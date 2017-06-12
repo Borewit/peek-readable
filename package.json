@@ -9,7 +9,7 @@
   "scripts": {
     "compile": "tsc --pretty",
     "lint": "tslint 'lib/**/*.ts'",
-    "test": "mocha --require ts-node/register test\\test.ts"
+    "test": "mocha --require ts-node/register test/test.ts"
   },
   "engines": {
     "node": ">=0.1.98"
