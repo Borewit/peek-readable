@@ -1,27 +1,12 @@
 language: node_js
 
-jobs:
-
-  include:
-    node_js:
-     - "0.10"
-     - "0.11"
-     - "0.12"
-    install:
-     - npm install
-    script:
-     - npm run lint
-     - npm run compile
-     - npm test
-
-   include:
-     node_js:
-      - "4"
-      - "6"
-      - "7"
-     install:
-      - npm install
-     script:
-      - npm run lint
-      - npm run compile
-      - npm test
+node_js:
+- "4"
+- "6"
+- "7"
+install:
+- npm install
+script:
+- npm run lint
+- npm run compile
+- npm test
