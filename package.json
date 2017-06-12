@@ -8,7 +8,7 @@
   },
   "scripts": {
     "compile": "tsc --pretty",
-    "lint": "tslint --format=verbose 'lib/**/*.ts'",
+    "lint": "tslint 'lib/**/*.ts'",
     "test": "mocha --require ts-node/register test\\test.ts"
   },
   "engines": {
