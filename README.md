@@ -30,5 +30,5 @@ return streamReader.read(buf, 0, 16).then((bytesRead) => {
 [npm-url]: https://npmjs.org/package/stream-reader
 [npm-image]: https://badge.fury.io/js/stream-reader.svg
 
-[travis-url]: https://travis-ci.org/profile/Borewit/stream-reader
+[travis-url]: https://travis-ci.org/Borewit/stream-reader
 [travis-image]: https://api.travis-ci.org/Borewit/stream-reader.svg?branch=master
