@@ -1,0 +1,40 @@
+{
+  "name": "stream-reader",
+  "version": "0.0.1",
+  "description": "Read from a readable stream just like a file",
+  "author": {
+    "name": "Borewit",
+    "url": "https://github.com/Borewit"
+  },
+  "scripts": {
+    "compile": "tsc --pretty",
+    "lint": "tslint --format=verbose 'lib/**/*.ts'",
+    "test": "mocha --require ts-node/register test\\test.ts"
+  },
+  "engines": {
+    "node": ">=0.1.98"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/Borewit/stream-reader"
+  },
+  "license": "BSD-3-Clause",
+  "main": "./lib/index.js",
+  "typings": "lib/index",
+  "bugs": {
+    "url": "https://github.com/Borewit/stream-reader/issues"
+  },
+  "devDependencies": {
+    "@types/mocha": "^2.2.41",
+    "@types/node": "^7.0.29",
+    "@types/promise": "^7.1.30",
+    "chai": "^4.0.2",
+    "mocha": "^3.4.2",
+    "ts-node": "^3.0.6",
+    "typescript": "^2.0.3",
+    "typings": "2.0.0"
+  },
+  "dependencies": {
+    "promise": "^7.1.1"
+  }
+}
