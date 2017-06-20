@@ -1,6 +1,6 @@
 {
   "name": "stream-reader",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "description": "Read from a readable stream just like a file",
   "author": {
     "name": "Borewit",
@@ -9,7 +9,8 @@
   "scripts": {
     "compile": "tsc --pretty",
     "lint": "tslint 'lib/**/*.ts'",
-    "test": "mocha --require ts-node/register test/test.ts"
+    "test": "mocha --require ts-node/register test/test.ts",
+    "dist": "copyfiles -f src/*.js src/*.js.map src/*.d.ts lib"
   },
   "engines": {
     "node": ">=0.1.98"
@@ -29,6 +30,7 @@
     "@types/node": "^7.0.29",
     "@types/promise": "^7.1.30",
     "chai": "^4.0.2",
+    "copyfiles": "^1.2.0",
     "mocha": "^3.4.2",
     "ts-node": "^3.0.6",
     "tslint": "^5.4.3",

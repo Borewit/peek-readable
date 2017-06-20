@@ -3,7 +3,7 @@
 import {} from "mocha"
 import {assert} from 'chai';
 import {SourceStream} from "./util";
-import {StreamReader} from "../lib";
+import {StreamReader} from "../src";
 import {Readable} from "stream";
 
 describe("ReadStreamTokenizer", () => {
@@ -86,7 +86,7 @@ describe("ReadStreamTokenizer", () => {
       }
 
       public _read() {
-        if (this.lens.length == 0) {
+        if (this.lens.length === 0) {
           this.push(null); // push the EOF-signaling `null` chunk
           return;
         }
