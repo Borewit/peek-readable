@@ -7,13 +7,13 @@ similar as you would read from a file.
 
 ## Usage
 
-The `stream-reader` contains one class: `StreamReader`.  The constructor of
+The `then-read-stream` contains one class: `StreamReader`.  The constructor of
 the `StreamReader` if provided with the [stream.Readable](https://nodejs.org/api/stream.html#stream_class_stream_readable)
 you want to read from.
 
 ##### TypeScript:
 ```JavaScript
-import {StreamReader} from "stream-reader";
+import {StreamReader} from "then-read-stream";
 
 const readThisStream = ... // Some stream of type stream.Readable
 const streamReader = new StreamReader(readThisStream);
@@ -30,7 +30,7 @@ return streamReader.read(buf, 0, 16).then((bytesRead) => {
 ```
 ##### JavaScript:
 ```JavaScript
-var stream_reader = require("stream-reader");
+var stream_reader = require("then-read-stream");
 
 var readThisStream = ... // Some stream of type stream.Readable
 var streamReader = new stream_reader.StreamReader(readThisStream);
@@ -47,9 +47,9 @@ return streamReader.read(buf, 0, 16).then( function(bytesRead) {
 
 
 
-[npm-url]: https://npmjs.org/package/stream-reader
-[npm-image]: https://badge.fury.io/js/stream-reader.svg
-[npm-downloads-image]: http://img.shields.io/npm/dm/stream-reader.svg
+[npm-url]: https://npmjs.org/package/then-read-stream
+[npm-image]: https://badge.fury.io/js/then-read-stream.svg
+[npm-downloads-image]: http://img.shields.io/npm/dm/then-read-stream.svg
 
-[travis-url]: https://travis-ci.org/Borewit/stream-reader
-[travis-image]: https://api.travis-ci.org/Borewit/stream-reader.svg?branch=master
+[travis-url]: https://travis-ci.org/Borewit/then-read-stream
+[travis-image]: https://api.travis-ci.org/Borewit/then-read-stream.svg?branch=master

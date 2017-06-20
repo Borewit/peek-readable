@@ -1,5 +1,5 @@
 {
-  "name": "stream-reader",
+  "name": "then-read-stream",
   "version": "0.0.2",
   "description": "Read from a readable stream just like a file",
   "author": {
@@ -17,13 +17,13 @@
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/Borewit/stream-reader"
+    "url": "https://github.com/Borewit/then-read-stream"
   },
   "license": "BSD-3-Clause",
   "main": "./lib/index.js",
   "typings": "lib/index",
   "bugs": {
-    "url": "https://github.com/Borewit/stream-reader/issues"
+    "url": "https://github.com/Borewit/then-read-stream/issues"
   },
   "devDependencies": {
     "@types/mocha": "^2.2.41",
