@@ -49,6 +49,7 @@ return streamReader.read(buf, 0, 16).then( function(bytesRead) {
 
 [npm-url]: https://npmjs.org/package/stream-reader
 [npm-image]: https://badge.fury.io/js/stream-reader.svg
+[npm-downloads-image]: http://img.shields.io/npm/dm/stream-reader.svg
 
 [travis-url]: https://travis-ci.org/Borewit/stream-reader
 [travis-image]: https://api.travis-ci.org/Borewit/stream-reader.svg?branch=master
