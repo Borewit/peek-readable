@@ -1,6 +1,6 @@
 {
   "name": "then-read-stream",
-  "version": "0.0.2",
+  "version": "0.0.3",
   "description": "Read from a readable stream just like a file",
   "author": {
     "name": "Borewit",
@@ -39,5 +39,12 @@
   },
   "dependencies": {
     "promise": "^7.1.1"
-  }
+  },
+  "keywords": [
+    "readable",
+    "buffer",
+    "promise",
+    "stream",
+    "read"
+  ]
 }
