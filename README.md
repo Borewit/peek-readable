@@ -1,4 +1,4 @@
-[![Build Status][travis-image]][travis-url]
+[![Build Status][travis-image]][travis-url] [![NPM version][npm-image]][npm-url] [![npm downloads][npm-downloads-image]][npm-url]
 
 A promise based asynchronous stream reader.
 
