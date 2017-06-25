@@ -27,9 +27,11 @@
     "url": "https://github.com/Borewit/then-read-stream/issues"
   },
   "devDependencies": {
+    "@types/es6-promise": "0.0.32",
     "@types/mocha": "^2.2.41",
     "@types/node": "^7.0.29",
     "chai": "^4.0.2",
+    "es6-promise": "^4.1.0",
     "gulp": "^3.9.1",
     "gulp-clean": "^0.3.2",
     "gulp-mocha": "^4.3.1",
