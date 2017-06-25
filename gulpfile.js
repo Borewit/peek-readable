@@ -22,7 +22,7 @@ gulp.task('compile', ['clean'], function () {
 
 gulp.task('test-compile', ['compile'], function () {
   return gulp.src(['test/**/*.ts'])
-    .pipe(typescript(), {target: 'es5'})
+    .pipe(typescript(), {declaration: true})
     .pipe(gulp.dest('./'))
 });
 
