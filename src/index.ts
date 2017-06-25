@@ -41,7 +41,7 @@ export class StreamReader {
   public constructor(private s: stream.Readable) {
     this.s.once("end", () => {
       this.endOfStream = true;
-      if(this.request) {
+      if (this.request) {
         this.request.deferred.reject(StreamReader.EndOfStream);
       }
       this.request = null;
@@ -69,7 +69,7 @@ export class StreamReader {
       this.request.deferred.resolve(this.request.length);
       process.nextTick(() => {
         this.request = null;
-      })
+      });
     } else {
       this.s.once("readable", () => {
         this.tryRead();
