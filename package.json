@@ -7,8 +7,9 @@
     "url": "https://github.com/Borewit"
   },
   "scripts": {
-    "compile": "tsc --pretty",
-    "lint": "tslint 'lib/**/*.ts'",
+    "tsc": "tsc --pretty",
+    "compile": "gulp compile",
+    "lint": "tslint 'src/**/*.ts'",
     "test": "gulp test",
     "prepare": "gulp"
   },
