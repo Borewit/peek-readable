@@ -29,7 +29,6 @@
   "devDependencies": {
     "@types/mocha": "^2.2.41",
     "@types/node": "^7.0.29",
-    "@types/promise": "^7.1.30",
     "chai": "^4.0.2",
     "gulp": "^3.9.1",
     "gulp-clean": "^0.3.2",
@@ -41,13 +40,10 @@
     "typescript": "^2.0.3",
     "typings": "2.0.0"
   },
-  "dependencies": {
-    "promise": "^7.1.1"
-  },
+  "dependencies": {},
   "keywords": [
     "readable",
     "buffer",
-    "promise",
     "stream",
     "read"
   ]
