@@ -51,15 +51,33 @@ export class StreamReader {
   // Read chunk from stream
   public read(buffer: Buffer, offset: number, length: number, position: number = null): Promise<number> {
 
-    this.request = {
-      buffer,
-      offset,
-      length,
-      position,
-      deferred: new Deferred<number>()
-    };
-    this.tryRead();
-    return this.request.deferred.promise;
+    if(this.request)
+      throw new Error('Concurrent read operation');
+
+    const readBuffer = this.s.read(length);
+
+    if (readBuffer) {
+      readBuffer.copy(buffer, offset);
+      return Promise.resolve<number>(length);
+    } else {
+      this.request = {
+        buffer,
+        offset,
+        length,
+        position,
+        deferred: new Deferred<number>()
+      };
+      this.s.once("readable", () => {
+        this.tryRead();
+      });
+      return this.request.deferred.promise.then((n) => {
+        this.request = null;
+        return n;
+      }).catch((err)=>{
+        this.request = null;
+        throw err;
+      })
+    }
   }
 
   private tryRead() {
@@ -67,9 +85,6 @@ export class StreamReader {
     if (readBuffer) {
       readBuffer.copy(this.request.buffer, this.request.offset);
       this.request.deferred.resolve(this.request.length);
-      process.nextTick(() => {
-        this.request = null;
-      });
     } else {
       this.s.once("readable", () => {
         this.tryRead();
