@@ -51,8 +51,8 @@ export class StreamReader {
   // Read chunk from stream
   public read(buffer: Buffer, offset: number, length: number, position: number = null): Promise<number> {
 
-    if(this.request)
-      throw new Error('Concurrent read operation');
+    if (this.request)
+      throw new Error("Concurrent read operation");
 
     const readBuffer = this.s.read(length);
 
@@ -73,10 +73,10 @@ export class StreamReader {
       return this.request.deferred.promise.then((n) => {
         this.request = null;
         return n;
-      }).catch((err)=>{
+      }).catch( (err) => {
         this.request = null;
         throw err;
-      })
+      });
     }
   }
 
