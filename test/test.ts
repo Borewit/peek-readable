@@ -42,9 +42,36 @@ describe("ReadStreamTokenizer", () => {
         assert.equal(err, StreamReader.EndOfStream);
       })
     });
-
   });
 
+  describe("concurrent reads", () => {
+
+    function readByteAsNumber(sr: StreamReader): Promise<number> {
+      const buf = new Buffer(1);
+      return sr.read(buf, 0, 1).then(() => {
+        return buf[0];
+      });
+    }
+
+    it("should support concurrent reads", () => {
+
+      const sourceStream = new SourceStream('\x00\x01\x02\x03\x04\x05\x06\x07\x08\x09');
+      const streamReader = new StreamReader(sourceStream);
+
+      const prom: Promise<number>[] = [];
+
+      for (let i = 0; i < 10; ++i) {
+        prom.push(readByteAsNumber(streamReader));
+      }
+
+      return Promise.all(prom).then((res) => {
+        for (let i = 0; i < 10; ++i) {
+          assert.equal(res[i], i);
+        }
+      })
+
+    });
+  });
 
   describe("disjoint", () => {
 
@@ -110,7 +137,7 @@ describe("ReadStreamTokenizer", () => {
       return sb.read(buf, 0, 4).then((bytesRead) => {
         assert.equal(bytesRead, 4);
         assert.equal(buf.readInt32BE(0), 16909060);
-        if(--s.nvals>0) {
+        if (--s.nvals > 0) {
           return run();
         }
       });
