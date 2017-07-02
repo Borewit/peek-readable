@@ -1,8 +1,10 @@
 *.iml
 typings
 node_modules
-lib/**/*.js
-lib/**/*.js.map
+src/**/*.js
+src/**/*.js.map
+src/**/*.d.ts
 test/**/*.js
 test/**/*.js.map
-src
+test/**/*.d.ts
+lib
