@@ -3,7 +3,9 @@
     "sourceMap":  true,
     "inlineSources": true,
     "module": "commonjs",
-    "moduleResolution": "node"
+    "moduleResolution": "node",
+    "declaration": true,
+    "outDir": "lib"
   },
   "include": [
     "src/**/*.ts",
