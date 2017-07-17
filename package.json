@@ -9,7 +9,7 @@
   "scripts": {
     "tsc": "tsc --pretty",
     "compile": "gulp compile",
-    "lint": "tslint 'src/**/*.ts'",
+    "lint": "tslint 'lib/**/*.ts'",
     "test": "gulp test",
     "prepare": "gulp"
   },

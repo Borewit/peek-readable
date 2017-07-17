@@ -4,11 +4,10 @@
     "inlineSources": true,
     "module": "commonjs",
     "moduleResolution": "node",
-    "declaration": true,
-    "outDir": "lib"
+    "declaration": true
   },
   "include": [
-    "src/**/*.ts",
+    "lib/**/*.ts",
     "test/**/*.ts"
   ]
 }
