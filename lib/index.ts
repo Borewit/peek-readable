@@ -2,7 +2,7 @@ import {Promise} from "es6-promise";
 import * as stream from "stream";
 
 interface IReadRequest {
-  buffer: Buffer,
+  buffer: Buffer | Uint8Array,
   offset: number,
   length: number,
   position?: number,
@@ -49,7 +49,7 @@ export class StreamReader {
   }
 
   // Read chunk from stream
-  public read(buffer: Buffer, offset: number, length: number, position: number = null): Promise<number> {
+  public read(buffer: Buffer | Uint8Array, offset: number, length: number, position: number = null): Promise<number> {
 
     if (this.request)
       throw new Error("Concurrent read operation");
