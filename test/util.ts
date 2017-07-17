@@ -1,7 +1,6 @@
 // Utilities for testing
 
 import {Readable} from "stream";
-const assert = require('assert');
 
 /**
  * A mock readable-stream, using string to read from
@@ -10,10 +9,10 @@ export class SourceStream extends Readable {
 
   private buf: Buffer;
 
-  constructor(private str: string = '') {
+  constructor(private str: string = "") {
     super();
 
-    this.buf = new Buffer(str, 'binary');
+    this.buf = new Buffer(str, "binary");
   }
 
   public _read() {
@@ -21,5 +20,3 @@ export class SourceStream extends Readable {
     this.push(null); // push the EOF-signaling `null` chunk
   }
 }
-
-

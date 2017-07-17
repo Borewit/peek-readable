@@ -1,19 +1,17 @@
 // Test reading an array of bytes.
 
-import {} from "mocha"
-import {assert} from 'chai';
-import {SourceStream} from "./util";
-import {StreamReader} from "../lib";
+import {assert} from "chai";
+import {} from "mocha";
 import {Readable} from "stream";
+import {StreamReader} from "../lib";
+import {SourceStream} from "./util";
 
 describe("ReadStreamTokenizer", () => {
 
-
   describe("buffer", () => {
 
-    const sourceStream = new SourceStream('\x05peter');
+    const sourceStream = new SourceStream("\x05peter");
     const streamReader = new StreamReader(sourceStream);
-
 
     it("Read only one byte from the chunck", () => {
 
@@ -40,7 +38,7 @@ describe("ReadStreamTokenizer", () => {
         assert.fail("Should reject due to end-of-stream");
       }).catch((err) => {
         assert.equal(err, StreamReader.EndOfStream);
-      })
+      });
     });
   });
 
@@ -55,10 +53,10 @@ describe("ReadStreamTokenizer", () => {
 
     it("should support concurrent reads", () => {
 
-      const sourceStream = new SourceStream('\x00\x01\x02\x03\x04\x05\x06\x07\x08\x09');
+      const sourceStream = new SourceStream("\x00\x01\x02\x03\x04\x05\x06\x07\x08\x09");
       const streamReader = new StreamReader(sourceStream);
 
-      const prom: Promise<number>[] = [];
+      const prom: Array<Promise<number>> = [];
 
       for (let i = 0; i < 10; ++i) {
         prom.push(readByteAsNumber(streamReader));
@@ -68,7 +66,7 @@ describe("ReadStreamTokenizer", () => {
         for (let i = 0; i < 10; ++i) {
           assert.equal(res[i], i);
         }
-      })
+      });
 
     });
   });
@@ -105,11 +103,11 @@ describe("ReadStreamTokenizer", () => {
 
         this.nvals = Math.floor(len / 4);
 
-        let data = '';
+        let data = "";
         for (let i = 0; i < this.nvals + 1; i++) {
-          data += '\x01\x02\x03\x04';
+          data += "\x01\x02\x03\x04";
         }
-        this.buf = new Buffer(data, 'binary');
+        this.buf = new Buffer(data, "binary");
       }
 
       public _read() {
@@ -133,7 +131,7 @@ describe("ReadStreamTokenizer", () => {
 
     const buf = new Buffer(4);
 
-    const run = function (): Promise<void> {
+    const run = (): Promise<void> =>  {
       return sb.read(buf, 0, 4).then((bytesRead) => {
         assert.equal(bytesRead, 4);
         assert.equal(buf.readInt32BE(0), 16909060);
@@ -151,7 +149,3 @@ describe("ReadStreamTokenizer", () => {
   });
 
 });
-
-
-
-
