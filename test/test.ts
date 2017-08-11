@@ -131,7 +131,7 @@ describe("ReadStreamTokenizer", () => {
 
     const buf = new Buffer(4);
 
-    const run = (): Promise<void> =>  {
+    const run = (): Promise<void> => {
       return sb.read(buf, 0, 4).then((bytesRead) => {
         assert.equal(bytesRead, 4);
         assert.equal(buf.readInt32BE(0), 16909060);
@@ -146,6 +146,49 @@ describe("ReadStreamTokenizer", () => {
       return run();
     });
 
+  });
+
+  describe("peek", () => {
+
+    it("should be able to read a peeked chunk", () => {
+
+      const sourceStream = new SourceStream("\x05peter");
+      const streamReader = new StreamReader(sourceStream);
+
+      const buf = new Buffer(1);
+
+      return streamReader.peek(buf, 0, 1)
+        .then((bytesRead) => {
+          assert.equal(bytesRead, 1, "Should peek exactly one byte");
+          assert.equal(buf[0], 5, "0x05 == 5");
+        })
+        .then(() => {
+          return streamReader.read(buf, 0, 1).then((bytesRead) => {
+            assert.equal(bytesRead, 1, "Should re-read the peaked byte");
+            assert.equal(buf[0], 5, "0x05 == 5");
+          });
+        });
+    });
+
+    it("should be able to read a larger chunk overlapping the peeked chunk", () => {
+
+      const sourceStream = new SourceStream("\x05peter");
+      const streamReader = new StreamReader(sourceStream);
+
+      const buf = new Buffer(6);
+
+      return streamReader.peek(buf, 0, 1)
+        .then((bytesRead) => {
+          assert.equal(bytesRead, 1, "Should peek exactly one byte");
+          assert.equal(buf[0], 5, "0x05 == 5");
+        })
+        .then(() => {
+          return streamReader.read(buf, 0, 6).then((bytesRead) => {
+            assert.equal(bytesRead, 6, "Should overlap the peaked byte");
+            assert.equal(buf, "\x05peter");
+          });
+        });
+    });
   });
 
 });
