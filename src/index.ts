@@ -85,7 +85,7 @@ export class StreamReader {
           this.peekQueue.unshift(peekData.slice(length));
         }
         return Promise.resolve(length);
-      } else if (length > peekData.length) {
+      } else {
         peekData.copy(buffer as Buffer, offset);
         return this.read(buffer, offset + peekData.length, length - peekData.length).then((bytesRead) => {
           return peekData.length + bytesRead;
