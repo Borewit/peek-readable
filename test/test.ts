@@ -3,7 +3,7 @@
 import {assert} from "chai";
 import {} from "mocha";
 import {Readable} from "stream";
-import {StreamReader} from "../lib";
+import {StreamReader} from "../src";
 import {SourceStream} from "./util";
 
 describe("ReadStreamTokenizer", () => {
