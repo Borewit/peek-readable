@@ -161,12 +161,11 @@ describe("ReadStreamTokenizer", () => {
         .then((bytesRead) => {
           assert.equal(bytesRead, 1, "Should peek exactly one byte");
           assert.equal(buf[0], 5, "0x05 == 5");
+          return streamReader.read(buf, 0, 1);
         })
-        .then(() => {
-          return streamReader.read(buf, 0, 1).then((bytesRead) => {
-            assert.equal(bytesRead, 1, "Should re-read the peaked byte");
-            assert.equal(buf[0], 5, "0x05 == 5");
-          });
+        .then((bytesRead) => {
+          assert.equal(bytesRead, 1, "Should re-read the peaked byte");
+          assert.equal(buf[0], 5, "0x05 == 5");
         });
     });
 
@@ -175,18 +174,41 @@ describe("ReadStreamTokenizer", () => {
       const sourceStream = new SourceStream("\x05peter");
       const streamReader = new StreamReader(sourceStream);
 
-      const buf = new Buffer(6);
+      const buf = new Buffer(6).fill(0);
 
       return streamReader.peek(buf, 0, 1)
         .then((bytesRead) => {
           assert.equal(bytesRead, 1, "Should peek exactly one byte");
           assert.equal(buf[0], 5, "0x05 == 5");
+          return streamReader.read(buf, 0, 6);
         })
-        .then(() => {
-          return streamReader.read(buf, 0, 6).then((bytesRead) => {
-            assert.equal(bytesRead, 6, "Should overlap the peaked byte");
-            assert.equal(buf, "\x05peter");
-          });
+        .then((bytesRead) => {
+          assert.equal(bytesRead, 6, "Should overlap the peaked byte");
+          assert.equal(buf, "\x05peter");
+        });
+    });
+
+    it("should be able to read a smaller chunk then the overlapping peeked chunk", () => {
+
+      const sourceStream = new SourceStream("\x05peter");
+      const streamReader = new StreamReader(sourceStream);
+
+      const buf = new Buffer(6).fill(0);
+
+      return streamReader.peek(buf, 0, 2)
+        .then((bytesRead) => {
+          assert.equal(bytesRead, 2, "Should peek 2 bytes");
+          assert.equal(buf[0], 5, "0x05 == 5");
+          return streamReader.read(buf, 0, 1);
+        })
+        .then((bytesRead) => {
+          assert.equal(bytesRead, 1, "Should read only 1 byte");
+          assert.equal(buf[0], 5, "0x05 == 5");
+          return streamReader.read(buf, 1, 5);
+        })
+        .then((bytesRead) => {
+          assert.equal(bytesRead, 5, "Should read remaining 5 byte");
+          assert.equal(buf, "\x05peter");
         });
     });
   });

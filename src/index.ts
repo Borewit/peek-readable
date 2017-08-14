@@ -79,16 +79,17 @@ export class StreamReader {
   public read(buffer: Buffer | Uint8Array, offset: number, length: number): Promise<number> {
     if (this.peekQueue.length > 0) {
       const peekData = this.peekQueue.shift();
-      if (length === peekData.length) {
-        peekData.copy(buffer as Buffer, offset);
+      if (length <= peekData.length) {
+        peekData.copy(buffer as Buffer, offset, 0, offset + length);
+        if (length < peekData.length) {
+          this.peekQueue.unshift(peekData.slice(length));
+        }
         return Promise.resolve(length);
-      } else if (peekData.length < length) {
+      } else if (length > peekData.length) {
         peekData.copy(buffer as Buffer, offset);
         return this.read(buffer, offset + peekData.length, length - peekData.length).then((bytesRead) => {
           return peekData.length + bytesRead;
         });
-      } else {
-        throw new Error("Not implemented yet");
       }
     } else {
       return this._read(buffer, offset, length);
