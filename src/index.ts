@@ -49,8 +49,8 @@ export class StreamReader {
       this.endOfStream = true;
       if (this.request) {
         this.request.deferred.reject(StreamReader.EndOfStream);
+        this.request = null;
       }
-      this.request = null;
     });
   }
 
@@ -107,6 +107,10 @@ export class StreamReader {
 
     if (this.request)
       throw new Error("Concurrent read operation");
+
+    if (this.endOfStream) {
+      return Promise.reject(StreamReader.EndOfStream);
+    }
 
     const readBuffer = this.s.read(length);
 
