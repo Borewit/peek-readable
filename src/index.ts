@@ -31,11 +31,6 @@ export const EndOfStream = new Error("End-Of-Stream");
 export class StreamReader {
 
   /**
-   * Obsolete: use module EndOfStream instead
-   */
-  public static EndOfStream = EndOfStream;
-
-  /**
    * Deferred read request
    */
   private request: IReadRequest;
