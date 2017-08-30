@@ -22,13 +22,18 @@ class Deferred<T> {
   }
 }
 
+/**
+ * Used to reject read if end-of-stream has been reached
+ * @type {Error}
+ */
+export const EndOfStream = new Error("End-Of-Stream");
+
 export class StreamReader {
 
   /**
-   * Used to reject read if end-of-stream has been reached
-   * @type {Error}
+   * Obsolete: use module EndOfStream instead
    */
-  public static EndOfStream = new Error("End-Of-Stream");
+  public static EndOfStream = EndOfStream;
 
   /**
    * Deferred read request
@@ -47,7 +52,7 @@ export class StreamReader {
     this.s.once("end", () => {
       this.endOfStream = true;
       if (this.request) {
-        this.request.deferred.reject(StreamReader.EndOfStream);
+        this.request.deferred.reject(EndOfStream);
         this.request = null;
       }
     });
@@ -62,7 +67,7 @@ export class StreamReader {
    * @returns {any}
    */
   public peek(buffer: Buffer | Uint8Array, offset: number, length: number): Promise<number> {
-    return this._read(buffer, offset, length).then((bytesRead) => {
+    return this.read(buffer, offset, length).then((bytesRead) => {
       this.peekQueue.push(buffer.slice(offset, length) as Buffer);
       return bytesRead;
     });
@@ -88,6 +93,10 @@ export class StreamReader {
         peekData.copy(buffer as Buffer, offset);
         return this.read(buffer, offset + peekData.length, length - peekData.length).then((bytesRead) => {
           return peekData.length + bytesRead;
+        }).catch((err) => {
+          if (err === EndOfStream) {
+            return peekData.length; // Return partial read
+          } else throw err;
         });
       }
     } else {
@@ -108,7 +117,8 @@ export class StreamReader {
       throw new Error("Concurrent read operation");
 
     if (this.endOfStream) {
-      return Promise.reject(StreamReader.EndOfStream);
+      //return Promise.reject(StreamReader.EndOfStream);
+      Promise.resolve<number>(0);
     }
 
     const readBuffer = this.s.read(length);

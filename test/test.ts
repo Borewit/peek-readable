@@ -3,7 +3,7 @@
 import {assert} from "chai";
 import {} from "mocha";
 import {Readable} from "stream";
-import {StreamReader} from "../src";
+import {EndOfStream, StreamReader} from "../src";
 import {SourceStream} from "./util";
 
 describe("ReadStreamTokenizer", () => {
@@ -13,7 +13,7 @@ describe("ReadStreamTokenizer", () => {
     const sourceStream = new SourceStream("\x05peter");
     const streamReader = new StreamReader(sourceStream);
 
-    it("Read only one byte from the chunck", () => {
+    it("Read only one byte from the chunk", () => {
 
       const buf = new Buffer(1);
       return streamReader.read(buf, 0, 1).then((bytesRead) => {
@@ -37,7 +37,7 @@ describe("ReadStreamTokenizer", () => {
       return streamReader.read(buf, 0, 1).then((bytesRead) => {
         assert.fail("Should reject due to end-of-stream");
       }).catch((err) => {
-        assert.equal(err, StreamReader.EndOfStream);
+        assert.equal(err, EndOfStream);
       });
     });
   });
@@ -211,6 +211,48 @@ describe("ReadStreamTokenizer", () => {
           assert.equal(buf, "\x05peter");
         });
     });
-  });
 
+    it("should be able to handle overlapping peeks", () => {
+
+      const sourceStream = new SourceStream("\x01\x02\x03\x04\x05");
+      const streamReader = new StreamReader(sourceStream);
+
+      const peekBuffer = new Buffer(3);
+      const readBuffer = new Buffer(1);
+
+      return streamReader.peek(peekBuffer, 0, 3) // Peek #1
+        .then((len) => {
+          assert.equal(3, len);
+          assert.deepEqual(peekBuffer, new Buffer("\x01\x02\x03", "binary"), "Peek #1");
+          return streamReader.read(readBuffer, 0, 1); // Read #1
+        }).then((len) => {
+          assert.equal(len, 1);
+          assert.deepEqual(readBuffer, new Buffer("\x01", "binary"), "Read #1");
+          return streamReader.peek(peekBuffer, 0, 3); // Peek #2
+        }).then((len) => {
+          assert.equal(len, 3);
+          assert.deepEqual(peekBuffer, new Buffer("\x02\x03\x04", "binary"), "Peek #2");
+          return streamReader.read(readBuffer, 0, 1); // Read #2
+        }).then((len) => {
+          assert.equal(len, 1);
+          assert.deepEqual(readBuffer, new Buffer("\x02", "binary"), "Read #2");
+          return streamReader.peek(peekBuffer, 0, 3); // Peek #3
+        }).then((len) => {
+          assert.equal(len, 3);
+          assert.deepEqual(peekBuffer, new Buffer("\x03\x04\x05", "binary"), "Peek #3");
+          return streamReader.read(readBuffer, 0, 1); // Read #3
+        }).then((len) => {
+          assert.equal(len, 1);
+          assert.deepEqual(readBuffer, new Buffer("\x03", "binary"), "Read #3");
+          return streamReader.peek(peekBuffer, 0, 3); // Peek #4
+        }).then((len) => {
+          assert.equal(len, 2, "3 bytes requested to peek, only 2 bytes left");
+          assert.deepEqual(peekBuffer, new Buffer("\x04\x05\x05", "binary"), "Peek #4");
+          return streamReader.read(readBuffer, 0, 1); // Read #4
+        }).then((len) => {
+          assert.equal(len, 1);
+          assert.deepEqual(readBuffer, new Buffer("\x04", "binary"), "Read #4");
+        });
+    });
+  });
 });
