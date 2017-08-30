@@ -117,8 +117,7 @@ export class StreamReader {
       throw new Error("Concurrent read operation");
 
     if (this.endOfStream) {
-      //return Promise.reject(StreamReader.EndOfStream);
-      Promise.resolve<number>(0);
+      return Promise.reject(EndOfStream);
     }
 
     const readBuffer = this.s.read(length);
