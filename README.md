@@ -5,7 +5,7 @@
 [![Coverage Status](https://coveralls.io/repos/github/Borewit/then-read-stream/badge.svg?branch=master)](https://coveralls.io/github/Borewit/then-read-stream?branch=master)
 
 
-A promise based asynchronous stream reader.
+A promise based asynchronous stream reader, which makes reading from a stream easy.
 
 Allows to read from a [Readable Stream](https://nodejs.org/api/stream.html#stream_readable_streams) 
 similar as you would read from a file.
