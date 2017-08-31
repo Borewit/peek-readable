@@ -63,7 +63,7 @@ export class StreamReader {
    */
   public peek(buffer: Buffer | Uint8Array, offset: number, length: number): Promise<number> {
     return this.read(buffer, offset, length).then((bytesRead) => {
-      this.peekQueue.push(buffer.slice(offset, length) as Buffer);
+      this.peekQueue.push(buffer.slice(offset, bytesRead) as Buffer);
       return bytesRead;
     });
   }
@@ -119,7 +119,7 @@ export class StreamReader {
 
     if (readBuffer) {
       readBuffer.copy(buffer, offset);
-      return Promise.resolve<number>(length);
+      return Promise.resolve<number>(readBuffer.length);
     } else {
       this.request = {
         buffer,

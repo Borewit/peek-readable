@@ -6,7 +6,7 @@ import {Readable} from "stream";
 import {EndOfStream, StreamReader} from "../src";
 import {SourceStream} from "./util";
 
-describe("ReadStreamTokenizer", () => {
+describe("StreamReader", () => {
 
   describe("buffer", () => {
 
@@ -255,4 +255,39 @@ describe("ReadStreamTokenizer", () => {
         });
     });
   });
+
+  describe("EndOfStream Error", () => {
+
+    it("should not throw an EndOfStream Error if we read exactly until the end of the stream", () => {
+
+      const sourceStream = new SourceStream("\x89\x54\x40");
+      const streamReader = new StreamReader(sourceStream);
+
+      const res = new Buffer(3);
+
+      return streamReader.peek(res, 0, 3)
+        .then((len) => {
+          assert.equal(3, len);
+        });
+    });
+
+    it("should not throw an EndOfStream Error at a partial result", () => {
+
+      const sourceStream = new SourceStream("\x89\x54\x40");
+      const streamReader = new StreamReader(sourceStream);
+
+      const res = new Buffer(4);
+
+      return streamReader.peek(res, 0, 4)
+        .then((len) => {
+          assert.equal(3, len, "should indicate only 3 bytes are actually peeked");
+          return streamReader.read(res, 0, 4);
+        }).then((len) => {
+          assert.equal(3, len, "should indicate only 3 bytes are actually read");
+        });
+    });
+
+  });
+
 });
+
