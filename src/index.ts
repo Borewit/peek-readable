@@ -1,3 +1,4 @@
+import * as assert from "assert";
 import * as stream from "stream";
 
 interface IReadRequest {
@@ -108,8 +109,7 @@ export class StreamReader {
    */
   private _read(buffer: Buffer | Uint8Array, offset: number, length: number): Promise<number> {
 
-    if (this.request)
-      throw new Error("Concurrent read operation");
+    assert.ok(!this.request, "Concurrent read operation?");
 
     if (this.endOfStream) {
       return Promise.reject(EndOfStream);
