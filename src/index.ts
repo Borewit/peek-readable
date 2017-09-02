@@ -24,10 +24,9 @@ class Deferred<T> {
 }
 
 /**
- * Used to reject read if end-of-stream has been reached
- * @type {Error}
+ * Error message
  */
-export const EndOfStream = new Error("End-Of-Stream");
+export const endOfStream = "End-Of-Stream";
 
 export class StreamReader {
 
@@ -48,7 +47,7 @@ export class StreamReader {
     this.s.once("end", () => {
       this.endOfStream = true;
       if (this.request) {
-        this.request.deferred.reject(EndOfStream);
+        this.request.deferred.reject(new Error(endOfStream));
         this.request = null;
       }
     });
@@ -90,7 +89,7 @@ export class StreamReader {
         return this.read(buffer, offset + peekData.length, length - peekData.length).then((bytesRead) => {
           return peekData.length + bytesRead;
         }).catch((err) => {
-          if (err === EndOfStream) {
+          if (err.message === endOfStream) {
             return peekData.length; // Return partial read
           } else throw err;
         });
@@ -112,7 +111,7 @@ export class StreamReader {
     assert.ok(!this.request, "Concurrent read operation?");
 
     if (this.endOfStream) {
-      return Promise.reject(EndOfStream);
+      return Promise.reject(new Error(endOfStream));
     }
 
     const readBuffer = this.s.read(length);

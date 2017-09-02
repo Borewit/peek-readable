@@ -3,7 +3,7 @@
 import {assert} from "chai";
 import {} from "mocha";
 import {Readable} from "stream";
-import {EndOfStream, StreamReader} from "../src";
+import {endOfStream, StreamReader} from "../src";
 import {SourceStream} from "./util";
 
 describe("StreamReader", () => {
@@ -37,7 +37,7 @@ describe("StreamReader", () => {
       return streamReader.read(buf, 0, 1).then((bytesRead) => {
         assert.fail("Should reject due to end-of-stream");
       }).catch((err) => {
-        assert.equal(err, EndOfStream);
+        assert.equal(err.message, endOfStream);
       });
     });
   });
