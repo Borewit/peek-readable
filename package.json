@@ -1,6 +1,6 @@
 {
   "name": "then-read-stream",
-  "version": "1.0.2",
+  "version": "1.0.3",
   "description": "Read from a readable stream just like a file",
   "author": {
     "name": "Borewit",
@@ -36,6 +36,7 @@
     "@types/node": "^8.0.26",
     "chai": "^4.1.2",
     "coveralls": "^2.13.1",
+    "fs-extra": "^4.0.1",
     "mocha": "^3.5.0",
     "nyc": "^11.1.0",
     "ts-node": "^3.3.0",

@@ -76,6 +76,9 @@ export class StreamReader {
    * @returns {any}
    */
   public read(buffer: Buffer | Uint8Array, offset: number, length: number): Promise<number> {
+    if (length === 0) {
+      return Promise.resolve(0);
+    }
     if (this.peekQueue.length > 0) {
       const peekData = this.peekQueue.shift();
       if (length <= peekData.length) {
@@ -143,7 +146,7 @@ export class StreamReader {
     const readBuffer = this.s.read(this.request.length);
     if (readBuffer) {
       readBuffer.copy(this.request.buffer, this.request.offset);
-      this.request.deferred.resolve(this.request.length);
+      this.request.deferred.resolve(readBuffer.length);
     } else {
       this.s.once("readable", () => {
         this.tryRead();

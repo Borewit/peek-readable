@@ -1,7 +1,7 @@
-// Test reading an array of bytes.
-
 import {assert} from "chai";
+import * as fs from "fs-extra";
 import {} from "mocha";
+import * as Path from "path";
 import {Readable} from "stream";
 import {endOfStream, StreamReader} from "../src";
 import {SourceStream} from "./util";
@@ -271,7 +271,7 @@ describe("StreamReader", () => {
         });
     });
 
-    it("should not throw an EndOfStream Error at a partial result", () => {
+    it("should return a partial result from a stream if EOF is reached", () => {
 
       const sourceStream = new SourceStream("\x89\x54\x40");
       const streamReader = new StreamReader(sourceStream);
@@ -288,5 +288,22 @@ describe("StreamReader", () => {
     });
 
   });
+
+  describe("file-stream", () => {
+
+    const path_test3 = Path.join(__dirname, "resources", "test3.dat");
+    const fileSize = 5;
+    const buf = new Buffer(17);
+
+    it("should return a partial size, if full length cannot be read", () => {
+      const fileReadStream = fs.createReadStream(path_test3);
+      const streamReader = new StreamReader(fileReadStream);
+      return streamReader.read(buf, 0, 17).then((actualRead) => {
+        assert.strictEqual(actualRead, fileSize);
+        fileReadStream.close();
+      });
+    });
+
+  }); // number
 
 });
