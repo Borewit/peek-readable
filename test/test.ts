@@ -8,12 +8,22 @@ import {SourceStream} from "./util";
 
 describe("StreamReader", () => {
 
-  describe("buffer", () => {
+  it("should be able to handle 0 byte read request", () => {
+
+    const streamReader = new StreamReader(new SourceStream("abcdefg"));
+
+    const buf = new Buffer(0);
+    return streamReader.read(buf, 0, 0).then((bytesRead) => {
+      assert.equal(bytesRead, 0, "Should return");
+    });
+  });
+
+  describe("read from a streamed data chunk", () => {
 
     const sourceStream = new SourceStream("\x05peter");
     const streamReader = new StreamReader(sourceStream);
 
-    it("Read only one byte from the chunk", () => {
+    it("read only one byte from the chunk", () => {
 
       const buf = new Buffer(1);
       return streamReader.read(buf, 0, 1).then((bytesRead) => {
