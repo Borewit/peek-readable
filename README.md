@@ -16,8 +16,55 @@ The `then-read-stream` contains one class: `StreamReader`.  The constructor of
 the `StreamReader` if provided with the [stream.Readable](https://nodejs.org/api/stream.html#stream_class_stream_readable)
 you want to read from.
 
-##### TypeScript:
+##### Examles:
+
+In the following example we read the first 16 bytes from a stream and store them in our buffer.
+
 ```JavaScript
+var stream_reader = require("then-read-stream");
+
+var readThisStream = ... // Some stream of type stream.Readable
+var streamReader = new stream_reader.StreamReader(readThisStream);
+
+var buffer = new Buffer(16);
+
+return streamReader.read(buf, 0, 16)
+  .then( function(bytesRead) {
+    // If all went well, buf contains the promised 16 bytes of data read
+  })
+  .catch( function(err) {
+    if(err === stream_reader.StreamReader.EndOfStream) {
+      // Rejected, end of the stream has been reached
+    }
+  })
+
+```
+
+With peek you can read ahead:
+```JavaScript
+return streamReader.peek(buffer, 0, 1)
+  .then( function(bytesRead) {
+    if(bytesRead !== 2 || buffer[0] !== 0xFF){
+      throw new Error('Stream should start with 0xFF');
+    }
+    // Read 16 bytes, start at the same offset as peek, so the first byte will be 0xFF
+    return streamReader.peek(buffer, 0, 16);
+  })
+```
+
+If you have to skip a part of the data, you can use ignore:
+```JavaScript
+return streamReader.ignore(16)
+  .then( function(bytesIgnored) {
+    if(bytesIgnored<16){
+      console.log('Remaing stream length was %s, expected 16', bytesIgnored)
+    }
+  })
+```
+
+##### TypeScript:
+TypeScript definitions are build in. No need to install additional modules.
+```TypeScript
 import {StreamReader} from "then-read-stream";
 
 const readThisStream = ... // Some stream of type stream.Readable
@@ -29,28 +76,10 @@ return streamReader.read(buf, 0, 16).then((bytesRead) => {
     // If all went well, buf contains the promised 16 bytes of data read
   }).catch((err) => {
     if(err === StreamReader.EndOfStream) {
-      // Rejected, bacause end of the stream has been reached
+      // Rejected, end of the stream has been reached
     }
   })
 ```
-##### JavaScript:
-```JavaScript
-var stream_reader = require("then-read-stream");
-
-var readThisStream = ... // Some stream of type stream.Readable
-var streamReader = new stream_reader.StreamReader(readThisStream);
-
-return streamReader.read(buf, 0, 16).then( function(bytesRead) {
-    // If all went well, buf contains the promised 16 bytes of data read
-  }).catch( function(err) {
-    if(err === stream_reader.StreamReader.EndOfStream) {
-      // Rejected, bacause end of the stream has been reached
-    }
-  })
-
-```
-
-
 
 [npm-url]: https://npmjs.org/package/then-read-stream
 [npm-image]: https://badge.fury.io/js/then-read-stream.svg
