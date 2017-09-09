@@ -13,7 +13,7 @@ describe("StreamReader", () => {
     const streamReader = new StreamReader(new SourceStream("abcdefg"));
 
     const buf = new Buffer(0);
-    return streamReader.read(buf, 0, 0).then((bytesRead) => {
+    return streamReader.read(buf, 0, 0).then(bytesRead => {
       assert.equal(bytesRead, 0, "Should return");
     });
   });
@@ -26,7 +26,7 @@ describe("StreamReader", () => {
     it("read only one byte from the chunk", () => {
 
       const buf = new Buffer(1);
-      return streamReader.read(buf, 0, 1).then((bytesRead) => {
+      return streamReader.read(buf, 0, 1).then(bytesRead => {
         assert.equal(bytesRead, 1, "Should read exactly one byte");
         assert.equal(buf[0], 5, "0x05 == 5");
       });
@@ -35,7 +35,7 @@ describe("StreamReader", () => {
     it("should decode string from chunk", () => {
 
       const buf = new Buffer(5);
-      return streamReader.read(buf, 0, 5).then((bytesRead) => {
+      return streamReader.read(buf, 0, 5).then(bytesRead => {
         assert.equal(bytesRead, 5, "Should read 5 bytes");
         assert.equal(buf.toString(), "peter");
       });
@@ -44,9 +44,9 @@ describe("StreamReader", () => {
     it("should should reject at the end of the stream", () => {
 
       const buf = new Buffer(1);
-      return streamReader.read(buf, 0, 1).then((bytesRead) => {
+      return streamReader.read(buf, 0, 1).then(bytesRead => {
         assert.fail("Should reject due to end-of-stream");
-      }).catch((err) => {
+      }).catch(err => {
         assert.equal(err.message, endOfStream);
       });
     });
@@ -72,7 +72,7 @@ describe("StreamReader", () => {
         prom.push(readByteAsNumber(streamReader));
       }
 
-      return Promise.all(prom).then((res) => {
+      return Promise.all(prom).then(res => {
         for (let i = 0; i < 10; ++i) {
           assert.equal(res[i], i);
         }
@@ -142,7 +142,7 @@ describe("StreamReader", () => {
     const buf = new Buffer(4);
 
     const run = (): Promise<void> => {
-      return sb.read(buf, 0, 4).then((bytesRead) => {
+      return sb.read(buf, 0, 4).then(bytesRead => {
         assert.equal(bytesRead, 4);
         assert.equal(buf.readInt32BE(0), 16909060);
         if (--s.nvals > 0) {
@@ -168,12 +168,12 @@ describe("StreamReader", () => {
       const buf = new Buffer(1);
 
       return streamReader.peek(buf, 0, 1)
-        .then((bytesRead) => {
+        .then(bytesRead => {
           assert.equal(bytesRead, 1, "Should peek exactly one byte");
           assert.equal(buf[0], 5, "0x05 == 5");
           return streamReader.read(buf, 0, 1);
         })
-        .then((bytesRead) => {
+        .then(bytesRead => {
           assert.equal(bytesRead, 1, "Should re-read the peaked byte");
           assert.equal(buf[0], 5, "0x05 == 5");
         });
@@ -187,12 +187,12 @@ describe("StreamReader", () => {
       const buf = new Buffer(6).fill(0);
 
       return streamReader.peek(buf, 0, 1)
-        .then((bytesRead) => {
+        .then(bytesRead => {
           assert.equal(bytesRead, 1, "Should peek exactly one byte");
           assert.equal(buf[0], 5, "0x05 == 5");
           return streamReader.read(buf, 0, 6);
         })
-        .then((bytesRead) => {
+        .then(bytesRead => {
           assert.equal(bytesRead, 6, "Should overlap the peaked byte");
           assert.equal(buf, "\x05peter");
         });
@@ -206,17 +206,17 @@ describe("StreamReader", () => {
       const buf = new Buffer(6).fill(0);
 
       return streamReader.peek(buf, 0, 2)
-        .then((bytesRead) => {
+        .then(bytesRead => {
           assert.equal(bytesRead, 2, "Should peek 2 bytes");
           assert.equal(buf[0], 5, "0x05 == 5");
           return streamReader.read(buf, 0, 1);
         })
-        .then((bytesRead) => {
+        .then(bytesRead => {
           assert.equal(bytesRead, 1, "Should read only 1 byte");
           assert.equal(buf[0], 5, "0x05 == 5");
           return streamReader.read(buf, 1, 5);
         })
-        .then((bytesRead) => {
+        .then(bytesRead => {
           assert.equal(bytesRead, 5, "Should read remaining 5 byte");
           assert.equal(buf, "\x05peter");
         });
@@ -231,35 +231,35 @@ describe("StreamReader", () => {
       const readBuffer = new Buffer(1);
 
       return streamReader.peek(peekBuffer, 0, 3) // Peek #1
-        .then((len) => {
+        .then(len => {
           assert.equal(3, len);
           assert.deepEqual(peekBuffer, new Buffer("\x01\x02\x03", "binary"), "Peek #1");
           return streamReader.read(readBuffer, 0, 1); // Read #1
-        }).then((len) => {
+        }).then(len => {
           assert.equal(len, 1);
           assert.deepEqual(readBuffer, new Buffer("\x01", "binary"), "Read #1");
           return streamReader.peek(peekBuffer, 0, 3); // Peek #2
-        }).then((len) => {
+        }).then(len => {
           assert.equal(len, 3);
           assert.deepEqual(peekBuffer, new Buffer("\x02\x03\x04", "binary"), "Peek #2");
           return streamReader.read(readBuffer, 0, 1); // Read #2
-        }).then((len) => {
+        }).then(len => {
           assert.equal(len, 1);
           assert.deepEqual(readBuffer, new Buffer("\x02", "binary"), "Read #2");
           return streamReader.peek(peekBuffer, 0, 3); // Peek #3
-        }).then((len) => {
+        }).then(len => {
           assert.equal(len, 3);
           assert.deepEqual(peekBuffer, new Buffer("\x03\x04\x05", "binary"), "Peek #3");
           return streamReader.read(readBuffer, 0, 1); // Read #3
-        }).then((len) => {
+        }).then(len => {
           assert.equal(len, 1);
           assert.deepEqual(readBuffer, new Buffer("\x03", "binary"), "Read #3");
           return streamReader.peek(peekBuffer, 0, 3); // Peek #4
-        }).then((len) => {
+        }).then(len => {
           assert.equal(len, 2, "3 bytes requested to peek, only 2 bytes left");
           assert.deepEqual(peekBuffer, new Buffer("\x04\x05\x05", "binary"), "Peek #4");
           return streamReader.read(readBuffer, 0, 1); // Read #4
-        }).then((len) => {
+        }).then(len => {
           assert.equal(len, 1);
           assert.deepEqual(readBuffer, new Buffer("\x04", "binary"), "Read #4");
         });
@@ -276,7 +276,7 @@ describe("StreamReader", () => {
       const res = new Buffer(3);
 
       return streamReader.peek(res, 0, 3)
-        .then((len) => {
+        .then(len => {
           assert.equal(3, len);
         });
     });
@@ -289,10 +289,10 @@ describe("StreamReader", () => {
       const res = new Buffer(4);
 
       return streamReader.peek(res, 0, 4)
-        .then((len) => {
+        .then(len => {
           assert.equal(3, len, "should indicate only 3 bytes are actually peeked");
           return streamReader.read(res, 0, 4);
-        }).then((len) => {
+        }).then(len => {
           assert.equal(3, len, "should indicate only 3 bytes are actually read");
         });
     });
@@ -308,7 +308,7 @@ describe("StreamReader", () => {
     it("should return a partial size, if full length cannot be read", () => {
       const fileReadStream = fs.createReadStream(path_test3);
       const streamReader = new StreamReader(fileReadStream);
-      return streamReader.read(buf, 0, 17).then((actualRead) => {
+      return streamReader.read(buf, 0, 17).then(actualRead => {
         assert.strictEqual(actualRead, fileSize);
         fileReadStream.close();
       });

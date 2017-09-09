@@ -62,7 +62,7 @@ export class StreamReader {
    * @returns {any}
    */
   public peek(buffer: Buffer | Uint8Array, offset: number, length: number): Promise<number> {
-    return this.read(buffer, offset, length).then((bytesRead) => {
+    return this.read(buffer, offset, length).then(bytesRead => {
       this.peekQueue.push(buffer.slice(offset, bytesRead) as Buffer);
       return bytesRead;
     });
@@ -89,9 +89,9 @@ export class StreamReader {
         return Promise.resolve(length);
       } else {
         peekData.copy(buffer as Buffer, offset);
-        return this.read(buffer, offset + peekData.length, length - peekData.length).then((bytesRead) => {
+        return this.read(buffer, offset + peekData.length, length - peekData.length).then(bytesRead => {
           return peekData.length + bytesRead;
-        }).catch((err) => {
+        }).catch(err => {
           if (err.message === endOfStream) {
             return peekData.length; // Return partial read
           } else throw err;
@@ -132,10 +132,10 @@ export class StreamReader {
       this.s.once("readable", () => {
         this.tryRead();
       });
-      return this.request.deferred.promise.then((n) => {
+      return this.request.deferred.promise.then(n => {
         this.request = null;
         return n;
-      }).catch((err) => {
+      }).catch(err => {
         this.request = null;
         throw err;
       });
