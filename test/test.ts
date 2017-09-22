@@ -1,5 +1,6 @@
-import {assert} from "chai";
-import * as fs from "fs-extra";
+import {assert, expect} from "chai";
+import {EventEmitter} from "events";
+ import * as fs from "fs-extra";
 import {} from "mocha";
 import * as Path from "path";
 import {Readable} from "stream";
@@ -7,6 +8,19 @@ import {endOfStream, StreamReader} from "../src";
 import {SourceStream} from "./util";
 
 describe("StreamReader", () => {
+
+  it("should throw an exception if constructor argument is not a stream", () => {
+
+    class MyEmitter extends EventEmitter {
+    }
+
+    const not_a_stream = new MyEmitter();
+
+    expect(() => {
+      const s = new StreamReader(not_a_stream as any);
+    }).to.throw("Expected an instance of stream.Readable");
+
+  });
 
   it("should be able to handle 0 byte read request", () => {
 

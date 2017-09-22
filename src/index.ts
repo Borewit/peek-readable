@@ -44,6 +44,9 @@ export class StreamReader {
   private peekQueue: Buffer[] = [];
 
   public constructor(private s: stream.Readable) {
+    if (!(s instanceof stream.Readable)) {
+      throw new Error("Expected an instance of stream.Readable");
+    }
     this.s.once("end", () => {
       this.endOfStream = true;
       if (this.request) {
