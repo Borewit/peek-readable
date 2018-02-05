@@ -22,7 +22,8 @@
     "max-line-length": [true, 150],
     "switch-default": false,
     "prefer-for-of": false,
-    "arrow-parens": [true, "ban-single-arg-parens"]
+    "arrow-parens": [true, "ban-single-arg-parens"],
+    "no-implicit-dependencies": [true, "dev"]
   },
   "jsRules": {
     /*

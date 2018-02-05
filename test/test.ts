@@ -6,6 +6,7 @@ import * as Path from "path";
 import {Readable} from "stream";
 import {endOfStream, StreamReader} from "../src";
 import {SourceStream} from "./util";
+import {Promise} from "es6-promise";
 
 describe("StreamReader", () => {
 
