@@ -1,4 +1,5 @@
 import {assert, expect} from "chai";
+import {Promise} from "es6-promise";
 import {EventEmitter} from "events";
 import * as fs from "fs-extra";
 import {} from "mocha";
@@ -6,7 +7,6 @@ import * as Path from "path";
 import {Readable} from "stream";
 import {endOfStream, StreamReader} from "../src";
 import {SourceStream} from "./util";
-import {Promise} from "es6-promise";
 
 describe("StreamReader", () => {
 

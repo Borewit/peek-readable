@@ -1,6 +1,6 @@
 import * as assert from "assert";
-import * as stream from "stream";
 import {Promise} from "es6-promise";
+import * as stream from "stream";
 
 interface IReadRequest {
   buffer: Buffer | Uint8Array,
