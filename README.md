@@ -3,8 +3,7 @@
 [![npm downloads](http://img.shields.io/npm/dm/then-read-stream.svg)](https://npmjs.org/package/then-read-stream)
 [![Dependencies](https://david-dm.org/Borewit/then-read-stream.svg)](https://david-dm.org/Borewit/then-read-stream)
 [![Coverage Status](https://coveralls.io/repos/github/Borewit/then-read-stream/badge.svg?branch=master)](https://coveralls.io/github/Borewit/then-read-stream?branch=master)
-
-
+[![NSP Status](https://nodesecurity.io/orgs/borewit/projects/c85f266b-59fd-4a9f-8fd6-84bf89e63885/badge)](https://nodesecurity.io/orgs/borewit/projects/c85f266b-59fd-4a9f-8fd6-84bf89e63885)
 A promise based asynchronous stream reader, which makes reading from a stream easy.
 
 Allows to read from a [Readable Stream](https://nodejs.org/api/stream.html#stream_readable_streams) 
