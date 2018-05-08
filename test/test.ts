@@ -27,7 +27,7 @@ describe("StreamReader", () => {
 
     const streamReader = new StreamReader(new SourceStream("abcdefg"));
 
-    const buf = new Buffer(0);
+    const buf = Buffer.alloc(0);
     return streamReader.read(buf, 0, 0).then(bytesRead => {
       assert.equal(bytesRead, 0, "Should return");
     });
@@ -40,7 +40,7 @@ describe("StreamReader", () => {
 
     it("read only one byte from the chunk", () => {
 
-      const buf = new Buffer(1);
+      const buf = Buffer.alloc(1);
       return streamReader.read(buf, 0, 1).then(bytesRead => {
         assert.equal(bytesRead, 1, "Should read exactly one byte");
         assert.equal(buf[0], 5, "0x05 == 5");
@@ -49,7 +49,7 @@ describe("StreamReader", () => {
 
     it("should decode string from chunk", () => {
 
-      const buf = new Buffer(5);
+      const buf = Buffer.alloc(5);
       return streamReader.read(buf, 0, 5).then(bytesRead => {
         assert.equal(bytesRead, 5, "Should read 5 bytes");
         assert.equal(buf.toString(), "peter");
@@ -58,7 +58,7 @@ describe("StreamReader", () => {
 
     it("should should reject at the end of the stream", () => {
 
-      const buf = new Buffer(1);
+      const buf = Buffer.alloc(1);
       return streamReader.read(buf, 0, 1).then(bytesRead => {
         assert.fail("Should reject due to end-of-stream");
       }).catch(err => {
@@ -70,7 +70,7 @@ describe("StreamReader", () => {
   describe("concurrent reads", () => {
 
     function readByteAsNumber(sr: StreamReader): Promise<number> {
-      const buf = new Buffer(1);
+      const buf = Buffer.alloc(1);
       return sr.read(buf, 0, 1).then(() => {
         return buf[0];
       });
@@ -132,7 +132,7 @@ describe("StreamReader", () => {
         for (let i = 0; i < this.nvals + 1; i++) {
           data += "\x01\x02\x03\x04";
         }
-        this.buf = new Buffer(data, "binary");
+        this.buf = Buffer.from(data, "binary");
       }
 
       public _read() {
@@ -154,7 +154,7 @@ describe("StreamReader", () => {
 
     const sb = new StreamReader(s);
 
-    const buf = new Buffer(4);
+    const buf = Buffer.alloc(4);
 
     const run = (): Promise<void> => {
       return sb.read(buf, 0, 4).then(bytesRead => {
@@ -180,7 +180,7 @@ describe("StreamReader", () => {
       const sourceStream = new SourceStream("\x05peter");
       const streamReader = new StreamReader(sourceStream);
 
-      const buf = new Buffer(1);
+      const buf = Buffer.alloc(1);
 
       return streamReader.peek(buf, 0, 1)
         .then(bytesRead => {
@@ -199,7 +199,7 @@ describe("StreamReader", () => {
       const sourceStream = new SourceStream("\x05peter");
       const streamReader = new StreamReader(sourceStream);
 
-      const buf = new Buffer(6).fill(0);
+      const buf = Buffer.alloc(6).fill(0);
 
       return streamReader.peek(buf, 0, 1)
         .then(bytesRead => {
@@ -218,7 +218,7 @@ describe("StreamReader", () => {
       const sourceStream = new SourceStream("\x05peter");
       const streamReader = new StreamReader(sourceStream);
 
-      const buf = new Buffer(6).fill(0);
+      const buf = Buffer.alloc(6).fill(0);
 
       return streamReader.peek(buf, 0, 2)
         .then(bytesRead => {
@@ -242,41 +242,41 @@ describe("StreamReader", () => {
       const sourceStream = new SourceStream("\x01\x02\x03\x04\x05");
       const streamReader = new StreamReader(sourceStream);
 
-      const peekBuffer = new Buffer(3);
-      const readBuffer = new Buffer(1);
+      const peekBuffer = Buffer.alloc(3);
+      const readBuffer = Buffer.alloc(1);
 
       return streamReader.peek(peekBuffer, 0, 3) // Peek #1
         .then(len => {
           assert.equal(3, len);
-          assert.deepEqual(peekBuffer, new Buffer("\x01\x02\x03", "binary"), "Peek #1");
+          assert.deepEqual(peekBuffer, Buffer.from("\x01\x02\x03", "binary"), "Peek #1");
           return streamReader.read(readBuffer, 0, 1); // Read #1
         }).then(len => {
           assert.equal(len, 1);
-          assert.deepEqual(readBuffer, new Buffer("\x01", "binary"), "Read #1");
+          assert.deepEqual(readBuffer, Buffer.from("\x01", "binary"), "Read #1");
           return streamReader.peek(peekBuffer, 0, 3); // Peek #2
         }).then(len => {
           assert.equal(len, 3);
-          assert.deepEqual(peekBuffer, new Buffer("\x02\x03\x04", "binary"), "Peek #2");
+          assert.deepEqual(peekBuffer, Buffer.from("\x02\x03\x04", "binary"), "Peek #2");
           return streamReader.read(readBuffer, 0, 1); // Read #2
         }).then(len => {
           assert.equal(len, 1);
-          assert.deepEqual(readBuffer, new Buffer("\x02", "binary"), "Read #2");
+          assert.deepEqual(readBuffer, Buffer.from("\x02", "binary"), "Read #2");
           return streamReader.peek(peekBuffer, 0, 3); // Peek #3
         }).then(len => {
           assert.equal(len, 3);
-          assert.deepEqual(peekBuffer, new Buffer("\x03\x04\x05", "binary"), "Peek #3");
+          assert.deepEqual(peekBuffer, Buffer.from("\x03\x04\x05", "binary"), "Peek #3");
           return streamReader.read(readBuffer, 0, 1); // Read #3
         }).then(len => {
           assert.equal(len, 1);
-          assert.deepEqual(readBuffer, new Buffer("\x03", "binary"), "Read #3");
+          assert.deepEqual(readBuffer, Buffer.from("\x03", "binary"), "Read #3");
           return streamReader.peek(peekBuffer, 0, 3); // Peek #4
         }).then(len => {
           assert.equal(len, 2, "3 bytes requested to peek, only 2 bytes left");
-          assert.deepEqual(peekBuffer, new Buffer("\x04\x05\x05", "binary"), "Peek #4");
+          assert.deepEqual(peekBuffer, Buffer.from("\x04\x05\x05", "binary"), "Peek #4");
           return streamReader.read(readBuffer, 0, 1); // Read #4
         }).then(len => {
           assert.equal(len, 1);
-          assert.deepEqual(readBuffer, new Buffer("\x04", "binary"), "Read #4");
+          assert.deepEqual(readBuffer, Buffer.from("\x04", "binary"), "Read #4");
         });
     });
   });
@@ -288,7 +288,7 @@ describe("StreamReader", () => {
       const sourceStream = new SourceStream("\x89\x54\x40");
       const streamReader = new StreamReader(sourceStream);
 
-      const res = new Buffer(3);
+      const res = Buffer.alloc(3);
 
       return streamReader.peek(res, 0, 3)
         .then(len => {
@@ -301,7 +301,7 @@ describe("StreamReader", () => {
       const sourceStream = new SourceStream("\x89\x54\x40");
       const streamReader = new StreamReader(sourceStream);
 
-      const res = new Buffer(4);
+      const res = Buffer.alloc(4);
 
       return streamReader.peek(res, 0, 4)
         .then(len => {
@@ -318,7 +318,7 @@ describe("StreamReader", () => {
 
     const path_test3 = Path.join(__dirname, "resources", "test3.dat");
     const fileSize = 5;
-    const buf = new Buffer(17);
+    const buf = Buffer.alloc(17);
 
     it("should return a partial size, if full length cannot be read", () => {
       const fileReadStream = fs.createReadStream(path_test3);
