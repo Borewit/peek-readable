@@ -12,7 +12,7 @@ export class SourceStream extends Readable {
   constructor(private str: string = "") {
     super();
 
-    this.buf = new Buffer(str, "binary");
+    this.buf = Buffer.from(str, "binary");
   }
 
   public _read() {
