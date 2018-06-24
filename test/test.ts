@@ -1,5 +1,5 @@
-import {Promise} from "bluebird";
 import {assert, expect} from "chai";
+import {Promise} from "es6-promise";
 import {EventEmitter} from "events";
 import * as fs from "fs-extra";
 import {} from "mocha";
