@@ -242,6 +242,7 @@ describe("StreamReader", () => {
       const sourceStream = new SourceStream("\x01\x02\x03\x04\x05");
       const streamReader = new StreamReader(sourceStream);
 
+      const peekBufferShort = Buffer.alloc(1);
       const peekBuffer = Buffer.alloc(3);
       const readBuffer = Buffer.alloc(1);
 
@@ -249,11 +250,15 @@ describe("StreamReader", () => {
         .then(len => {
           assert.equal(3, len);
           assert.deepEqual(peekBuffer, Buffer.from("\x01\x02\x03", "binary"), "Peek #1");
+          return streamReader.peek(peekBufferShort, 0, 1) // Peek #2
+        }).then(len => {
+          assert.equal(1, len);
+          assert.deepEqual(peekBufferShort, Buffer.from("\x01", "binary"), "Peek #2");
           return streamReader.read(readBuffer, 0, 1); // Read #1
         }).then(len => {
           assert.equal(len, 1);
           assert.deepEqual(readBuffer, Buffer.from("\x01", "binary"), "Read #1");
-          return streamReader.peek(peekBuffer, 0, 3); // Peek #2
+          return streamReader.peek(peekBuffer, 0, 3); // Peek #3
         }).then(len => {
           assert.equal(len, 3);
           assert.deepEqual(peekBuffer, Buffer.from("\x02\x03\x04", "binary"), "Peek #2");
