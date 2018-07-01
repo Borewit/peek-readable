@@ -58,11 +58,11 @@ export class StreamReader {
   }
 
   /**
-   * Read ahead from stream. Subsequent read will return the same data
+   * Read ahead (peek) from stream. Subsequent read or peeks will return the same data
    * @param buffer Buffer to store data read from stream in
    * @param offset Offset buffer
    * @param length Number of bytes to read
-   * @param position
+   * @param position Source offset
    * @returns {any}
    */
   public peek(buffer: Buffer | Uint8Array, offset: number, length: number): Promise<number> {
@@ -74,8 +74,8 @@ export class StreamReader {
 
   /**
    * Read chunk from stream
-   * @param buffer Buffer to store data read from stream in
-   * @param offset Offset buffer
+   * @param buffer Target buffer to store data read from stream in
+   * @param offset Offset of target buffer
    * @param length Number of bytes to read
    * @returns {any}
    */
