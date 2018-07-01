@@ -86,7 +86,7 @@ export class StreamReader {
     if (this.peekQueue.length > 0) {
       const peekData = this.peekQueue.shift();
       if (length <= peekData.length) {
-        peekData.copy(buffer as Buffer, offset, 0, offset + length);
+        peekData.copy(buffer as Buffer, offset, 0, length);
         if (length < peekData.length) {
           this.peekQueue.unshift(peekData.slice(length));
         }
