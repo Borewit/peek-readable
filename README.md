@@ -12,11 +12,11 @@ similar as you would read from a file.
 
 ## Usage
 
-The `then-read-stream` contains one class: `StreamReader`.  The constructor of
-the `StreamReader` if provided with the [stream.Readable](https://nodejs.org/api/stream.html#stream_class_stream_readable)
+The `then-read-stream` contains one class: `StreamReader`.
+`StreamReader` iis constructed with the [stream.Readable](https://nodejs.org/api/stream.html#stream_class_stream_readable)
 you want to read from.
 
-##### Examles:
+##### Examples:
 
 In the following example we read the first 16 bytes from a stream and store them in our buffer.
 
