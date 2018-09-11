@@ -9,13 +9,14 @@
   "scripts": {
     "compile-src": "tsc -p src",
     "compile-test": "tsc -p test",
-    "compile": "npm run compile-src && npm run compile-test",
-    "prepare": "npm run compile",
+    "build": "yarn run compile",
+    "compile": "yarn run compile-src && yarn run compile-test",
+    "prepare": "yarn run compile",
     "lint": "tslint 'src/**/*.ts' --exclude 'src/**/*.d.ts' 'test/**/*.ts' --exclude 'test/**/*.d.ts'",
     "test": "mocha --require ts-node/register test",
     "cover-test": "nyc npm run test",
-    "coveralls": "npm run cover-test && nyc report --reporter=text-lcov | coveralls",
-    "start": "npm run compile && npm run lint && npm run cover-test"
+    "coveralls": "yarn run cover-test && nyc report --reporter=text-lcov | coveralls",
+    "start": "yarn run compile && yarn run lint && npm run cover-test"
   },
   "engines": {
     "node": ">=0.1.98"
