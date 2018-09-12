@@ -7,9 +7,9 @@
     "url": "https://github.com/Borewit"
   },
   "scripts": {
+    "build": "yarn run compile",
     "compile-src": "tsc -p src",
     "compile-test": "tsc -p test",
-    "build": "yarn run compile",
     "compile": "yarn run compile-src && yarn run compile-test",
     "prepare": "yarn run compile",
     "lint": "tslint 'src/**/*.ts' --exclude 'src/**/*.d.ts' 'test/**/*.ts' --exclude 'test/**/*.d.ts'",
