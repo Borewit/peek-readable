@@ -3,7 +3,8 @@
 [![npm downloads](http://img.shields.io/npm/dm/then-read-stream.svg)](https://npmjs.org/package/then-read-stream)
 [![Dependencies](https://david-dm.org/Borewit/then-read-stream.svg)](https://david-dm.org/Borewit/then-read-stream)
 [![Coverage Status](https://coveralls.io/repos/github/Borewit/then-read-stream/badge.svg?branch=master)](https://coveralls.io/github/Borewit/then-read-stream?branch=master)
-[![NSP Status](https://nodesecurity.io/orgs/borewit/projects/c85f266b-59fd-4a9f-8fd6-84bf89e63885/badge)](https://nodesecurity.io/orgs/borewit/projects/c85f266b-59fd-4a9f-8fd6-84bf89e63885)
+[![Known Vulnerabilities](https://snyk.io/test/github/Borewit/then-read-stream/badge.svg?targetFile=package.json)](https://snyk.io/test/github/Borewit/then-read-stream?targetFile=package.json)
+![npm bundle size (minified)](https://img.shields.io/bundlephobia/min/react.svg)
 
 A promise based asynchronous stream reader, which makes reading from a stream easy.
 
@@ -25,19 +26,20 @@ NPM module is compliant with [ECMAScript 2015 (ES6)](https://www.ecma-internatio
 In the following example we read the first 16 bytes from a stream and store them in our buffer.
 
 ```JavaScript
-var stream_reader = require("then-read-stream");
+import * as trs from 'then-read-stream';
 
-var readThisStream = ... // Some stream of type stream.Readable
-var streamReader = new stream_reader.StreamReader(readThisStream);
+const readble = ... // Some stream of type stream.Readable
 
-var buffer = new Buffer(16);
+const streamReader = new trs.StreamReader(readble);
+
+const buffer = new Buffer(16);
 
 return streamReader.read(buf, 0, 16)
-  .then( function(bytesRead) {
+  .then( bytesRead => {
     // If all went well, buf contains the promised 16 bytes of data read
   })
-  .catch( function(err) {
-    if(err === stream_reader.StreamReader.EndOfStream) {
+  .catch( err => {
+    if(err.message === streamReader.endOfStream) {
       // Rejected, end of the stream has been reached
     }
   })
@@ -46,8 +48,9 @@ return streamReader.read(buf, 0, 16)
 
 With peek you can read ahead:
 ```JavaScript
+
 return streamReader.peek(buffer, 0, 1)
-  .then( function(bytesRead) {
+  .then( bytesRead => {
     if(bytesRead !== 2 || buffer[0] !== 0xFF){
       throw new Error('Stream should start with 0xFF');
     }
@@ -59,9 +62,9 @@ return streamReader.peek(buffer, 0, 1)
 If you have to skip a part of the data, you can use ignore:
 ```JavaScript
 return streamReader.ignore(16)
-  .then( function(bytesIgnored) {
-    if(bytesIgnored<16){
-      console.log('Remaing stream length was %s, expected 16', bytesIgnored)
+  .then( bytesIgnored => {
+    if (bytesIgnored < 16){
+      console.log(`Remaining stream length was ${bytesIgnored}, expected 16`);
     }
   })
 ```
@@ -69,25 +72,18 @@ return streamReader.ignore(16)
 ##### TypeScript:
 TypeScript definitions are build in. No need to install additional modules.
 ```TypeScript
-import {StreamReader} from "then-read-stream";
+import {StreamReader, endOfStream} from "then-read-stream";
 
 const readThisStream = ... // Some stream of type stream.Readable
 const streamReader = new StreamReader(readThisStream);
 
 const buf = new Buffer(16);
   
-return streamReader.read(buf, 0, 16).then((bytesRead) => {
+return streamReader.read(buf, 0, 16).then(bytesRead => {
     // If all went well, buf contains the promised 16 bytes of data read
-  }).catch((err) => {
-    if(err === StreamReader.EndOfStream) {
+  }).catch(err => {
+    if(err.message === endOfStream) {
       // Rejected, end of the stream has been reached
     }
   })
 ```
-
-[npm-url]: https://npmjs.org/package/then-read-stream
-[npm-image]: https://badge.fury.io/js/then-read-stream.svg
-[npm-downloads-image]: http://img.shields.io/npm/dm/then-read-stream.svg
-
-[travis-url]: https://travis-ci.org/Borewit/then-read-stream
-[travis-image]: https://api.travis-ci.org/Borewit/then-read-stream.svg?branch=master
