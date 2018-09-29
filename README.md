@@ -14,7 +14,7 @@ similar as you would read from a file.
 ## Usage
 
 The `then-read-stream` contains one class: `StreamReader`.
-`StreamReader` iis constructed with the [stream.Readable](https://nodejs.org/api/stream.html#stream_class_stream_readable)
+`StreamReader` is constructed with the [stream.Readable](https://nodejs.org/api/stream.html#stream_class_stream_readable)
 you want to read from.
 
 ### Compatibility
