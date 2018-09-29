@@ -16,6 +16,10 @@ The `then-read-stream` contains one class: `StreamReader`.
 `StreamReader` iis constructed with the [stream.Readable](https://nodejs.org/api/stream.html#stream_class_stream_readable)
 you want to read from.
 
+### Compatibility
+
+NPM module is compliant with [ECMAScript 2015 (ES6)](https://www.ecma-international.org/ecma-262/6.0/).
+
 ##### Examples:
 
 In the following example we read the first 16 bytes from a stream and store them in our buffer.
