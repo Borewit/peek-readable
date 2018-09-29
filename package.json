@@ -32,16 +32,15 @@
     "url": "https://github.com/Borewit/then-read-stream/issues"
   },
   "devDependencies": {
-    "@types/mocha": "^5.2.3",
-    "@types/node": "10.9.4",
+    "@types/mocha": "^5.2.5",
+    "@types/node": "^10.11.3",
     "chai": "^4.1.2",
     "coveralls": "^3.0.1",
-    "fs-extra": "^5.0.0",
     "mocha": "^5.2.0",
     "nyc": "^13.0.0",
     "ts-node": "7",
     "tslint": "^5.10.0",
-    "typescript": "3.0.3"
+    "typescript": "^3.1.1"
   },
   "keywords": [
     "readable",

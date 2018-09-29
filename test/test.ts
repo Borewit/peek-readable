@@ -1,6 +1,6 @@
 import {assert, expect} from "chai";
 import {EventEmitter} from "events";
-import * as fs from "fs-extra";
+import * as fs from "fs";
 import * as Path from "path";
 import {Readable} from "stream";
 import {endOfStream, StreamReader} from "../src";
@@ -57,7 +57,7 @@ describe("StreamReader", () => {
     it("should should reject at the end of the stream", () => {
 
       const buf = Buffer.alloc(1);
-      return streamReader.read(buf, 0, 1).then(bytesRead => {
+      return streamReader.read(buf, 0, 1).then(() => {
         assert.fail("Should reject due to end-of-stream");
       }).catch(err => {
         assert.equal(err.message, endOfStream);
