@@ -3,8 +3,8 @@
 [![npm downloads](http://img.shields.io/npm/dm/then-read-stream.svg)](https://npmjs.org/package/then-read-stream)
 [![Dependencies](https://david-dm.org/Borewit/then-read-stream.svg)](https://david-dm.org/Borewit/then-read-stream)
 [![Coverage Status](https://coveralls.io/repos/github/Borewit/then-read-stream/badge.svg?branch=master)](https://coveralls.io/github/Borewit/then-read-stream?branch=master)
+[![Codacy Badge](https://api.codacy.com/project/badge/Grade/8a89b90858734a6da07570eaf2e89849)](https://www.codacy.com/app/Borewit/then-read-stream?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=Borewit/then-read-stream&amp;utm_campaign=Badge_Grade)
 [![Known Vulnerabilities](https://snyk.io/test/github/Borewit/then-read-stream/badge.svg?targetFile=package.json)](https://snyk.io/test/github/Borewit/then-read-stream?targetFile=package.json)
-![npm bundle size (minified)](https://img.shields.io/bundlephobia/min/react.svg)
 
 A promise based asynchronous stream reader, which makes reading from a stream easy.
 
@@ -13,15 +13,13 @@ similar as you would read from a file.
 
 ## Usage
 
-The `then-read-stream` contains one class: `StreamReader`.
-`StreamReader` is constructed with the [stream.Readable](https://nodejs.org/api/stream.html#stream_class_stream_readable)
-you want to read from.
+The `then-read-stream` contains one class: `StreamReader`, which reads from a [stream.Readable](https://nodejs.org/api/stream.html#stream_class_stream_readable).
 
 ### Compatibility
 
 NPM module is compliant with [ECMAScript 2015 (ES6)](https://www.ecma-international.org/ecma-262/6.0/).
 
-##### Examples:
+#### Examples
 
 In the following example we read the first 16 bytes from a stream and store them in our buffer.
 
@@ -69,7 +67,7 @@ return streamReader.ignore(16)
   })
 ```
 
-##### TypeScript:
+#### TypeScript
 TypeScript definitions are build in. No need to install additional modules.
 ```TypeScript
 import {StreamReader, endOfStream} from "then-read-stream";
