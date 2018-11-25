@@ -1,6 +1,6 @@
 // Utilities for testing
 
-import {Readable} from "stream";
+import { Readable } from 'stream';
 
 /**
  * A mock readable-stream, using string to read from
@@ -9,10 +9,10 @@ export class SourceStream extends Readable {
 
   private buf: Buffer;
 
-  constructor(private str: string = "") {
+  constructor(private str: string = '') {
     super();
 
-    this.buf = Buffer.from(str, "binary");
+    this.buf = Buffer.from(str, 'binary');
   }
 
   public _read() {

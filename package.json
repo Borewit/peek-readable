@@ -7,7 +7,7 @@
     "url": "https://github.com/Borewit"
   },
   "scripts": {
-    "clean": "del-cli lib/** src/**/*.js src/**/*.js.map src/**/*.d.ts test/**/*.js test/**/*.js.map",
+    "clean": "del-cli lib/** src/**/*.js src/**/*.js.map src/**/*.d.ts test/**/*.js test/**/*.js.map coverage .nyc_output",
     "build": "npm run clean && npm run compile",
     "compile-src": "tsc -p src",
     "compile-test": "tsc -p test",
@@ -16,8 +16,8 @@
     "lint-md": "remark -u preset-lint-recommended .",
     "lint": "npm run lint-md && npm run lint-ts",
     "test": "mocha --require ts-node/register test",
-    "cover-test": "nyc npm run test",
-    "coveralls": "npm run cover-test && nyc report --reporter=text-lcov | coveralls",
+    "test-coverage": "nyc npm run test",
+    "send-coveralls": "nyc report --reporter=text-lcov | coveralls",
     "start": "npm run compile && npm run lint && npm run cover-test"
   },
   "engines": {
@@ -28,7 +28,7 @@
     "url": "https://github.com/Borewit/then-read-stream"
   },
   "license": "MIT",
-  "main": "./lib/index.js",
+  "main": "./lib/index",
   "typings": "lib/index",
   "bugs": {
     "url": "https://github.com/Borewit/then-read-stream/issues"
