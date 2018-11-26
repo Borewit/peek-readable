@@ -6,6 +6,8 @@
 [![Codacy Badge](https://api.codacy.com/project/badge/Grade/8a89b90858734a6da07570eaf2e89849)](https://www.codacy.com/app/Borewit/then-read-stream?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=Borewit/then-read-stream&amp;utm_campaign=Badge_Grade)
 [![Known Vulnerabilities](https://snyk.io/test/github/Borewit/then-read-stream/badge.svg?targetFile=package.json)](https://snyk.io/test/github/Borewit/then-read-stream?targetFile=package.json)
 
+# then-read-stream
+
 A promise based asynchronous stream reader, which makes reading from a stream easy.
 
 Allows to read from a [Readable Stream](https://nodejs.org/api/stream.html#stream_readable_streams) 

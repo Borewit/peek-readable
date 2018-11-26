@@ -1,5 +1,5 @@
-import * as assert from "assert";
-import * as stream from "stream";
+import * as assert from 'assert';
+import * as stream from 'stream';
 
 interface IReadRequest {
   buffer: Buffer | Uint8Array,
@@ -26,7 +26,7 @@ class Deferred<T> {
 /**
  * Error message
  */
-export const endOfStream = "End-Of-Stream";
+export const endOfStream = 'End-Of-Stream';
 
 export class StreamReader {
 
@@ -45,15 +45,11 @@ export class StreamReader {
 
   public constructor(private s: stream.Readable) {
     if (!s.read || !s.once) {
-      throw new Error("Expected an instance of stream.Readable");
+      throw new Error('Expected an instance of stream.Readable');
     }
-    this.s.once("end", () => {
-      this.endOfStream = true;
-      if (this.request) {
-        this.request.deferred.reject(new Error(endOfStream));
-        this.request = null;
-      }
-    });
+    this.s.once('end', () => this.reject(new Error(endOfStream)));
+    this.s.once('error', err => this.reject(err));
+    this.s.once('close', () => this.reject(new Error('Stream closed')));
   }
 
   /**
@@ -64,11 +60,10 @@ export class StreamReader {
    * @param position Source offset
    * @returns {any}
    */
-  public peek(buffer: Buffer | Uint8Array, offset: number, length: number): Promise<number> {
-    return this.read(buffer, offset, length).then(bytesRead => {
-      this.peekQueue.unshift(buffer.slice(offset, bytesRead) as Buffer);
-      return bytesRead;
-    });
+  public async peek(buffer: Buffer | Uint8Array, offset: number, length: number): Promise<number> {
+    const bytesRead = await this.read(buffer, offset, length);
+    this.peekQueue.unshift(buffer.slice(offset, bytesRead) as Buffer);
+    return bytesRead;
   }
 
   /**
@@ -78,9 +73,9 @@ export class StreamReader {
    * @param length Number of bytes to read
    * @returns {any}
    */
-  public read(buffer: Buffer | Uint8Array, offset: number, length: number): Promise<number> {
+  public async read(buffer: Buffer | Uint8Array, offset: number, length: number): Promise<number> {
     if (length === 0) {
-      return Promise.resolve(0);
+      return 0;
     }
     if (this.peekQueue.length > 0) {
       const peekData = this.peekQueue.shift();
@@ -89,16 +84,17 @@ export class StreamReader {
         if (length < peekData.length) {
           this.peekQueue.unshift(peekData.slice(length));
         }
-        return Promise.resolve(length);
+        return length;
       } else {
         peekData.copy(buffer as Buffer, offset);
-        return this.read(buffer, offset + peekData.length, length - peekData.length).then(bytesRead => {
+        try {
+          const bytesRead = await this.read(buffer, offset + peekData.length, length - peekData.length);
           return peekData.length + bytesRead;
-        }).catch(err => {
+        } catch (err) {
           if (err.message === endOfStream) {
             return peekData.length; // Return partial read
           } else throw err;
-        });
+        }
       }
     } else {
       return this._read(buffer, offset, length);
@@ -112,19 +108,19 @@ export class StreamReader {
    * @param length Number of bytes to read
    * @returns {any}
    */
-  private _read(buffer: Buffer | Uint8Array, offset: number, length: number): Promise<number> {
+  private async _read(buffer: Buffer | Uint8Array, offset: number, length: number): Promise<number> {
 
-    assert.ok(!this.request, "Concurrent read operation?");
+    assert.ok(!this.request, 'Concurrent read operation?');
 
     if (this.endOfStream) {
-      return Promise.reject(new Error(endOfStream));
+      throw new Error(endOfStream);
     }
 
     const readBuffer = this.s.read(length);
 
     if (readBuffer) {
       readBuffer.copy(buffer, offset);
-      return Promise.resolve<number>(readBuffer.length);
+      return readBuffer.length;
     } else {
       this.request = {
         buffer,
@@ -132,7 +128,7 @@ export class StreamReader {
         length,
         deferred: new Deferred<number>()
       };
-      this.s.once("readable", () => {
+      this.s.once('readable', () => {
         this.tryRead();
       });
       return this.request.deferred.promise.then(n => {
@@ -151,9 +147,17 @@ export class StreamReader {
       readBuffer.copy(this.request.buffer, this.request.offset);
       this.request.deferred.resolve(readBuffer.length);
     } else {
-      this.s.once("readable", () => {
+      this.s.once('readable', () => {
         this.tryRead();
       });
+    }
+  }
+
+  private reject(err: Error) {
+    this.endOfStream = true;
+    if (this.request) {
+      this.request.deferred.reject(err);
+      this.request = null;
     }
   }
 }
