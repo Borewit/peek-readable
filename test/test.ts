@@ -248,7 +248,7 @@ describe('StreamReader', () => {
       len = await streamReader.read(readBuffer, 0, 1); // Read #3
       assert.equal(len, 1);
       assert.deepEqual(readBuffer, Buffer.from('\x03', 'binary'), 'Read #3');
-      len = await streamReader.peek(peekBuffer, 0, 3); // Peek #4
+      len = await streamReader.peek(peekBuffer, 0, 2); // Peek #4
       assert.equal(len, 2, '3 bytes requested to peek, only 2 bytes left');
       assert.deepEqual(peekBuffer, Buffer.from('\x04\x05\x05', 'binary'), 'Peek #4');
       len = await streamReader.read(readBuffer, 0, 1); // Read #4

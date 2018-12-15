@@ -62,7 +62,7 @@ export class StreamReader {
    */
   public async peek(buffer: Buffer | Uint8Array, offset: number, length: number): Promise<number> {
     const bytesRead = await this.read(buffer, offset, length);
-    this.peekQueue.unshift(buffer.slice(offset, bytesRead) as Buffer);
+    this.peekQueue.push(buffer.slice(offset, offset + bytesRead) as Buffer); // Put read data back to peek buffer
     return bytesRead;
   }
 
@@ -77,28 +77,30 @@ export class StreamReader {
     if (length === 0) {
       return 0;
     }
-    if (this.peekQueue.length > 0) {
-      const peekData = this.peekQueue.shift();
-      if (length <= peekData.length) {
-        peekData.copy(buffer as Buffer, offset, 0, length);
-        if (length < peekData.length) {
-          this.peekQueue.unshift(peekData.slice(length));
-        }
-        return length;
-      } else {
-        peekData.copy(buffer as Buffer, offset);
-        try {
-          const bytesRead = await this.read(buffer, offset + peekData.length, length - peekData.length);
-          return peekData.length + bytesRead;
-        } catch (err) {
-          if (err.message === endOfStream) {
-            return peekData.length; // Return partial read
-          } else throw err;
-        }
-      }
-    } else {
-      return this._read(buffer, offset, length);
+
+    if (this.peekQueue.length === 0 && this.endOfStream) {
+      throw new Error(endOfStream);
     }
+
+    let remaining = length;
+    let bytesRead = 0;
+    // consume peeked data first
+    while (this.peekQueue.length > 0 && remaining > 0) {
+      const peekData = this.peekQueue.pop(); // Front of queue
+      const lenCopy = Math.min(peekData.length, remaining);
+      peekData.copy(buffer, offset + bytesRead, 0, lenCopy);
+      bytesRead += lenCopy;
+      remaining -= lenCopy;
+      if (lenCopy < peekData.length) {
+        // remainder back to queue
+        this.peekQueue.push(peekData.slice(lenCopy));
+      }
+    }
+    // continue reading from stream if required
+    if (remaining > 0 && !this.endOfStream) {
+      bytesRead += await this._read(buffer, offset + bytesRead, remaining);
+    }
+    return bytesRead;
   }
 
   /**
@@ -111,10 +113,6 @@ export class StreamReader {
   private async _read(buffer: Buffer | Uint8Array, offset: number, length: number): Promise<number> {
 
     assert.ok(!this.request, 'Concurrent read operation?');
-
-    if (this.endOfStream) {
-      throw new Error(endOfStream);
-    }
 
     const readBuffer = this.s.read(length);
 
