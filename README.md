@@ -24,39 +24,50 @@ NPM module is compliant with [ECMAScript 2015 (ES6)](https://www.ecma-internatio
 #### Examples
 
 In the following example we read the first 16 bytes from a stream and store them in our buffer.
+Source code of examples can be found [here](test/examples.ts).
 
 ```JavaScript
-import * as trs from 'then-read-stream';
+import * as fs from 'fs';
+import * as path from 'path';
+import { StreamReader } from 'then-read-stream';
 
-const readble = ... // Some stream of type stream.Readable
+const readable = fs.createReadStream('JPEG_example_JPG_RIP_001.jpg');
+const streamReader = new StreamReader(readable);
 
-const streamReader = new trs.StreamReader(readble);
+const buffer = Buffer.alloc(16);
 
-const buffer = new Buffer(16);
-
-return streamReader.read(buf, 0, 16)
+return streamReader.read(buffer, 0, 16)
   .then( bytesRead => {
-    // If all went well, buf contains the promised 16 bytes of data read
-  })
-  .catch( err => {
-    if(err.message === streamReader.endOfStream) {
-      // Rejected, end of the stream has been reached
-    }
-  })
-
+    // buf, contains bytesRead, which will be 16 if the end-of-stream has not been reached
+  });
 ```
 
 With peek you can read ahead:
 ```JavaScript
+import * as fs from 'fs';
+import * as path from 'path';
+import { StreamReader } from 'then-read-stream';
 
-return streamReader.peek(buffer, 0, 1)
-  .then( bytesRead => {
-    if(bytesRead !== 2 || buffer[0] !== 0xFF){
-      throw new Error('Stream should start with 0xFF');
+const fileReadStream = fs.createReadStream('JPEG_example_JPG_RIP_001.jpg');
+const streamReader = new StreamReader(fileReadStream);
+const buffer = Buffer.alloc(20);
+
+return streamReader.peek(buffer, 0, 3)
+  .then(bytesRead => {
+    if (bytesRead === 3 && buffer[0] === 0xFF && buffer[1] === 0xD8 && buffer[2] === 0xFF) {
+      console.log('This is a JPEG file');
+      return streamReader.read(buffer, 0, 20); // Read JPEG header
+    } else {
+      throw Error('Expected a JPEG file');
     }
-    // Read 16 bytes, start at the same offset as peek, so the first byte will be 0xFF
-    return streamReader.peek(buffer, 0, 16);
   })
+  .then(bytesRead => {
+    if (bytesRead === 20) {
+      console.log('Got the JPEG header');
+    } else {
+      throw Error('Failed to read JPEG header');
+    }
+  });
 ```
 
 If you have to skip a part of the data, you can use ignore:
@@ -66,24 +77,6 @@ return streamReader.ignore(16)
     if (bytesIgnored < 16){
       console.log(`Remaining stream length was ${bytesIgnored}, expected 16`);
     }
-  })
+  });
 ```
 
-#### TypeScript
-TypeScript definitions are build in. No need to install additional modules.
-```TypeScript
-import {StreamReader, endOfStream} from "then-read-stream";
-
-const readThisStream = ... // Some stream of type stream.Readable
-const streamReader = new StreamReader(readThisStream);
-
-const buf = new Buffer(16);
-  
-return streamReader.read(buf, 0, 16).then(bytesRead => {
-    // If all went well, buf contains the promised 16 bytes of data read
-  }).catch(err => {
-    if(err.message === endOfStream) {
-      // Rejected, end of the stream has been reached
-    }
-  })
-```
