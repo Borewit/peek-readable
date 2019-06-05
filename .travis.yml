@@ -1,12 +1,10 @@
 language: node_js
 
 node_js:
-- "6"
-- "7"
 - "8"
-- "9"
 - "10"
 - "11"
+- "12"
 install:
 - yarn install
 script:
@@ -22,4 +20,4 @@ jobs:
         - yarn run compile
         - yarn run test-coverage
         - yarn run send-coveralls
-      node_js: 9
+      node_js: 10
