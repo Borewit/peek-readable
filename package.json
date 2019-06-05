@@ -15,17 +15,17 @@
     "lint-ts": "tslint 'src/**/*.ts' --exclude 'src/**/*.d.ts' 'test/**/*.ts' --exclude 'test/**/*.d.ts'",
     "lint-md": "remark -u preset-lint-recommended .",
     "lint": "npm run lint-md && npm run lint-ts",
-    "test": "mocha --require ts-node/register test",
+    "test": "mocha --require ts-node/register --require source-map-support/register --full-trace test/*.ts",
     "test-coverage": "nyc npm run test",
     "send-coveralls": "nyc report --reporter=text-lcov | coveralls",
     "start": "npm run compile && npm run lint && npm run cover-test"
   },
   "engines": {
-    "node": ">=0.1.98"
+    "node": ">=8"
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/Borewit/then-read-stream"
+    "url": "git+https://github.com/Borewit/then-read-stream"
   },
   "license": "MIT",
   "main": "./lib/index",
@@ -34,18 +34,19 @@
     "url": "https://github.com/Borewit/then-read-stream/issues"
   },
   "devDependencies": {
-    "@types/mocha": "^5.2.5",
-    "@types/node": "^10.12.24",
+    "@types/mocha": "^5.2.7",
+    "@types/node": "^12.0.4",
     "chai": "^4.2.0",
-    "coveralls": "^3.0.2",
-    "del-cli": "^1.1.0",
-    "mocha": "^5.2.0",
-    "nyc": "^13.2.0",
+    "coveralls": "^3.0.3",
+    "del-cli": "^2.0.0",
+    "mocha": "^6.1.4",
+    "nyc": "^14.1.1",
     "remark-cli": "^6.0.1",
     "remark-preset-lint-recommended": "^3.0.2",
+    "source-map-support": "^0.5.12",
     "ts-node": "^8.0.2",
-    "tslint": "^5.12.1",
-    "typescript": "^3.3.3"
+    "tslint": "^5.17.0",
+    "typescript": "^3.5.1"
   },
   "keywords": [
     "readable",
@@ -55,9 +56,11 @@
   ],
   "nyc": {
     "check-coverage": true,
-    "include": [
-      "src/**/*"
+    "extension": [
+      ".ts"
     ],
+    "sourceMap": true,
+    "instrument": true,
     "reporter": [
       "lcov",
       "text"
