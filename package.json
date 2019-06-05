@@ -15,13 +15,13 @@
     "lint-ts": "tslint 'src/**/*.ts' --exclude 'src/**/*.d.ts' 'test/**/*.ts' --exclude 'test/**/*.d.ts'",
     "lint-md": "remark -u preset-lint-recommended .",
     "lint": "npm run lint-md && npm run lint-ts",
-    "test": "mocha --require ts-node/register test",
+    "test": "mocha --require ts-node/register --require source-map-support/register --full-trace test/*.ts",
     "test-coverage": "nyc npm run test",
     "send-coveralls": "nyc report --reporter=text-lcov | coveralls",
     "start": "npm run compile && npm run lint && npm run cover-test"
   },
   "engines": {
-    "node": ">=0.1.98"
+    "node": ">=8"
   },
   "repository": {
     "type": "git",
@@ -43,6 +43,7 @@
     "nyc": "^14.1.1",
     "remark-cli": "^6.0.1",
     "remark-preset-lint-recommended": "^3.0.2",
+    "source-map-support": "^0.5.12",
     "ts-node": "^8.0.2",
     "tslint": "^5.17.0",
     "typescript": "^3.5.1"
@@ -55,16 +56,15 @@
   ],
   "nyc": {
     "check-coverage": true,
-    "include": [
-      "src/**/*"
+    "extension": [
+      ".ts"
     ],
+    "sourceMap": true,
+    "instrument": true,
     "reporter": [
       "lcov",
       "text"
     ],
     "report-dir": "coverage"
-  },
-  "engines": {
-    "node": ">=8"
   }
 }
