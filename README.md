@@ -19,7 +19,7 @@ The `then-read-stream` contains one class: `StreamReader`, which reads from a [s
 
 ### Compatibility
 
-NPM module is compliant with [ECMAScript 2015 (ES6)](https://www.ecma-international.org/ecma-262/6.0/).
+NPM module is compliant with [ECMAScript 2017 (ES8)](https://en.wikipedia.org/wiki/ECMAScript#8th_Edition_-_ECMAScript_2017).
 
 #### Examples
 
