@@ -3,7 +3,7 @@
 import { assert, expect } from 'chai';
 import * as fs from 'fs';
 import * as path from 'path';
-import { StreamReader } from '../src';
+import { StreamReader } from '../lib';
 
 describe('Examples', () => {
 

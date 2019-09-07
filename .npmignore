@@ -1,7 +1,10 @@
 test/
 coverage/
 src/
+lib/**/*.ts
+lib/**/*.js.map
 tslint.json
-tsconfig.json
+**/tsconfig.json
 *.iml
 .travis.yml
+tslint.json
