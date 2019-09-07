@@ -3,7 +3,7 @@ import { EventEmitter } from 'events';
 import * as fs from 'fs';
 import * as Path from 'path';
 import { Readable } from 'stream';
-import { endOfStream, StreamReader } from '../src';
+import { endOfStream, StreamReader } from '../lib';
 import { SourceStream } from './util';
 
 describe('StreamReader', () => {
