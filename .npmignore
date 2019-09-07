@@ -9,3 +9,4 @@ tslint.json
 *.iml
 .travis.yml
 tslint.json
+**/*.log
