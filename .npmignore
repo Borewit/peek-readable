@@ -2,6 +2,7 @@ test/
 coverage/
 src/
 lib/**/*.ts
+!lib/**/*.d.ts
 lib/**/*.js.map
 tslint.json
 **/tsconfig.json
