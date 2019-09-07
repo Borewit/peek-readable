@@ -4,6 +4,8 @@
 [![Dependencies](https://david-dm.org/Borewit/then-read-stream.svg)](https://david-dm.org/Borewit/then-read-stream)
 [![Coverage Status](https://coveralls.io/repos/github/Borewit/then-read-stream/badge.svg?branch=master)](https://coveralls.io/github/Borewit/then-read-stream?branch=master)
 [![Codacy Badge](https://api.codacy.com/project/badge/Grade/8a89b90858734a6da07570eaf2e89849)](https://www.codacy.com/app/Borewit/then-read-stream?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=Borewit/then-read-stream&amp;utm_campaign=Badge_Grade)
+[![Total alerts](https://img.shields.io/lgtm/alerts/g/Borewit/then-read-stream.svg?logo=lgtm&logoWidth=18)](https://lgtm.com/projects/g/Borewit/then-read-stream/alerts/)
+[![Language grade: JavaScript](https://img.shields.io/lgtm/grade/javascript/g/Borewit/then-read-stream.svg?logo=lgtm&logoWidth=18)](https://lgtm.com/projects/g/Borewit/then-read-stream/context:javascript)
 [![Known Vulnerabilities](https://snyk.io/test/github/Borewit/then-read-stream/badge.svg?targetFile=package.json)](https://snyk.io/test/github/Borewit/then-read-stream?targetFile=package.json)
 
 # then-read-stream
