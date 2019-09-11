@@ -132,7 +132,7 @@ export class StreamReader {
       return this.request.deferred.promise.then(n => {
         this.request = null;
         return n;
-      }).catch(err => {
+      }, err => {
         this.request = null;
         throw err;
       });
