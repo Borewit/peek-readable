@@ -28,9 +28,8 @@ NPM module is compliant with [ECMAScript 2017 (ES8)](https://en.wikipedia.org/wi
 In the following example we read the first 16 bytes from a stream and store them in our buffer.
 Source code of examples can be found [here](test/examples.ts).
 
-```JavaScript
+```js
 import * as fs from 'fs';
-import * as path from 'path';
 import { StreamReader } from 'then-read-stream';
 
 const readable = fs.createReadStream('JPEG_example_JPG_RIP_001.jpg');
@@ -45,9 +44,8 @@ return streamReader.read(buffer, 0, 16)
 ```
 
 With peek you can read ahead:
-```JavaScript
+```js
 import * as fs from 'fs';
-import * as path from 'path';
 import { StreamReader } from 'then-read-stream';
 
 const fileReadStream = fs.createReadStream('JPEG_example_JPG_RIP_001.jpg');
@@ -73,7 +71,7 @@ return streamReader.peek(buffer, 0, 3)
 ```
 
 If you have to skip a part of the data, you can use ignore:
-```JavaScript
+```js
 return streamReader.ignore(16)
   .then( bytesIgnored => {
     if (bytesIgnored < 16){
