@@ -23,6 +23,8 @@ class Deferred<T> {
   }
 }
 
+const maxStreamReadSize = 1 * 1024 * 1024; // Maximum request length on read-stream operation
+
 /**
  * Error message
  */
@@ -97,8 +99,13 @@ export class StreamReader {
       }
     }
     // continue reading from stream if required
-    if (remaining > 0 && !this.endOfStream) {
-      bytesRead += await this._read(buffer, offset + bytesRead, remaining);
+    while (remaining > 0 && !this.endOfStream) {
+      const reqLen = Math.min(remaining, maxStreamReadSize);
+      const chunkLen = await this._read(buffer, offset + bytesRead, reqLen);
+      bytesRead += chunkLen;
+      if (chunkLen < reqLen)
+        break;
+      remaining -= chunkLen;
     }
     return bytesRead;
   }
