@@ -20,3 +20,9 @@ update_configs:
           dependency_name: "coveralls"
       - match:
           dependency_name: "nyc"
+      -match:
+        dependency_name: "eslint"
+      -match:
+        dependency_name: "@typescript-eslint/eslint-plugin"
+      -match:
+        dependency_name: "@typescript-eslint/parser"
