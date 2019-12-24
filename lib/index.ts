@@ -56,11 +56,10 @@ export class StreamReader {
 
   /**
    * Read ahead (peek) from stream. Subsequent read or peeks will return the same data
-   * @param buffer Buffer to store data read from stream in
-   * @param offset Offset buffer
-   * @param length Number of bytes to read
-   * @param position Source offset
-   * @returns {any}
+   * @param buffer - Buffer to store data read from stream in
+   * @param offset - Offset buffer
+   * @param length - Number of bytes to read
+   * @returns Number of bytes peeked
    */
   public async peek(buffer: Buffer | Uint8Array, offset: number, length: number): Promise<number> {
     const bytesRead = await this.read(buffer, offset, length);
@@ -70,10 +69,10 @@ export class StreamReader {
 
   /**
    * Read chunk from stream
-   * @param buffer Target buffer to store data read from stream in
-   * @param offset Offset of target buffer
-   * @param length Number of bytes to read
-   * @returns {any}
+   * @param buffer - Target buffer to store data read from stream in
+   * @param offset - Offset of target buffer
+   * @param length - Number of bytes to read
+   * @returns Number of bytes read
    */
   public async read(buffer: Buffer | Uint8Array, offset: number, length: number): Promise<number> {
     if (length === 0) {
