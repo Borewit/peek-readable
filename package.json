@@ -1,6 +1,6 @@
 {
   "name": "then-read-stream",
-  "version": "2.0.8",
+  "version": "3.0.0",
   "description": "Read from a readable stream just like a file",
   "author": {
     "name": "Borewit",
