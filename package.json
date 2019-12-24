@@ -28,7 +28,7 @@
     "url": "git+https://github.com/Borewit/then-read-stream"
   },
   "license": "MIT",
-  "main": "./lib/index",
+  "main": "lib/index.js",
   "typings": "lib/index",
   "bugs": {
     "url": "https://github.com/Borewit/then-read-stream/issues"
