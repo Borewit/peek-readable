@@ -17,66 +17,85 @@ similar as you would read from a file.
 
 ## Usage
 
+### Installation
+
+```shell script
+npm install --save then-read-stream
+```
+
 The `then-read-stream` contains one class: `StreamReader`, which reads from a [stream.Readable](https://nodejs.org/api/stream.html#stream_class_stream_readable).
 
 ### Compatibility
 
 NPM module is compliant with [ECMAScript 2017 (ES8)](https://en.wikipedia.org/wiki/ECMAScript#8th_Edition_-_ECMAScript_2017).
 
-#### Examples
+## Examples
 
 In the following example we read the first 16 bytes from a stream and store them in our buffer.
 Source code of examples can be found [here](test/examples.ts).
 
 ```js
-import * as fs from 'fs';
-import { StreamReader } from 'then-read-stream';
+const fs = require('fs');
+const { StreamReader } = require('then-read-stream');
 
-const readable = fs.createReadStream('JPEG_example_JPG_RIP_001.jpg');
-const streamReader = new StreamReader(readable);
+(async () => {
 
-const buffer = Buffer.alloc(16);
+  const fileReadStream = fs.createReadStream('JPEG_example_JPG_RIP_001.jpg');
+  const streamReader = new StreamReader(fileReadStream);
+  const buffer = Buffer.alloc(16);
 
-return streamReader.read(buffer, 0, 16)
-  .then( bytesRead => {
-    // buf, contains bytesRead, which will be 16 if the end-of-stream has not been reached
-  });
+  const bytesRead = await streamReader.read(buffer, 0, 16);
+  // buffer contains 16 bytes, if the end-of-stream has not been reached
+})();
+```
+
+End-of-stream detection:
+```js
+(async () => {
+
+  const fileReadStream = fs.createReadStream('JPEG_example_JPG_RIP_001.jpg');
+  const streamReader = new StreamReader(fileReadStream);
+  const buffer = Buffer.alloc(16);
+
+  try {
+    await streamReader.read(buffer, 0, 16);
+    // buffer contains 16 bytes, if the end-of-stream has not been reached
+  } catch(error) {
+    if (error instanceof EndOfStreamError) {
+      console.log('End-of-stream reached');
+    }
+  }
+})();
 ```
 
 With peek you can read ahead:
 ```js
-import * as fs from 'fs';
-import { StreamReader } from 'then-read-stream';
+const fs = require('fs');
+const { StreamReader } = require('then-read-stream');
 
 const fileReadStream = fs.createReadStream('JPEG_example_JPG_RIP_001.jpg');
 const streamReader = new StreamReader(fileReadStream);
 const buffer = Buffer.alloc(20);
 
-return streamReader.peek(buffer, 0, 3)
-  .then(bytesRead => {
-    if (bytesRead === 3 && buffer[0] === 0xFF && buffer[1] === 0xD8 && buffer[2] === 0xFF) {
-      console.log('This is a JPEG file');
-      return streamReader.read(buffer, 0, 20); // Read JPEG header
-    } else {
-      throw Error('Expected a JPEG file');
-    }
-  })
-  .then(bytesRead => {
-    if (bytesRead === 20) {
-      console.log('Got the JPEG header');
-    } else {
-      throw Error('Failed to read JPEG header');
-    }
-  });
+(async () => {
+  let bytesRead = await streamReader.peek(buffer, 0, 3);
+  if (bytesRead === 3 && buffer[0] === 0xFF && buffer[1] === 0xD8 && buffer[2] === 0xFF) {
+    console.log('This is a JPEG file');
+  } else {
+    throw Error('Expected a JPEG file');
+  }
+
+  bytesRead = await streamReader.read(buffer, 0, 20); // Read JPEG header
+  if (bytesRead === 20) {
+    console.log('Got the JPEG header');
+  } else {
+    throw Error('Failed to read JPEG header');
+  }
+})();
 ```
 
 If you have to skip a part of the data, you can use ignore:
 ```js
-return streamReader.ignore(16)
-  .then( bytesIgnored => {
-    if (bytesIgnored < 16){
-      console.log(`Remaining stream length was ${bytesIgnored}, expected 16`);
-    }
-  });
+await streamReader.ignore(16);
 ```
 

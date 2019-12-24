@@ -3,7 +3,7 @@ import { EventEmitter } from 'events';
 import * as fs from 'fs';
 import * as Path from 'path';
 import { Readable } from 'stream';
-import { endOfStream, StreamReader } from '../lib';
+import { EndOfStreamError, StreamReader } from '../lib';
 import { SourceStream } from './util';
 
 describe('StreamReader', () => {
@@ -58,7 +58,7 @@ describe('StreamReader', () => {
         await streamReader.read(buf, 0, 1);
         assert.fail('Should reject due to end-of-stream');
       } catch (err) {
-        assert.equal(err.message, endOfStream);
+        assert.instanceOf(err, EndOfStreamError);
       }
     });
   });

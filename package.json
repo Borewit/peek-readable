@@ -12,9 +12,9 @@
     "compile-src": "tsc -p lib",
     "compile-test": "tsc -p test",
     "compile": "npm run compile-src && yarn run compile-test",
-    "lint-ts": "tslint 'lib/**/*.ts' --exclude 'lib/**/*.d.ts' 'test/**/*.ts' --exclude 'test/**/*.d.ts'",
+    "eslint": "eslint lib test --ext .ts --ignore-pattern *.d.ts",
     "lint-md": "remark -u preset-lint-recommended .",
-    "lint": "npm run lint-md && npm run lint-ts",
+    "lint": "npm run lint-md && npm run eslint",
     "test": "mocha --require ts-node/register --require source-map-support/register --full-trace test/*.ts",
     "test-coverage": "nyc npm run test",
     "send-coveralls": "nyc report --reporter=text-lcov | coveralls",
@@ -28,7 +28,7 @@
     "url": "git+https://github.com/Borewit/then-read-stream"
   },
   "license": "MIT",
-  "main": "./lib/index",
+  "main": "lib/index.js",
   "typings": "lib/index",
   "bugs": {
     "url": "https://github.com/Borewit/then-read-stream/issues"
@@ -40,16 +40,20 @@
   "devDependencies": {
     "@types/mocha": "^5.2.7",
     "@types/node": "^13.1.0",
+    "@typescript-eslint/eslint-plugin": "^2.13.0",
+    "@typescript-eslint/parser": "^2.13.0",
+    "add": "^2.0.6",
     "chai": "^4.2.0",
     "coveralls": "^3.0.8",
     "del-cli": "^3.0.0",
+    "eslint": "^6.8.0",
     "mocha": "^6.2.2",
     "nyc": "^15.0.0",
     "remark-cli": "^7.0.1",
     "remark-preset-lint-recommended": "^3.0.2",
     "ts-node": "^8.5.2",
-    "tslint": "^5.20.1",
-    "typescript": "^3.7.2"
+    "typescript": "^3.7.2",
+    "yarn": "^1.21.1"
   },
   "keywords": [
     "readable",

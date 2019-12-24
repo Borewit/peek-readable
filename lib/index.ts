@@ -1,5 +1,7 @@
 import * as assert from 'assert';
 import * as stream from 'stream';
+import { EndOfStreamError } from './EndOfFileStream';
+export { EndOfStreamError } from './EndOfFileStream';
 
 interface IReadRequest {
   buffer: Buffer | Uint8Array,
@@ -25,11 +27,6 @@ class Deferred<T> {
 
 const maxStreamReadSize = 1 * 1024 * 1024; // Maximum request length on read-stream operation
 
-/**
- * Error message
- */
-export const endOfStream = 'End-Of-Stream';
-
 export class StreamReader {
 
   /**
@@ -49,7 +46,7 @@ export class StreamReader {
     if (!s.read || !s.once) {
       throw new Error('Expected an instance of stream.Readable');
     }
-    this.s.once('end', () => this.reject(new Error(endOfStream)));
+    this.s.once('end', () => this.reject(new EndOfStreamError()));
     this.s.once('error', err => this.reject(err));
     this.s.once('close', () => this.reject(new Error('Stream closed')));
   }
@@ -80,7 +77,7 @@ export class StreamReader {
     }
 
     if (this.peekQueue.length === 0 && this.endOfStream) {
-      throw new Error(endOfStream);
+      throw new EndOfStreamError();
     }
 
     let remaining = length;
