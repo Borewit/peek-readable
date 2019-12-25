@@ -29,7 +29,7 @@
   },
   "license": "MIT",
   "main": "lib/index.js",
-  "typings": "lib/index",
+  "typings": "lib/index.d.ts",
   "bugs": {
     "url": "https://github.com/Borewit/then-read-stream/issues"
   },
