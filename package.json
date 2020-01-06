@@ -1,7 +1,7 @@
 {
-  "name": "then-read-stream",
+  "name": "peek-readable",
   "version": "3.0.0",
-  "description": "Read from a readable stream just like a file",
+  "description": "Read and peek from a readable stream",
   "author": {
     "name": "Borewit",
     "url": "https://github.com/Borewit"
@@ -25,13 +25,13 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/Borewit/then-read-stream"
+    "url": "git+https://github.com/Borewit/peek-readable"
   },
   "license": "MIT",
   "main": "lib/index.js",
   "typings": "lib/index.d.ts",
   "bugs": {
-    "url": "https://github.com/Borewit/then-read-stream/issues"
+    "url": "https://github.com/Borewit/peek-readable/issues"
   },
   "files": [
     "lib/**/*.js",

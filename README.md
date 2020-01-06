@@ -1,29 +1,30 @@
-[![Build Status](https://travis-ci.org/Borewit/then-read-stream.svg?branch=master)](https://travis-ci.org/Borewit/then-read-stream)
-[![NPM version](https://badge.fury.io/js/then-read-stream.svg)](https://npmjs.org/package/then-read-stream)
-[![npm downloads](http://img.shields.io/npm/dm/then-read-stream.svg)](https://npmcharts.com/compare/then-read-stream?start=600&interval=30)
-[![Dependencies](https://david-dm.org/Borewit/then-read-stream.svg)](https://david-dm.org/Borewit/then-read-stream)
-[![Coverage Status](https://coveralls.io/repos/github/Borewit/then-read-stream/badge.svg?branch=master)](https://coveralls.io/github/Borewit/then-read-stream?branch=master)
-[![Codacy Badge](https://api.codacy.com/project/badge/Grade/8a89b90858734a6da07570eaf2e89849)](https://www.codacy.com/app/Borewit/then-read-stream?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=Borewit/then-read-stream&amp;utm_campaign=Badge_Grade)
-[![Total alerts](https://img.shields.io/lgtm/alerts/g/Borewit/then-read-stream.svg?logo=lgtm&logoWidth=18)](https://lgtm.com/projects/g/Borewit/then-read-stream/alerts/)
-[![Language grade: JavaScript](https://img.shields.io/lgtm/grade/javascript/g/Borewit/then-read-stream.svg?logo=lgtm&logoWidth=18)](https://lgtm.com/projects/g/Borewit/then-read-stream/context:javascript)
-[![Known Vulnerabilities](https://snyk.io/test/github/Borewit/then-read-stream/badge.svg?targetFile=package.json)](https://snyk.io/test/github/Borewit/then-read-stream?targetFile=package.json)
+[![Build Status](https://travis-ci.org/Borewit/peek-readable.svg?branch=master)](https://travis-ci.org/Borewit/peek-readable)
+[![NPM version](https://badge.fury.io/js/peek-readable.svg)](https://npmjs.org/package/peek-readable)
+[![npm downloads](http://img.shields.io/npm/dm/peek-readable.svg)](https://npmcharts.com/compare/peek-readable?start=600&interval=30)
+[![Dependencies](https://david-dm.org/Borewit/peek-readable.svg)](https://david-dm.org/Borewit/peek-readable)
+[![Coverage Status](https://coveralls.io/repos/github/Borewit/peek-readable/badge.svg?branch=master)](https://coveralls.io/github/Borewit/peek-readable?branch=master)
+[![Codacy Badge](https://api.codacy.com/project/badge/Grade/8a89b90858734a6da07570eaf2e89849)](https://www.codacy.com/app/Borewit/peek-readable?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=Borewit/peek-readable&amp;utm_campaign=Badge_Grade)
+[![Total alerts](https://img.shields.io/lgtm/alerts/g/Borewit/peek-readable.svg?logo=lgtm&logoWidth=18)](https://lgtm.com/projects/g/Borewit/peek-readable/alerts/)
+[![Language grade: JavaScript](https://img.shields.io/lgtm/grade/javascript/g/Borewit/peek-readable.svg?logo=lgtm&logoWidth=18)](https://lgtm.com/projects/g/Borewit/peek-readable/context:javascript)
+[![Known Vulnerabilities](https://snyk.io/test/github/Borewit/peek-readable/badge.svg?targetFile=package.json)](https://snyk.io/test/github/Borewit/peek-readable?targetFile=package.json)
 
-# then-read-stream
+# peek-readable
 
 A promise based asynchronous stream reader, which makes reading from a stream easy.
 
-Allows to read from a [Readable Stream](https://nodejs.org/api/stream.html#stream_readable_streams) 
-similar as you would read from a file.
+Allows to read and peek from a [Readable Stream](https://nodejs.org/api/stream.html#stream_readable_streams) 
+
+Note that [peek-readable](https://github.com/Borewit/peek-readable) was formally released as [then-read-stream](https://github.com/Borewit/peek-readable).
 
 ## Usage
 
 ### Installation
 
 ```shell script
-npm install --save then-read-stream
+npm install --save peek-readable
 ```
 
-The `then-read-stream` contains one class: `StreamReader`, which reads from a [stream.Readable](https://nodejs.org/api/stream.html#stream_class_stream_readable).
+The `peek-readable` contains one class: `StreamReader`, which reads from a [stream.Readable](https://nodejs.org/api/stream.html#stream_class_stream_readable).
 
 ### Compatibility
 
@@ -36,7 +37,7 @@ Source code of examples can be found [here](test/examples.ts).
 
 ```js
 const fs = require('fs');
-const { StreamReader } = require('then-read-stream');
+const { StreamReader } = require('peek-readable');
 
 (async () => {
 
@@ -71,7 +72,7 @@ End-of-stream detection:
 With peek you can read ahead:
 ```js
 const fs = require('fs');
-const { StreamReader } = require('then-read-stream');
+const { StreamReader } = require('peek-readable');
 
 const fileReadStream = fs.createReadStream('JPEG_example_JPG_RIP_001.jpg');
 const streamReader = new StreamReader(fileReadStream);
@@ -96,6 +97,9 @@ const buffer = Buffer.alloc(20);
 
 If you have to skip a part of the data, you can use ignore:
 ```js
-await streamReader.ignore(16);
+(async () => {
+  //...  
+  await streamReader.ignore(16);
+})();
 ```
 
