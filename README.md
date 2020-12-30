@@ -1,4 +1,4 @@
-[![Build Status](https://travis-ci.org/Borewit/peek-readable.svg?branch=master)](https://travis-ci.org/Borewit/peek-readable)
+![Node.js CI](https://github.com/Borewit/peek-readable/workflows/Node.js%20CI/badge.svg)
 [![NPM version](https://badge.fury.io/js/peek-readable.svg)](https://npmjs.org/package/peek-readable)
 [![npm downloads](http://img.shields.io/npm/dm/peek-readable.svg)](https://npmcharts.com/compare/peek-readable?start=600&interval=30)
 [![Dependencies](https://david-dm.org/Borewit/peek-readable.svg)](https://david-dm.org/Borewit/peek-readable)
