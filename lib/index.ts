@@ -111,7 +111,7 @@ export class StreamReader {
    * @param buffer Buffer to store data read from stream in
    * @param offset Offset buffer
    * @param length Number of bytes to read
-   * @returns {any}
+   * @returns Number of bytes read
    */
   private async _read(buffer: Buffer | Uint8Array, offset: number, length: number): Promise<number> {
 
