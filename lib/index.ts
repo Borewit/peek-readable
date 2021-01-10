@@ -1,4 +1,3 @@
-import * as assert from 'assert';
 import * as stream from 'stream';
 import { EndOfStreamError } from './EndOfFileStream';
 export { EndOfStreamError } from './EndOfFileStream';
@@ -115,7 +114,7 @@ export class StreamReader {
    */
   private async _read(buffer: Buffer | Uint8Array, offset: number, length: number): Promise<number> {
 
-    assert.ok(!this.request, 'Concurrent read operation?');
+    if(this.request) throw new Error('Concurrent read operation?');
 
     const readBuffer = this.s.read(length);
 
