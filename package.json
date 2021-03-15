@@ -47,7 +47,7 @@
     "@typescript-eslint/eslint-plugin": "^2.34.0",
     "@typescript-eslint/parser": "^2.34.0",
     "add": "^2.0.6",
-    "chai": "^4.3.3",
+    "chai": "^4.3.4",
     "coveralls": "^3.1.0",
     "del-cli": "^3.0.1",
     "eslint": "^6.8.0",
