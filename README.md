@@ -93,12 +93,3 @@ const buffer = Buffer.alloc(20);
   }
 })();
 ```
-
-If you have to skip a part of the data, you can use ignore:
-```js
-(async () => {
-  //...  
-  await streamReader.ignore(16);
-})();
-```
-
