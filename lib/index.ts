@@ -132,10 +132,8 @@ export class StreamReader {
         this.tryRead();
       });
       return this.request.deferred.promise.then(n => {
-        this.request = null;
         return n;
       }, err => {
-        this.request = null;
         throw err;
       });
     }
@@ -146,6 +144,7 @@ export class StreamReader {
     if (readBuffer) {
       readBuffer.copy(this.request.buffer, this.request.offset);
       this.request.deferred.resolve(readBuffer.length);
+      this.request = null;
     } else {
       this.s.once('readable', () => {
         this.tryRead();
