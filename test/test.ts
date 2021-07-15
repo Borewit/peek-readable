@@ -25,9 +25,9 @@ describe('StreamReader', () => {
 
     const streamReader = new StreamReader(new SourceStream('abcdefg'));
 
-    const buf = Buffer.alloc(0);
+    const buf = new Uint8Array(0);
     const bytesRead = await streamReader.read(buf, 0, 0);
-    assert.equal(bytesRead, 0, 'Should return');
+    assert.strictEqual(bytesRead, 0, 'Should return');
   });
 
   describe('read from a streamed data chunk', async () => {
@@ -37,25 +37,25 @@ describe('StreamReader', () => {
 
     it('read only one byte from the chunk', async () => {
 
-      const buf = Buffer.alloc(1);
-      const bytesRead = await streamReader.read(buf, 0, 1);
-      assert.equal(bytesRead, 1, 'Should read exactly one byte');
-      assert.equal(buf[0], 5, '0x05 == 5');
+      const uint8Array = new Uint8Array(1);
+      const bytesRead = await streamReader.read(uint8Array, 0, 1);
+      assert.strictEqual(bytesRead, 1, 'Should read exactly one byte');
+      assert.strictEqual(uint8Array[0], 5, '0x05 == 5');
     });
 
     it('should decode string from chunk', async () => {
 
-      const buf = Buffer.alloc(5);
-      const bytesRead = await streamReader.read(buf, 0, 5);
-      assert.equal(bytesRead, 5, 'Should read 5 bytes');
-      assert.equal(buf.toString(), 'peter');
+      const uint8Array = new Uint8Array(5);
+      const bytesRead = await streamReader.read(uint8Array, 0, 5);
+      assert.strictEqual(bytesRead, 5, 'Should read 5 bytes');
+      assert.strictEqual(Buffer.from(uint8Array).toString('latin1'), 'peter');
     });
 
     it('should should reject at the end of the stream', async () => {
 
-      const buf = Buffer.alloc(1);
+      const uint8Array = new Uint8Array(1);
       try {
-        await streamReader.read(buf, 0, 1);
+        await streamReader.read(uint8Array, 0, 1);
         assert.fail('Should reject due to end-of-stream');
       } catch (err) {
         assert.instanceOf(err, EndOfStreamError);
@@ -66,9 +66,9 @@ describe('StreamReader', () => {
   describe('concurrent reads', () => {
 
     async function readByteAsNumber(sr: StreamReader): Promise<number> {
-      const buf = Buffer.alloc(1);
-      await sr.read(buf, 0, 1);
-      return buf[0];
+      const uint8Array = new Uint8Array(1);
+      await sr.read(uint8Array, 0, 1);
+      return uint8Array[0];
     }
 
     it('should support concurrent reads', () => {
@@ -84,7 +84,7 @@ describe('StreamReader', () => {
 
       return Promise.all(prom).then(res => {
         for (let i = 0; i < 10; ++i) {
-          assert.equal(res[i], i);
+          assert.strictEqual(res[i], i);
         }
       });
 
@@ -149,12 +149,12 @@ describe('StreamReader', () => {
 
     const sb = new StreamReader(s);
 
-    const buf = Buffer.alloc(4);
+    const uint8Array = new Uint8Array(4);
 
     const run = (): Promise<void> => {
-      return sb.read(buf, 0, 4).then(bytesRead => {
-        assert.equal(bytesRead, 4);
-        assert.equal(buf.readInt32BE(0), 16909060);
+      return sb.read(uint8Array, 0, 4).then(bytesRead => {
+        assert.strictEqual(bytesRead, 4);
+        assert.strictEqual(new DataView(uint8Array.buffer).getUint32(0, false), 16909060);
         if (--s.nvals > 0) {
           return run();
         }
@@ -175,14 +175,14 @@ describe('StreamReader', () => {
       const sourceStream = new SourceStream('\x05peter');
       const streamReader = new StreamReader(sourceStream);
 
-      const buf = Buffer.alloc(1);
+      const uint8Array = new Uint8Array(1);
 
-      let bytesRead = await streamReader.peek(buf, 0, 1);
-      assert.equal(bytesRead, 1, 'Should peek exactly one byte');
-      assert.equal(buf[0], 5, '0x05 == 5');
-      bytesRead = await streamReader.read(buf, 0, 1);
-      assert.equal(bytesRead, 1, 'Should re-read the peaked byte');
-      assert.equal(buf[0], 5, '0x05 == 5');
+      let bytesRead = await streamReader.peek(uint8Array, 0, 1);
+      assert.strictEqual(bytesRead, 1, 'Should peek exactly one byte');
+      assert.strictEqual(uint8Array[0], 5, '0x05 == 5');
+      bytesRead = await streamReader.read(uint8Array, 0, 1);
+      assert.strictEqual(bytesRead, 1, 'Should re-read the peaked byte');
+      assert.strictEqual(uint8Array[0], 5, '0x05 == 5');
     });
 
     it('should be able to read a larger chunk overlapping the peeked chunk', async () => {
@@ -190,14 +190,14 @@ describe('StreamReader', () => {
       const sourceStream = new SourceStream('\x05peter');
       const streamReader = new StreamReader(sourceStream);
 
-      const buf = Buffer.alloc(6).fill(0);
+      const uint8Array = new Uint8Array(6).fill(0);
 
-      let bytesRead = await streamReader.peek(buf, 0, 1);
-      assert.equal(bytesRead, 1, 'Should peek exactly one byte');
-      assert.equal(buf[0], 5, '0x05 == 5');
-      bytesRead = await streamReader.read(buf, 0, 6);
-      assert.equal(bytesRead, 6, 'Should overlap the peaked byte');
-      assert.equal(buf, '\x05peter');
+      let bytesRead = await streamReader.peek(uint8Array, 0, 1);
+      assert.strictEqual(bytesRead, 1, 'Should peek exactly one byte');
+      assert.strictEqual(uint8Array[0], 5, '0x05 == 5');
+      bytesRead = await streamReader.read(uint8Array, 0, 6);
+      assert.strictEqual(bytesRead, 6, 'Should overlap the peaked byte');
+      assert.strictEqual(Buffer.from(uint8Array.buffer).toString('latin1'), '\x05peter');
     });
 
     it('should be able to read a smaller chunk then the overlapping peeked chunk', async () => {
@@ -205,17 +205,17 @@ describe('StreamReader', () => {
       const sourceStream = new SourceStream('\x05peter');
       const streamReader = new StreamReader(sourceStream);
 
-      const buf = Buffer.alloc(6).fill(0);
+      const uint8Array = new Uint8Array(6).fill(0);
 
-      let bytesRead = await streamReader.peek(buf, 0, 2);
-      assert.equal(bytesRead, 2, 'Should peek 2 bytes');
-      assert.equal(buf[0], 5, '0x05 == 5');
-      bytesRead = await streamReader.read(buf, 0, 1);
-      assert.equal(bytesRead, 1, 'Should read only 1 byte');
-      assert.equal(buf[0], 5, '0x05 == 5');
-      bytesRead = await streamReader.read(buf, 1, 5);
-      assert.equal(bytesRead, 5, 'Should read remaining 5 byte');
-      assert.equal(buf, '\x05peter');
+      let bytesRead = await streamReader.peek(uint8Array, 0, 2);
+      assert.strictEqual(bytesRead, 2, 'Should peek 2 bytes');
+      assert.strictEqual(uint8Array[0], 5, '0x05 == 5');
+      bytesRead = await streamReader.read(uint8Array, 0, 1);
+      assert.strictEqual(bytesRead, 1, 'Should read only 1 byte');
+      assert.strictEqual(uint8Array[0], 5, '0x05 == 5');
+      bytesRead = await streamReader.read(uint8Array, 1, 5);
+      assert.strictEqual(bytesRead, 5, 'Should read remaining 5 byte');
+      assert.strictEqual(Buffer.from(uint8Array.buffer).toString('latin1'), '\x05peter');
     });
 
     it('should be able to handle overlapping peeks', async () => {
@@ -223,9 +223,9 @@ describe('StreamReader', () => {
       const sourceStream = new SourceStream('\x01\x02\x03\x04\x05');
       const streamReader = new StreamReader(sourceStream);
 
-      const peekBufferShort = Buffer.alloc(1);
-      const peekBuffer = Buffer.alloc(3);
-      const readBuffer = Buffer.alloc(1);
+      const peekBufferShort = new Uint8Array(1);
+      const peekBuffer = new Uint8Array(3);
+      const readBuffer = new Uint8Array(1);
 
       let len = await streamReader.peek(peekBuffer, 0, 3); // Peek #1
       assert.equal(3, len);
@@ -264,7 +264,7 @@ describe('StreamReader', () => {
       const sourceStream = new SourceStream('\x89\x54\x40');
       const streamReader = new StreamReader(sourceStream);
 
-      const res = Buffer.alloc(3);
+      const res = new Uint8Array(3);
 
       const len = await streamReader.peek(res, 0, 3);
       assert.equal(3, len);
@@ -275,7 +275,7 @@ describe('StreamReader', () => {
       const sourceStream = new SourceStream('\x89\x54\x40');
       const streamReader = new StreamReader(sourceStream);
 
-      const res = Buffer.alloc(4);
+      const res = new Uint8Array(4);
 
       let len = await streamReader.peek(res, 0, 4);
       assert.equal(3, len, 'should indicate only 3 bytes are actually peeked');
@@ -289,12 +289,12 @@ describe('StreamReader', () => {
 
     const path_test3 = Path.join(__dirname, 'resources', 'test3.dat');
     const fileSize = 5;
-    const buf = Buffer.alloc(17);
+    const uint8Array = new Uint8Array(17);
 
     it('should return a partial size, if full length cannot be read', async () => {
       const fileReadStream = fs.createReadStream(path_test3);
       const streamReader = new StreamReader(fileReadStream);
-      const actualRead = await streamReader.read(buf, 0, 17);
+      const actualRead = await streamReader.read(uint8Array, 0, 17);
       assert.strictEqual(actualRead, fileSize);
       fileReadStream.close();
     });
@@ -304,7 +304,7 @@ describe('StreamReader', () => {
   describe('exception', () => {
 
     const path_test3 = Path.join(__dirname, 'resources', 'test3.dat');
-    const buf = Buffer.alloc(17);
+    const uint8Array = new Uint8Array(17);
 
     it('handle stream closed', async () => {
       const fileReadStream = fs.createReadStream(path_test3);
@@ -312,7 +312,7 @@ describe('StreamReader', () => {
       fileReadStream.close(); // Sabotage stream
 
       try {
-        const x = await streamReader.read(buf, 0, 17);
+        const x = await streamReader.read(uint8Array, 0, 17);
         assert.fail('Should throw an exception');
       } catch (err) {
         assert.strictEqual(err.message, 'Stream closed');
@@ -327,7 +327,7 @@ describe('StreamReader', () => {
       const streamReader = new StreamReader(fileReadStream);
 
       try {
-        const x = await streamReader.read(buf, 0, 17);
+        const x = await streamReader.read(uint8Array, 0, 17);
         assert.fail('Should throw an exception');
       } catch (err) {
         assert.strictEqual(err.code, 'ENOENT');

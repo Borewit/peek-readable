@@ -39,12 +39,10 @@ const fs = require('fs');
 const { StreamReader } = require('peek-readable');
 
 (async () => {
-
-  const fileReadStream = fs.createReadStream('JPEG_example_JPG_RIP_001.jpg');
-  const streamReader = new StreamReader(fileReadStream);
-  const buffer = Buffer.alloc(16);
-
-  const bytesRead = await streamReader.read(buffer, 0, 16);
+  const readable = fs.createReadStream('JPEG_example_JPG_RIP_001.jpg');
+  const streamReader = new StreamReader(readable);
+  const uint8Array = new Uint8Array(16);
+  const bytesRead = await streamReader.read(uint8Array, 0, 16);;
   // buffer contains 16 bytes, if the end-of-stream has not been reached
 })();
 ```
@@ -55,7 +53,7 @@ End-of-stream detection:
 
   const fileReadStream = fs.createReadStream('JPEG_example_JPG_RIP_001.jpg');
   const streamReader = new StreamReader(fileReadStream);
-  const buffer = Buffer.alloc(16);
+  const buffer = Buffer.alloc(16); // or use: new Uint8Array(16);
 
   try {
     await streamReader.read(buffer, 0, 16);

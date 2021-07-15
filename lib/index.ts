@@ -3,7 +3,7 @@ import { EndOfStreamError } from './EndOfFileStream';
 export { EndOfStreamError } from './EndOfFileStream';
 
 interface IReadRequest {
-  buffer: Buffer | Uint8Array,
+  buffer: Uint8Array,
   offset: number,
   length: number,
   position?: number,
@@ -39,7 +39,7 @@ export class StreamReader {
    * Store peeked data
    * @type {Array}
    */
-  private peekQueue: Buffer[] = [];
+  private peekQueue: Uint8Array[] = [];
 
   public constructor(private s: stream.Readable) {
     if (!s.read || !s.once) {
@@ -52,25 +52,25 @@ export class StreamReader {
 
   /**
    * Read ahead (peek) from stream. Subsequent read or peeks will return the same data
-   * @param buffer - Buffer to store data read from stream in
-   * @param offset - Offset buffer
+   * @param uint8Array - Uint8Array (or Buffer) to store data read from stream in
+   * @param offset - Offset target
    * @param length - Number of bytes to read
    * @returns Number of bytes peeked
    */
-  public async peek(buffer: Buffer | Uint8Array, offset: number, length: number): Promise<number> {
-    const bytesRead = await this.read(buffer, offset, length);
-    this.peekQueue.push(buffer.slice(offset, offset + bytesRead) as Buffer); // Put read data back to peek buffer
+  public async peek(uint8Array: Uint8Array, offset: number, length: number): Promise<number> {
+    const bytesRead = await this.read(uint8Array, offset, length);
+    this.peekQueue.push(uint8Array.subarray(offset, offset + bytesRead)); // Put read data back to peek buffer
     return bytesRead;
   }
 
   /**
    * Read chunk from stream
-   * @param buffer - Target buffer to store data read from stream in
-   * @param offset - Offset of target buffer
+   * @param buffer - Target Uint8Array (or Buffer) to store data read from stream in
+   * @param offset - Offset target
    * @param length - Number of bytes to read
    * @returns Number of bytes read
    */
-  public async read(buffer: Buffer | Uint8Array, offset: number, length: number): Promise<number> {
+  public async read(buffer: Uint8Array, offset: number, length: number): Promise<number> {
     if (length === 0) {
       return 0;
     }
@@ -85,12 +85,12 @@ export class StreamReader {
     while (this.peekQueue.length > 0 && remaining > 0) {
       const peekData = this.peekQueue.pop(); // Front of queue
       const lenCopy = Math.min(peekData.length, remaining);
-      peekData.copy(buffer, offset + bytesRead, 0, lenCopy);
+      buffer.set(peekData.subarray(0, lenCopy), offset + bytesRead);
       bytesRead += lenCopy;
       remaining -= lenCopy;
       if (lenCopy < peekData.length) {
         // remainder back to queue
-        this.peekQueue.push(peekData.slice(lenCopy));
+        this.peekQueue.push(peekData.subarray(lenCopy));
       }
     }
     // continue reading from stream if required
@@ -107,19 +107,19 @@ export class StreamReader {
 
   /**
    * Read chunk from stream
-   * @param buffer Buffer to store data read from stream in
-   * @param offset Offset buffer
+   * @param buffer Target Uint8Array (or Buffer) to store data read from stream in
+   * @param offset Offset target
    * @param length Number of bytes to read
    * @returns Number of bytes read
    */
-  private async _read(buffer: Buffer | Uint8Array, offset: number, length: number): Promise<number> {
+  private async _read(buffer: Uint8Array, offset: number, length: number): Promise<number> {
 
     if(this.request) throw new Error('Concurrent read operation?');
 
     const readBuffer = this.s.read(length);
 
     if (readBuffer) {
-      readBuffer.copy(buffer, offset);
+      buffer.set(readBuffer, offset);
       return readBuffer.length;
     } else {
       this.request = {
@@ -142,7 +142,7 @@ export class StreamReader {
   private tryRead() {
     const readBuffer = this.s.read(this.request.length);
     if (readBuffer) {
-      readBuffer.copy(this.request.buffer, this.request.offset);
+      this.request.buffer.set(readBuffer, this.request.offset);
       this.request.deferred.resolve(readBuffer.length);
       this.request = null;
     } else {
