@@ -33,6 +33,7 @@
   },
   "license": "MIT",
   "main": "lib/index.js",
+  "type": "module",
   "exports": "./lib/index.js",
   "types": "lib/index.d.ts",
   "bugs": {
