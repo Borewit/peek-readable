@@ -3,7 +3,10 @@
 import { assert } from 'chai';
 import * as fs from 'fs';
 import * as path from 'path';
-import { EndOfStreamError, StreamReader } from '../lib';
+import { EndOfStreamError, StreamReader } from '../lib/index.js';
+import { fileURLToPath } from 'url';
+
+const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
 describe('Examples', () => {
 

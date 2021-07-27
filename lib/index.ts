@@ -1,6 +1,6 @@
 import * as stream from 'stream';
-import { EndOfStreamError } from './EndOfFileStream';
-export { EndOfStreamError } from './EndOfFileStream';
+import { EndOfStreamError } from './EndOfFileStream.js';
+export { EndOfStreamError } from './EndOfFileStream.js';
 
 interface IReadRequest {
   buffer: Uint8Array,

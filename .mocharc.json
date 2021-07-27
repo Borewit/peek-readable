@@ -1,0 +1,9 @@
+{
+  "extension": ["ts", "tsx"],
+  "watch-files": ["lib/**/*.ts", "test/**/*.ts"],
+  "spec": ["test/*.ts"],
+  "loader": "ts-node/esm",
+  "extensions": ["ts", "tsx"],
+  "enable-source-maps": true,
+  "full-trace": true
+}

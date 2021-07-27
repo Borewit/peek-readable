@@ -3,8 +3,11 @@ import { EventEmitter } from 'events';
 import * as fs from 'fs';
 import * as Path from 'path';
 import { Readable } from 'stream';
-import { EndOfStreamError, StreamReader } from '../lib';
-import { SourceStream } from './util';
+import { EndOfStreamError, StreamReader } from '../lib/index.js';
+import { SourceStream } from './util.js';
+import { fileURLToPath } from 'url';
+
+const __dirname = Path.dirname(fileURLToPath(import.meta.url));
 
 describe('StreamReader', () => {
 
@@ -16,7 +19,7 @@ describe('StreamReader', () => {
     const not_a_stream = new MyEmitter();
 
     expect(() => {
-      const s = new StreamReader(not_a_stream as any);
+      new StreamReader(not_a_stream as any);
     }).to.throw('Expected an instance of stream.Readable');
 
   });
