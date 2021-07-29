@@ -131,11 +131,7 @@ export class StreamReader {
       this.s.once('readable', () => {
         this.tryRead();
       });
-      return this.request.deferred.promise.then(n => {
-        return n;
-      }, err => {
-        throw err;
-      });
+      return this.request.deferred.promise;
     }
   }
 
