@@ -1,11 +1,11 @@
 import { assert, expect } from 'chai';
-import { EventEmitter } from 'events';
-import * as fs from 'fs';
-import * as Path from 'path';
-import { Readable } from 'stream';
+import { EventEmitter } from 'node:events';
+import fs from 'node:fs';
+import Path from 'node:path';
+import { Readable } from 'node:stream';
 import { EndOfStreamError, StreamReader } from '../lib/index.js';
 import { SourceStream } from './util.js';
-import { fileURLToPath } from 'url';
+import { fileURLToPath } from 'node:url';
 
 const __dirname = Path.dirname(fileURLToPath(import.meta.url));
 

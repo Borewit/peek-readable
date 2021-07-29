@@ -1,8 +1,8 @@
 /* tslint:disable:no-console */
 
 import { assert } from 'chai';
-import * as fs from 'fs';
-import * as path from 'path';
+import fs from 'node:fs';
+import path from 'node:path';
 import { EndOfStreamError, StreamReader } from '../lib/index.js';
 import { fileURLToPath } from 'url';
 

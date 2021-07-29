@@ -1,4 +1,4 @@
-import * as stream from 'stream';
+import stream from 'stream';
 import { EndOfStreamError } from './EndOfFileStream.js';
 export { EndOfStreamError } from './EndOfFileStream.js';
 
