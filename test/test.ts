@@ -16,7 +16,7 @@ describe('StreamReader', () => {
     const not_a_stream = new MyEmitter();
 
     expect(() => {
-      const s = new StreamReader(not_a_stream as any);
+      new StreamReader(not_a_stream as any);
     }).to.throw('Expected an instance of stream.Readable');
 
   });
@@ -145,6 +145,7 @@ describe('StreamReader', () => {
     }
 
     const t = TESTTAB.shift();
+    if (!t) return;
     const s = new LensSourceStream(t);
 
     const sb = new StreamReader(s);
@@ -312,7 +313,7 @@ describe('StreamReader', () => {
       fileReadStream.close(); // Sabotage stream
 
       try {
-        const x = await streamReader.read(uint8Array, 0, 17);
+        await streamReader.read(uint8Array, 0, 17);
         assert.fail('Should throw an exception');
       } catch (err) {
         assert.strictEqual(err.message, 'Stream closed');
@@ -327,7 +328,7 @@ describe('StreamReader', () => {
       const streamReader = new StreamReader(fileReadStream);
 
       try {
-        const x = await streamReader.read(uint8Array, 0, 17);
+        await streamReader.read(uint8Array, 0, 17);
         assert.fail('Should throw an exception');
       } catch (err) {
         assert.strictEqual(err.code, 'ENOENT');

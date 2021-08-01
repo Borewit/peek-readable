@@ -13,8 +13,8 @@ interface IReadRequest {
 class Deferred<T> {
 
   public promise: Promise<T>;
-  public resolve: (value: T) => void;
-  public reject: (reason: any) => void;
+  public resolve: (value: T) => void = () => null;
+  public reject: (reason: any) => void = () => null;
 
   constructor() {
     this.promise = new Promise<T>((resolve, reject) => {
@@ -31,7 +31,7 @@ export class StreamReader {
   /**
    * Deferred read request
    */
-  private request: IReadRequest;
+  private request: IReadRequest | null = null;
 
   private endOfStream = false;
 
@@ -84,6 +84,7 @@ export class StreamReader {
     // consume peeked data first
     while (this.peekQueue.length > 0 && remaining > 0) {
       const peekData = this.peekQueue.pop(); // Front of queue
+      if (!peekData) throw new Error('peekData should be defined');
       const lenCopy = Math.min(peekData.length, remaining);
       buffer.set(peekData.subarray(0, lenCopy), offset + bytesRead);
       bytesRead += lenCopy;
@@ -136,6 +137,7 @@ export class StreamReader {
   }
 
   private tryRead() {
+    if (!this.request) throw new Error('this.request should be defined');
     const readBuffer = this.s.read(this.request.length);
     if (readBuffer) {
       this.request.buffer.set(readBuffer, this.request.offset);
