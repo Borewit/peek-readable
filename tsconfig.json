@@ -4,7 +4,8 @@
     "module": "ES2020",
     "moduleResolution": "node",
     "target": "ES2019",
-    "esModuleInterop": true
+    "esModuleInterop": true,
+    "strict": true
   }
 }
 
