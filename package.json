@@ -52,7 +52,7 @@
     "coveralls": "^3.1.1",
     "del-cli": "^4.0.1",
     "eslint": "^7.32.0",
-    "mocha": "^9.0.3",
+    "mocha": "^9.1.0",
     "nyc": "^15.1.0",
     "remark-cli": "^10.0.0",
     "remark-preset-lint-recommended": "^6.0.1",
