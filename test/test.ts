@@ -9,7 +9,6 @@ import { SourceStream } from './util';
 describe('StreamReader', () => {
 
   it('should throw an exception if constructor argument is not a stream', () => {
-
     class MyEmitter extends EventEmitter {
     }
 
@@ -18,11 +17,9 @@ describe('StreamReader', () => {
     expect(() => {
       new StreamReader(not_a_stream as any);
     }).to.throw('Expected an instance of stream.Readable');
-
   });
 
   it('should be able to handle 0 byte read request', async () => {
-
     const streamReader = new StreamReader(new SourceStream('abcdefg'));
 
     const buf = new Uint8Array(0);
@@ -30,37 +27,34 @@ describe('StreamReader', () => {
     assert.strictEqual(bytesRead, 0, 'Should return');
   });
 
-  describe('read from a streamed data chunk', async () => {
-
+  it('read from a streamed data chunk', async () => {
     const sourceStream = new SourceStream('\x05peter');
     const streamReader = new StreamReader(sourceStream);
 
-    it('read only one byte from the chunk', async () => {
+    let uint8Array: Uint8Array;
+    let bytesRead: number;
 
-      const uint8Array = new Uint8Array(1);
-      const bytesRead = await streamReader.read(uint8Array, 0, 1);
-      assert.strictEqual(bytesRead, 1, 'Should read exactly one byte');
-      assert.strictEqual(uint8Array[0], 5, '0x05 == 5');
-    });
+    // read only one byte from the chunk
+    uint8Array = new Uint8Array(1);
+    bytesRead = await streamReader.read(uint8Array, 0, 1);
+    assert.strictEqual(bytesRead, 1, 'Should read exactly one byte');
+    assert.strictEqual(uint8Array[0], 5, '0x05 == 5');
 
-    it('should decode string from chunk', async () => {
 
-      const uint8Array = new Uint8Array(5);
-      const bytesRead = await streamReader.read(uint8Array, 0, 5);
-      assert.strictEqual(bytesRead, 5, 'Should read 5 bytes');
-      assert.strictEqual(Buffer.from(uint8Array).toString('latin1'), 'peter');
-    });
+    // should decode string from chunk
+    uint8Array = new Uint8Array(5);
+    bytesRead = await streamReader.read(uint8Array, 0, 5);
+    assert.strictEqual(bytesRead, 5, 'Should read 5 bytes');
+    assert.strictEqual(Buffer.from(uint8Array).toString('latin1'), 'peter');
 
-    it('should should reject at the end of the stream', async () => {
-
-      const uint8Array = new Uint8Array(1);
-      try {
-        await streamReader.read(uint8Array, 0, 1);
-        assert.fail('Should reject due to end-of-stream');
-      } catch (err) {
-        assert.instanceOf(err, EndOfStreamError);
-      }
-    });
+    // should should reject at the end of the stream
+    uint8Array = new Uint8Array(1);
+    try {
+      await streamReader.read(uint8Array, 0, 1);
+      assert.fail('Should reject due to end-of-stream');
+    } catch (err) {
+      assert.instanceOf(err, EndOfStreamError);
+    }
   });
 
   describe('concurrent reads', () => {
