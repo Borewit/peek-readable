@@ -57,7 +57,7 @@
     "remark-cli": "^10.0.0",
     "remark-preset-lint-recommended": "^6.0.1",
     "ts-node": "^10.1.0",
-    "typescript": "^4.3.5"
+    "typescript": "^4.4.2"
   },
   "keywords": [
     "readable",
