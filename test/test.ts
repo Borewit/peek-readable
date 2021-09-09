@@ -315,7 +315,7 @@ describe('StreamReader', () => {
       try {
         await streamReader.read(uint8Array, 0, 17);
         assert.fail('Should throw an exception');
-      } catch (err) {
+      } catch (err: any) {
         assert.strictEqual(err.message, 'Stream closed');
       }
     });
@@ -330,7 +330,7 @@ describe('StreamReader', () => {
       try {
         await streamReader.read(uint8Array, 0, 17);
         assert.fail('Should throw an exception');
-      } catch (err) {
+      } catch (err: any) {
         assert.strictEqual(err.code, 'ENOENT');
       }
     });
