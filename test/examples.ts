@@ -1,4 +1,4 @@
-/* tslint:disable:no-console */
+/* eslint-disable no-console */
 
 import { assert } from 'chai';
 import * as fs from 'fs';

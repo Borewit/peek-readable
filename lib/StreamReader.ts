@@ -85,7 +85,7 @@ export class StreamReader {
     // continue reading from stream if required
     while (remaining > 0 && !this.endOfStream) {
       const reqLen = Math.min(remaining, maxStreamReadSize);
-      const chunkLen = await this._read(buffer, offset + bytesRead, reqLen);
+      const chunkLen = await this.readFromStream(buffer, offset + bytesRead, reqLen);
       bytesRead += chunkLen;
       if (chunkLen < reqLen)
         break;
@@ -101,7 +101,7 @@ export class StreamReader {
    * @param length Number of bytes to read
    * @returns Number of bytes read
    */
-  private async _read(buffer: Uint8Array, offset: number, length: number): Promise<number> {
+  private async readFromStream(buffer: Uint8Array, offset: number, length: number): Promise<number> {
 
     const readBuffer = this.s.read(length);
 
