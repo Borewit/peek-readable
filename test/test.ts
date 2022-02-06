@@ -70,7 +70,7 @@ describe('StreamReader', () => {
       const sourceStream = new SourceStream('\x00\x01\x02\x03\x04\x05\x06\x07\x08\x09');
       const streamReader = new StreamReader(sourceStream);
 
-      const prom: Array<Promise<number>> = [];
+      const prom: Promise<number>[] = [];
 
       for (let i = 0; i < 10; ++i) {
         prom.push(readByteAsNumber(streamReader));
