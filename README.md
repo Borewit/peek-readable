@@ -27,7 +27,7 @@ The `peek-readable` contains one class: `StreamReader`, which reads from a [stre
 
 ### Compatibility
 
-NPM module is compliant with [ECMAScript 2017 (ES8)](https://en.wikipedia.org/wiki/ECMAScript#8th_Edition_-_ECMAScript_2017).
+NPM module is compliant with [ECMAScript 2018 (ES9)](https://en.wikipedia.org/wiki/ECMAScript#9th_Edition_%E2%80%93_ECMAScript_2018).
 
 ## Examples
 
