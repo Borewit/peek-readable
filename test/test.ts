@@ -7,7 +7,7 @@ import { EndOfStreamError, StreamReader } from '../lib/index.js';
 import { SourceStream } from './util.js';
 import { fileURLToPath } from 'node:url';
 
-const __dirname = Path.dirname(fileURLToPath(import.meta.url));
+const dirname = Path.dirname(fileURLToPath(import.meta.url));
 
 describe('StreamReader', () => {
 
@@ -73,7 +73,7 @@ describe('StreamReader', () => {
       const sourceStream = new SourceStream('\x00\x01\x02\x03\x04\x05\x06\x07\x08\x09');
       const streamReader = new StreamReader(sourceStream);
 
-      const prom: Array<Promise<number>> = [];
+      const prom: Promise<number>[] = [];
 
       for (let i = 0; i < 10; ++i) {
         prom.push(readByteAsNumber(streamReader));
@@ -285,7 +285,7 @@ describe('StreamReader', () => {
 
   describe('file-stream', () => {
 
-    const path_test3 = Path.join(__dirname, 'resources', 'test3.dat');
+    const path_test3 = Path.join(dirname, 'resources', 'test3.dat');
     const fileSize = 5;
     const uint8Array = new Uint8Array(17);
 
@@ -301,7 +301,7 @@ describe('StreamReader', () => {
 
   describe('exception', () => {
 
-    const path_test3 = Path.join(__dirname, 'resources', 'test3.dat');
+    const path_test3 = Path.join(dirname, 'resources', 'test3.dat');
     const uint8Array = new Uint8Array(17);
 
     it('handle stream closed', async () => {
@@ -319,7 +319,7 @@ describe('StreamReader', () => {
 
     it('handle stream error', async () => {
 
-      const path_test4 = Path.join(__dirname, 'resources', 'file-does-not-exist');
+      const path_test4 = Path.join(dirname, 'resources', 'file-does-not-exist');
 
       const fileReadStream = fs.createReadStream(path_test4);
       const streamReader = new StreamReader(fileReadStream);
