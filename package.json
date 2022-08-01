@@ -21,7 +21,6 @@
     "lint": "npm run lint-md && npm run eslint",
     "test": "mocha",
     "test-coverage": "c8 npm run test",
-    "send-coveralls": "c8 report --reporter=text-lcov | coveralls",
     "start": "npm run compile && npm run lint && npm run cover-test"
   },
   "engines": {
