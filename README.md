@@ -27,7 +27,9 @@ The `peek-readable` contains one class: `StreamReader`, which reads from a [stre
 
 ### Compatibility
 
-NPM module is compliant with [ECMAScript 2018 (ES9)](https://en.wikipedia.org/wiki/ECMAScript#9th_Edition_%E2%80%93_ECMAScript_2018).
+Module: version 5 migrated from [CommonJS](https://en.wikipedia.org/wiki/CommonJS) to [pure ECMAScript Module (ESM)](https://gist.github.com/sindresorhus/a39789f98801d908bbc7ff3ecc99d99c).
+JavaScript is compliant with [ECMAScript 2019 (ES10)](https://en.wikipedia.org/wiki/ECMAScript#10th_Edition_%E2%80%93_ECMAScript_2019).
+Requires Node.js ≥ 14.16 engine.
 
 ## Examples
 
@@ -35,8 +37,8 @@ In the following example we read the first 16 bytes from a stream and store them
 Source code of examples can be found [here](test/examples.ts).
 
 ```js
-const fs = require('fs');
-const { StreamReader } = require('peek-readable');
+import fs from 'node:fs';
+import { StreamReader } from 'peek-readable';
 
 (async () => {
   const readable = fs.createReadStream('JPEG_example_JPG_RIP_001.jpg');
@@ -68,8 +70,8 @@ End-of-stream detection:
 
 With peek you can read ahead:
 ```js
-const fs = require('fs');
-const { StreamReader } = require('peek-readable');
+import fs from 'node:fs';
+import { StreamReader } from 'peek-readable';
 
 const fileReadStream = fs.createReadStream('JPEG_example_JPG_RIP_001.jpg');
 const streamReader = new StreamReader(fileReadStream);

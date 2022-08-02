@@ -1,5 +1,4 @@
 *.iml
-typings
 node_modules
 coverage
 .nyc_output
@@ -9,4 +8,3 @@ lib/**/*.d.ts
 test/**/*.js
 test/**/*.js.map
 test/**/*.d.ts
-

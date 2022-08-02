@@ -1,10 +1,9 @@
 import { assert, expect } from 'chai';
-import { EventEmitter } from 'events';
-import * as fs from 'fs';
-import * as Path from 'path';
-import { Readable } from 'stream';
-import { EndOfStreamError, StreamReader } from '../lib';
-import { SourceStream } from './util';
+import { EventEmitter } from 'node:events';
+import fs from 'node:fs';
+import { Readable } from 'node:stream';
+import { EndOfStreamError, StreamReader } from '../lib/index.js';
+import { SourceStream } from './util.js';
 
 describe('StreamReader', () => {
 
@@ -282,12 +281,11 @@ describe('StreamReader', () => {
 
   describe('file-stream', () => {
 
-    const path_test3 = Path.join(__dirname, 'resources', 'test3.dat');
     const fileSize = 5;
     const uint8Array = new Uint8Array(17);
 
     it('should return a partial size, if full length cannot be read', async () => {
-      const fileReadStream = fs.createReadStream(path_test3);
+      const fileReadStream = fs.createReadStream(new URL('resources/test3.dat', import.meta.url));
       const streamReader = new StreamReader(fileReadStream);
       const actualRead = await streamReader.read(uint8Array, 0, 17);
       assert.strictEqual(actualRead, fileSize);
@@ -298,11 +296,10 @@ describe('StreamReader', () => {
 
   describe('exception', () => {
 
-    const path_test3 = Path.join(__dirname, 'resources', 'test3.dat');
     const uint8Array = new Uint8Array(17);
 
     it('handle stream closed', async () => {
-      const fileReadStream = fs.createReadStream(path_test3);
+      const fileReadStream = fs.createReadStream(new URL('resources/test3.dat', import.meta.url));
       const streamReader = new StreamReader(fileReadStream);
       fileReadStream.close(); // Sabotage stream
 
@@ -316,9 +313,7 @@ describe('StreamReader', () => {
 
     it('handle stream error', async () => {
 
-      const path_test4 = Path.join(__dirname, 'resources', 'file-does-not-exist');
-
-      const fileReadStream = fs.createReadStream(path_test4);
+      const fileReadStream = fs.createReadStream(new URL('resources/file-does-not-exist', import.meta.url));
       const streamReader = new StreamReader(fileReadStream);
 
       try {

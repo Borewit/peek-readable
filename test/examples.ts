@@ -1,15 +1,14 @@
 /* eslint-disable no-console */
 
 import { assert } from 'chai';
-import * as fs from 'fs';
-import * as path from 'path';
-import { EndOfStreamError, StreamReader } from '../lib';
+import fs from 'node:fs';
+import { EndOfStreamError, StreamReader } from '../lib/index.js';
 
 describe('Examples', () => {
 
   it('first example', async () => {
 
-    const readable = fs.createReadStream(path.join(__dirname, 'resources', 'JPEG_example_JPG_RIP_001.jpg'));
+    const readable = fs.createReadStream(new URL('resources/JPEG_example_JPG_RIP_001.jpg', import.meta.url));
     const streamReader = new StreamReader(readable);
     const uint8Array = new Uint8Array(16);
     const bytesRead = await streamReader.read(uint8Array, 0, 16);
@@ -18,7 +17,7 @@ describe('Examples', () => {
 
   it('End-of-stream detection', async () => {
 
-    const fileReadStream = fs.createReadStream(path.join(__dirname, 'resources', 'JPEG_example_JPG_RIP_001.jpg'));
+    const fileReadStream = fs.createReadStream(new URL('resources/JPEG_example_JPG_RIP_001.jpg', import.meta.url));
     const streamReader = new StreamReader(fileReadStream);
     const uint8Array =  new Uint8Array(16);
     assert.equal(await streamReader.read(uint8Array, 0, 16), 16);
@@ -35,7 +34,7 @@ describe('Examples', () => {
 
   it('peek', async () => {
 
-    const fileReadStream = fs.createReadStream(path.join(__dirname, 'resources', 'JPEG_example_JPG_RIP_001.jpg'));
+    const fileReadStream = fs.createReadStream(new URL('resources/JPEG_example_JPG_RIP_001.jpg', import.meta.url));
     const streamReader = new StreamReader(fileReadStream);
     const buffer = Buffer.alloc(20);
 
