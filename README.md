@@ -29,6 +29,7 @@ The `peek-readable` contains one class: `StreamReader`, which reads from a [stre
 
 Module: version 5 migrated from [CommonJS](https://en.wikipedia.org/wiki/CommonJS) to [pure ECMAScript Module (ESM)](https://gist.github.com/sindresorhus/a39789f98801d908bbc7ff3ecc99d99c).
 JavaScript is compliant with [ECMAScript 2019 (ES10)](https://en.wikipedia.org/wiki/ECMAScript#10th_Edition_%E2%80%93_ECMAScript_2019).
+Requires Node.js ≥ 14.16 engine.
 
 ## Examples
 
