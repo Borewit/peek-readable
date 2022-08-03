@@ -11,7 +11,7 @@ updates:
     labels:
       - dependencies
       - CJS
-    target-branch: "common-js"
+    target-branch: commonjs
     versioning-strategy: increase
     ignore:
       - dependency-name: "@types/node"
@@ -27,7 +27,7 @@ updates:
       time: "06:00"
     open-pull-requests-limit: 10
     versioning-strategy: increase
-    target-branch: "master"
+    target-branch: master
     labels:
       - dependencies
       - ESM
