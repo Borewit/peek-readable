@@ -6,6 +6,7 @@
 [![Total alerts](https://img.shields.io/lgtm/alerts/g/Borewit/peek-readable.svg?logo=lgtm&logoWidth=18)](https://lgtm.com/projects/g/Borewit/peek-readable/alerts/)
 [![Language grade: JavaScript](https://img.shields.io/lgtm/grade/javascript/g/Borewit/peek-readable.svg?logo=lgtm&logoWidth=18)](https://lgtm.com/projects/g/Borewit/peek-readable/context:javascript)
 [![Known Vulnerabilities](https://snyk.io/test/github/Borewit/peek-readable/badge.svg?targetFile=package.json)](https://snyk.io/test/github/Borewit/peek-readable?targetFile=package.json)
+[![CodeQL](https://github.com/Borewit/peek-readable/actions/workflows/codeql.yml/badge.svg)](https://github.com/Borewit/peek-readable/actions/workflows/codeql.yml)
 
 # peek-readable
 
