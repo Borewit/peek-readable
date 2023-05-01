@@ -42,7 +42,7 @@
     "lib/**/*.d.ts"
   ],
   "devDependencies": {
-    "@types/chai": "^4.3.4",
+    "@types/chai": "^4.3.5",
     "@types/mocha": "^9.1.1",
     "@types/node": "^18.11.9",
     "@typescript-eslint/eslint-plugin": "^4.33.0",
