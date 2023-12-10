@@ -1,6 +1,7 @@
 import { Readable } from 'node:stream';
 import { EndOfStreamError } from './EndOfFileStream.js';
 import { Deferred } from './Deferred.js';
+import { IStreamReader } from "./index.js";
 
 export { EndOfStreamError } from './EndOfFileStream.js';
 
@@ -14,7 +15,7 @@ interface IReadRequest {
 
 const maxStreamReadSize = 1 * 1024 * 1024; // Maximum request length on read-stream operation
 
-export class StreamReader {
+export class StreamReader implements IStreamReader {
 
   /**
    * Deferred used for postponed read request (as not data is yet available to read)
