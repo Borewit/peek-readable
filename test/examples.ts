@@ -1,7 +1,7 @@
 /* eslint-disable no-console */
 
 import { assert } from 'chai';
-import fs from 'node:fs';
+import * as fs from 'node:fs';
 import { EndOfStreamError, StreamReader } from '../lib/index.js';
 
 describe('Examples', () => {

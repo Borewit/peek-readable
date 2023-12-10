@@ -1,11 +1,11 @@
-import { assert, expect } from 'chai';
-import { EventEmitter } from 'node:events';
-import fs from 'node:fs';
-import { Readable } from 'node:stream';
-import { EndOfStreamError, StreamReader } from '../lib/index.js';
-import { SourceStream } from './util.js';
+import {assert, expect} from 'chai';
+import {EventEmitter} from 'node:events';
+import * as fs from 'node:fs';
+import {Readable} from 'node:stream';
+import {EndOfStreamError, StreamReader, WebStreamReader} from '../lib/index.js';
+import {SourceStream, stringToReadableStream} from './util.js';
 
-describe('StreamReader', () => {
+describe('Node.js StreamReader', () => {
 
   it('should throw an exception if constructor argument is not a stream', () => {
     class MyEmitter extends EventEmitter {
@@ -324,6 +324,48 @@ describe('StreamReader', () => {
       }
     });
 
+  });
+
+});
+
+describe('WebStreamReader', () => {
+
+
+  it('should be able to handle 0 byte read request', async () => {
+    const webStreamReader = new WebStreamReader(stringToReadableStream('abcdefg'));
+
+    const buf = new Uint8Array(0);
+    const bytesRead = await webStreamReader.read(buf, 0, 0);
+    assert.strictEqual(bytesRead, 0, 'Should return');
+  });
+
+  it('read from a streamed data chunk', async () => {
+    const webStreamReader = new WebStreamReader(stringToReadableStream('\x05peter'));
+
+    let uint8Array: Uint8Array;
+    let bytesRead: number;
+
+    // read only one byte from the chunk
+    uint8Array = new Uint8Array(1);
+    bytesRead = await webStreamReader.read(uint8Array, 0, 1);
+    assert.strictEqual(bytesRead, 1, 'Should read exactly one byte');
+    assert.strictEqual(uint8Array[0], 5, '0x05 == 5');
+
+
+    // should decode string from chunk
+    uint8Array = new Uint8Array(5);
+    bytesRead = await webStreamReader.read(uint8Array, 0, 5);
+    assert.strictEqual(bytesRead, 5, 'Should read 5 bytes');
+    assert.strictEqual(new TextDecoder('latin1').decode(uint8Array), 'peter');
+
+    // should reject at the end of the stream
+    uint8Array = new Uint8Array(1);
+    try {
+      await webStreamReader.read(uint8Array, 0, 1);
+      assert.fail('Should reject due to end-of-stream');
+    } catch (err) {
+      assert.instanceOf(err, EndOfStreamError);
+    }
   });
 
 });
