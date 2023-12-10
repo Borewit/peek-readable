@@ -39,7 +39,6 @@ jobs:
             test/**/*.js.map
 
   test:
-
     runs-on: ubuntu-latest
     needs: build
 
