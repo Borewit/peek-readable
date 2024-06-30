@@ -1,10 +1,8 @@
-![Node.js CI](https://github.com/Borewit/peek-readable/workflows/Node.js%20CI/badge.svg)
+[![Node.js CI](https://github.com/Borewit/peek-readable/actions/workflows/nodejs-ci.yml/badge.svg)](https://github.com/Borewit/peek-readable/actions/workflows/nodejs-ci.yml)
 [![NPM version](https://badge.fury.io/js/peek-readable.svg)](https://npmjs.org/package/peek-readable)
 [![npm downloads](http://img.shields.io/npm/dm/peek-readable.svg)](https://npmcharts.com/compare/peek-readable?start=600&interval=30)
 [![Coverage Status](https://coveralls.io/repos/github/Borewit/peek-readable/badge.svg?branch=master)](https://coveralls.io/github/Borewit/peek-readable?branch=master)
 [![Codacy Badge](https://app.codacy.com/project/badge/Grade/d4b511481b3a4634b6ca5c0724407eb9)](https://www.codacy.com/gh/Borewit/peek-readable/dashboard?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=Borewit/peek-readable&amp;utm_campaign=Badge_Grade)
-[![Total alerts](https://img.shields.io/lgtm/alerts/g/Borewit/peek-readable.svg?logo=lgtm&logoWidth=18)](https://lgtm.com/projects/g/Borewit/peek-readable/alerts/)
-[![Language grade: JavaScript](https://img.shields.io/lgtm/grade/javascript/g/Borewit/peek-readable.svg?logo=lgtm&logoWidth=18)](https://lgtm.com/projects/g/Borewit/peek-readable/context:javascript)
 [![Known Vulnerabilities](https://snyk.io/test/github/Borewit/peek-readable/badge.svg?targetFile=package.json)](https://snyk.io/test/github/Borewit/peek-readable?targetFile=package.json)
 [![CodeQL](https://github.com/Borewit/peek-readable/actions/workflows/codeql.yml/badge.svg)](https://github.com/Borewit/peek-readable/actions/workflows/codeql.yml)
 
