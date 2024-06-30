@@ -1,7 +1,7 @@
 {
   "env": {
     "browser": true,
-    "es6": true,
+    "es2021": true,
     "node": true
   },
   "extends": [
@@ -138,10 +138,7 @@
     ],
     "id-match": "error",
     "import/no-extraneous-dependencies": [
-      "error",
-      {
-        "devDependencies": false
-      }
+      "error", {"devDependencies": ["test/**/*.ts"]}
     ],
     "import/no-internal-modules": "off",
     "import/order": "off",
@@ -149,7 +146,7 @@
     "indent": "off",
     "jsdoc/check-alignment": "error",
     "jsdoc/check-indentation": "error",
-    "jsdoc/newline-after-description": [
+    "jsdoc/tag-lines": [
       "error",
       "never"
     ],
@@ -191,7 +188,7 @@
     "no-unused-labels": "error",
     "no-use-before-define": "off",
     "no-var": "error",
-    "node/file-extension-in-import": ["off"],
+    "node/file-extension-in-import": ["error", "always"],
     "node/no-extraneous-import": "error",
     "object-shorthand": "error",
     "one-var": [
