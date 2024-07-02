@@ -26,9 +26,7 @@ describe('Examples', () => {
       assert.fail('Should throw EndOfStreamError');
     } catch(error) {
       assert.isOk(error instanceof EndOfStreamError, 'Expect `error` to be instance of `EndOfStreamError`');
-      if (error instanceof EndOfStreamError) {
-        console.log('End-of-stream reached');
-      }
+      console.log('End-of-stream reached');
     }
   });
 

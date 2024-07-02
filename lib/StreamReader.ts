@@ -1,7 +1,7 @@
 import { Readable } from 'node:stream';
 import { EndOfStreamError } from './EndOfFileStream.js';
 import { Deferred } from './Deferred.js';
-import { IStreamReader } from "./index.js";
+import { AbstractStreamReader } from "./AbstractStreamReader.js";
 
 export { EndOfStreamError } from './EndOfFileStream.js';
 
@@ -13,24 +13,19 @@ interface IReadRequest {
   deferred: Deferred<number>
 }
 
-const maxStreamReadSize = 1 * 1024 * 1024; // Maximum request length on read-stream operation
-
-export class StreamReader implements IStreamReader {
+/**
+ * Node.js Readable Stream Reader
+ * Ref: https://nodejs.org/api/stream.html#readable-streams
+ */
+export class StreamReader extends AbstractStreamReader {
 
   /**
    * Deferred used for postponed read request (as not data is yet available to read)
    */
-  private deferred:Deferred<number> | null = null;
-
-  private endOfStream = false;
-
-  /**
-   * Store peeked data
-   * @type {Array}
-   */
-  private peekQueue: Uint8Array[] = [];
+  private deferred: Deferred<number> | null = null;
 
   public constructor(private s: Readable) {
+    super();
     if (!s.read || !s.once) {
       throw new Error('Expected an instance of stream.Readable');
     }
@@ -40,69 +35,17 @@ export class StreamReader implements IStreamReader {
   }
 
   /**
-   * Read ahead (peek) from stream. Subsequent read or peeks will return the same data
-   * @param uint8Array - Uint8Array (or Buffer) to store data read from stream in
-   * @param offset - Offset target
-   * @param length - Number of bytes to read
-   * @returns Number of bytes peeked
-   */
-  public async peek(uint8Array: Uint8Array, offset: number, length: number): Promise<number> {
-    const bytesRead = await this.read(uint8Array, offset, length);
-    this.peekQueue.push(uint8Array.subarray(offset, offset + bytesRead)); // Put read data back to peek buffer
-    return bytesRead;
-  }
-
-  /**
-   * Read chunk from stream
-   * @param buffer - Target Uint8Array (or Buffer) to store data read from stream in
-   * @param offset - Offset target
-   * @param length - Number of bytes to read
-   * @returns Number of bytes read
-   */
-  public async read(buffer: Uint8Array, offset: number, length: number): Promise<number> {
-    if (length === 0) {
-      return 0;
-    }
-
-    if (this.peekQueue.length === 0 && this.endOfStream) {
-      throw new EndOfStreamError();
-    }
-
-    let remaining = length;
-    let bytesRead = 0;
-    // consume peeked data first
-    while (this.peekQueue.length > 0 && remaining > 0) {
-      const peekData = this.peekQueue.pop(); // Front of queue
-      if (!peekData) throw new Error('peekData should be defined');
-      const lenCopy = Math.min(peekData.length, remaining);
-      buffer.set(peekData.subarray(0, lenCopy), offset + bytesRead);
-      bytesRead += lenCopy;
-      remaining -= lenCopy;
-      if (lenCopy < peekData.length) {
-        // remainder back to queue
-        this.peekQueue.push(peekData.subarray(lenCopy));
-      }
-    }
-    // continue reading from stream if required
-    while (remaining > 0 && !this.endOfStream) {
-      const reqLen = Math.min(remaining, maxStreamReadSize);
-      const chunkLen = await this.readFromStream(buffer, offset + bytesRead, reqLen);
-      bytesRead += chunkLen;
-      if (chunkLen < reqLen)
-        break;
-      remaining -= chunkLen;
-    }
-    return bytesRead;
-  }
-
-  /**
    * Read chunk from stream
    * @param buffer Target Uint8Array (or Buffer) to store data read from stream in
    * @param offset Offset target
    * @param length Number of bytes to read
    * @returns Number of bytes read
    */
-  private async readFromStream(buffer: Uint8Array, offset: number, length: number): Promise<number> {
+  protected async readFromStream(buffer: Uint8Array, offset: number, length: number): Promise<number> {
+
+    if (this.endOfStream) {
+      return 0;
+    }
 
     const readBuffer = this.s.read(length);
 
