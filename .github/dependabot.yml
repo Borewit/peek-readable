@@ -1,31 +1,13 @@
 version: 2
 updates:
 
-  # CommonJS (CJS)
-  - package-ecosystem: npm
-    directory: "/"
-    schedule:
-      interval: weekly
-      time: "04:00"
-    open-pull-requests-limit: 10
-    labels:
-      - dependencies
-      - CJS
-    target-branch: commonjs
-    versioning-strategy: increase
-    ignore:
-      - dependency-name: "@types/node"
-        update-types: [ "version-update:semver-patch" ]
-      - dependency-name: "mocha"
-        update-types: [ "version-update:semver-major" ]
-
   # ECMAScript Module (ESM)
   - package-ecosystem: npm
     directory: "/"
     schedule:
       interval: weekly
       time: "06:00"
-    open-pull-requests-limit: 10
+    open-pull-requests-limit: 20
     versioning-strategy: increase
     target-branch: master
     labels:
