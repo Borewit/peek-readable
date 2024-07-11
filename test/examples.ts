@@ -1,4 +1,5 @@
-import { assert } from 'chai';
+import * as assert from 'node:assert/strict';
+import { describe, it } from 'node:test';
 import * as fs from 'node:fs';
 import { EndOfStreamError, StreamReader } from '../lib/index.js';
 
@@ -23,7 +24,7 @@ describe('Examples', () => {
       while(await streamReader.read(uint8Array, 0, 1) > 0);
       assert.fail('Should throw EndOfStreamError');
     } catch(error) {
-      assert.isOk(error instanceof EndOfStreamError, 'Expect `error` to be instance of `EndOfStreamError`');
+      assert.ok(error instanceof EndOfStreamError, 'Expect `error` to be instance of `EndOfStreamError`');
       console.log('End-of-stream reached');
     }
   });
