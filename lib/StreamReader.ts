@@ -1,9 +1,9 @@
 import { Readable } from 'node:stream';
-import { EndOfStreamError } from './EndOfFileStream.js';
+import { EndOfStreamError } from './EndOfStreamError.js';
 import { Deferred } from './Deferred.js';
 import { AbstractStreamReader } from "./AbstractStreamReader.js";
 
-export { EndOfStreamError } from './EndOfFileStream.js';
+export { EndOfStreamError } from './EndOfStreamError.js';
 
 interface IReadRequest {
   buffer: Uint8Array,

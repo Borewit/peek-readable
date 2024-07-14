@@ -8,12 +8,12 @@ import { ReadableStream} from 'node:stream/web';
  */
 export class SourceStream extends Readable {
 
-  private buf: Buffer;
+  private buf: Uint8Array;
 
   constructor(private str: string = '') {
     super();
 
-    this.buf = Buffer.from(str, 'latin1');
+    this.buf =  new TextEncoder().encode(str);
   }
 
   public _read() {

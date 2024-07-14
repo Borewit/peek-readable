@@ -13,6 +13,8 @@ interface StreamFactorySuite {
   fromString: StringToStreamFactory;
 }
 
+const latin1TextDecoder = new TextDecoder('latin1');
+
 describe('Matrix', () => {
 
   const streamFactories: StreamFactorySuite[] = [{
@@ -52,7 +54,7 @@ describe('Matrix', () => {
           uint8Array = new Uint8Array(5);
           bytesRead = await streamReader.read(uint8Array, 0, 5);
           assert.strictEqual(bytesRead, 5, 'Should read 5 bytes');
-          assert.strictEqual(Buffer.from(uint8Array).toString('latin1'), 'peter');
+          assert.strictEqual(new TextDecoder('latin1').decode(uint8Array), 'peter');
 
           // should should reject at the end of the stream
           uint8Array = new Uint8Array(1);
@@ -118,7 +120,7 @@ describe('Matrix', () => {
             assert.strictEqual(uint8Array[0], 5, '0x05 == 5');
             bytesRead = await streamReader.read(uint8Array, 0, 6);
             assert.strictEqual(bytesRead, 6, 'Should overlap the peaked byte');
-            assert.strictEqual(Buffer.from(uint8Array.buffer).toString('latin1'), '\x05peter');
+            assert.strictEqual(latin1TextDecoder.decode(uint8Array.buffer), '\x05peter');
           });
 
           it('should be able to read a smaller chunk then the overlapping peeked chunk', async () => {
@@ -135,7 +137,7 @@ describe('Matrix', () => {
             assert.strictEqual(uint8Array[0], 5, '0x05 == 5');
             bytesRead = await streamReader.read(uint8Array, 1, 5);
             assert.strictEqual(bytesRead, 5, 'Should read remaining 5 byte');
-            assert.strictEqual(Buffer.from(uint8Array.buffer).toString('latin1'), '\x05peter');
+            assert.strictEqual(latin1TextDecoder.decode(uint8Array), '\x05peter');
           });
 
           it('should be able to handle overlapping peeks', async () => {
@@ -148,31 +150,31 @@ describe('Matrix', () => {
 
             let len = await streamReader.peek(peekBuffer, 0, 3); // Peek #1
             assert.equal(3, len);
-            assert.deepEqual(peekBuffer, Buffer.from('\x01\x02\x03', 'binary'), 'Peek #1');
+            assert.strictEqual(latin1TextDecoder.decode(peekBuffer), '\x01\x02\x03', 'Peek #1');
             len = await streamReader.peek(peekBufferShort, 0, 1); // Peek #2
             assert.equal(1, len);
-            assert.deepEqual(peekBufferShort, Buffer.from('\x01', 'binary'), 'Peek #2');
+            assert.strictEqual(latin1TextDecoder.decode(peekBufferShort), '\x01', 'Peek #2');
             len = await streamReader.read(readBuffer, 0, 1); // Read #1
             assert.equal(len, 1);
-            assert.deepEqual(readBuffer, Buffer.from('\x01', 'binary'), 'Read #1');
+            assert.strictEqual(latin1TextDecoder.decode(readBuffer), '\x01', 'Read #1');
             len = await streamReader.peek(peekBuffer, 0, 3); // Peek #3
             assert.equal(len, 3);
-            assert.deepEqual(peekBuffer, Buffer.from('\x02\x03\x04', 'binary'), 'Peek #3');
+            assert.strictEqual(latin1TextDecoder.decode(peekBuffer), '\x02\x03\x04', 'Peek #3');
             len = await streamReader.read(readBuffer, 0, 1); // Read #2
             assert.equal(len, 1);
-            assert.deepEqual(readBuffer, Buffer.from('\x02', 'binary'), 'Read #2');
+            assert.strictEqual(latin1TextDecoder.decode(readBuffer), '\x02', 'Read #2');
             len = await streamReader.peek(peekBuffer, 0, 3); // Peek #3
             assert.equal(len, 3);
-            assert.deepEqual(peekBuffer, Buffer.from('\x03\x04\x05', 'binary'), 'Peek #3');
+            assert.strictEqual(latin1TextDecoder.decode(peekBuffer), '\x03\x04\x05', 'Peek #3');
             len = await streamReader.read(readBuffer, 0, 1); // Read #3
             assert.equal(len, 1);
-            assert.deepEqual(readBuffer, Buffer.from('\x03', 'binary'), 'Read #3');
+            assert.strictEqual(latin1TextDecoder.decode(readBuffer), '\x03', 'Read #3');
             len = await streamReader.peek(peekBuffer, 0, 2); // Peek #4
             assert.equal(len, 2, '3 bytes requested to peek, only 2 bytes left');
-            assert.deepEqual(peekBuffer, Buffer.from('\x04\x05\x05', 'binary'), 'Peek #4');
+            assert.strictEqual(latin1TextDecoder.decode(peekBuffer), '\x04\x05\x05', 'Peek #4');
             len = await streamReader.read(readBuffer, 0, 1); // Read #4
             assert.equal(len, 1);
-            assert.deepEqual(readBuffer, Buffer.from('\x04', 'binary'), 'Read #4');
+            assert.strictEqual(latin1TextDecoder.decode(readBuffer), '\x04', 'Read #4');
           });
         });
 
@@ -285,7 +287,7 @@ describe('Node.js StreamReader', () => {
     class LensSourceStream extends Readable {
 
       public nvals: number;
-      private buf: Buffer;
+      private buf: Uint8Array;
 
       public constructor(private lens: number[]) {
 
@@ -303,7 +305,7 @@ describe('Node.js StreamReader', () => {
         for (let i = 0; i < this.nvals + 1; i++) {
           data += '\x01\x02\x03\x04';
         }
-        this.buf = Buffer.from(data, 'binary');
+        this.buf = new Uint8Array([0x01, 0x02, 0x03, 0x04]);
       }
 
       public _read() {
