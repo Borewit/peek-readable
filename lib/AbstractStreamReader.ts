@@ -1,12 +1,9 @@
-import { Deferred } from './Deferred.js';
-import {EndOfStreamError, IStreamReader} from "./index.js";
+import { EndOfStreamError } from "./EndOfStreamError.js";
 
-export interface IReadRequest {
-  buffer: Uint8Array,
-  offset: number,
-  length: number,
-  position?: number,
-  deferred: Deferred<number>
+
+export interface IStreamReader {
+  peek(uint8Array: Uint8Array, offset: number, length: number): Promise<number>;
+  read(buffer: Uint8Array, offset: number, length: number): Promise<number>
 }
 
 type isEndOfStream = () => boolean;

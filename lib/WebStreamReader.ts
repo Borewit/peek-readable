@@ -1,6 +1,6 @@
 import { ReadableStreamBYOBReader, ReadableStream } from 'node:stream/web';
-import { EndOfStreamError } from './EndOfFileStream.js';
-export { EndOfStreamError } from './EndOfFileStream.js';
+import { EndOfStreamError } from './EndOfStreamError.js';
+export { EndOfStreamError } from './EndOfStreamError.js';
 import { AbstractStreamReader } from "./AbstractStreamReader.js";
 
 /**

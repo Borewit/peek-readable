@@ -34,7 +34,7 @@ describe('Examples', () => {
 
     const fileReadStream = fs.createReadStream(new URL('resources/JPEG_example_JPG_RIP_001.jpg', import.meta.url));
     const streamReader = new StreamReader(fileReadStream);
-    const buffer = Buffer.alloc(20);
+    const buffer = new Uint8Array(20);
 
     let bytesRead = await streamReader.peek(buffer, 0, 3);
     if (bytesRead === 3 && buffer[0] === 0xFF && buffer[1] === 0xD8 && buffer[2] === 0xFF) {
