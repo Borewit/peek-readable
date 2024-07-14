@@ -24,5 +24,3 @@ updates:
           - "eslint-import-resolver-typescript"
           - "eslint-plugin-*"
           - "@typescript-eslint/*"
-        labels:
-          - dev-dependencies
