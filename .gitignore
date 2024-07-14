@@ -8,3 +8,11 @@ lib/**/*.d.ts
 test/**/*.js
 test/**/*.js.map
 test/**/*.d.ts
+
+.pnp.*
+.yarn/*
+!.yarn/patches
+!.yarn/plugins
+!.yarn/releases
+!.yarn/sdks
+!.yarn/versions
