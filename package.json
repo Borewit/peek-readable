@@ -69,5 +69,6 @@
     "buffer",
     "stream",
     "read"
-  ]
+  ],
+  "packageManager": "yarn@4.3.1"
 }
