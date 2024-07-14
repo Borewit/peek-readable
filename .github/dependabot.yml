@@ -12,4 +12,14 @@ updates:
     target-branch: master
     labels:
       - dependencies
-      - ESM
+    groups:
+      eslint:
+        dependency-type: "development"
+        patterns:
+          - "eslint"
+          - "eslint-config-prettier"
+          - "eslint-import-resolver-typescript"
+          - "eslint-plugin-*"
+          - "@typescript-eslint/*"
+        labels:
+          - dev-dependencies
