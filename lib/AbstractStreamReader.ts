@@ -6,15 +6,12 @@ export interface IStreamReader {
   read(buffer: Uint8Array, offset: number, length: number): Promise<number>
 }
 
-type isEndOfStream = () => boolean;
-
 export abstract class AbstractStreamReader implements IStreamReader {
 
   /**
    * Maximum request length on read-stream operation
    */
   protected maxStreamReadSize = 1 * 1024 * 1024;
-
   protected endOfStream = false;
 
   /**
@@ -42,7 +39,7 @@ export abstract class AbstractStreamReader implements IStreamReader {
     }
 
     let bytesRead = this.readFromPeekBuffer(buffer, offset, length);
-    bytesRead += await this.readRemainderFromStream(buffer, offset + bytesRead, length - bytesRead, () => false);
+    bytesRead += await this.readRemainderFromStream(buffer, offset + bytesRead, length - bytesRead);
     if (bytesRead === 0) {
       throw new EndOfStreamError();
     }
@@ -76,11 +73,11 @@ export abstract class AbstractStreamReader implements IStreamReader {
     return bytesRead;
   }
 
-  public async readRemainderFromStream(buffer: Uint8Array, offset: number, remaining: number, isEndOfStream: isEndOfStream): Promise<number> {
+  public async readRemainderFromStream(buffer: Uint8Array, offset: number, remaining: number): Promise<number> {
 
     let bytesRead = 0;
     // Continue reading from stream if required
-    while (remaining > 0 && !isEndOfStream()) {
+    while (remaining > 0 && !this.endOfStream) {
       const reqLen = Math.min(remaining, this.maxStreamReadSize);
       const chunkLen = await this.readFromStream(buffer, offset + bytesRead, reqLen);
       if (chunkLen === 0)
