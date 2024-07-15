@@ -9,7 +9,6 @@ import { AbstractStreamReader } from "./AbstractStreamReader.js";
  */
 export class WebStreamReader extends AbstractStreamReader {
   private reader: ReadableStreamBYOBReader;
-  private eofStream = false;
 
   public constructor(stream: ReadableStream<Uint8Array>) {
     super();
@@ -18,14 +17,14 @@ export class WebStreamReader extends AbstractStreamReader {
 
   protected async readFromStream(buffer: Uint8Array, offset: number, length: number): Promise<number> {
 
-    if(this.eofStream) {
+    if(this.endOfStream) {
       throw new EndOfStreamError();
     }
 
     const result = await this.reader.read(new Uint8Array(length));
 
     if (result.done) {
-      this.eofStream = result.done;
+      this.endOfStream = result.done;
     }
 
     if(result.value) {
