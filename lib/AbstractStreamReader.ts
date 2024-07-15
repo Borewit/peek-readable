@@ -83,9 +83,9 @@ export abstract class AbstractStreamReader implements IStreamReader {
     while (remaining > 0 && !isEndOfStream()) {
       const reqLen = Math.min(remaining, this.maxStreamReadSize);
       const chunkLen = await this.readFromStream(buffer, offset + bytesRead, reqLen);
-      bytesRead += chunkLen;
-      if (chunkLen < reqLen)
+      if (chunkLen === 0)
         break;
+      bytesRead += chunkLen;
       remaining -= chunkLen;
     }
     return bytesRead;
