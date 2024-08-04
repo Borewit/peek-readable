@@ -16,11 +16,4 @@ updates:
       eslint:
         dependency-type: "development"
         patterns:
-          - "eslint"
-          - "@eslint/compat"
-          - "@eslint/eslintrc"
-          - "@eslint/js"
-          - "eslint-config-prettier"
-          - "eslint-import-resolver-typescript"
-          - "eslint-plugin-*"
-          - "@typescript-eslint/*"
+          - "@biomejs/biome"
