@@ -17,8 +17,9 @@
     "compile-test": "tsc -p test",
     "compile": "npm run compile-src && yarn run compile-test",
     "eslint": "eslint lib/**/*.ts --ignore-pattern lib/**/*.d.ts test/**/*.ts",
+    "biome": "biome check",
     "lint-md": "remark -u preset-lint-recommended .",
-    "lint": "npm run lint-md && npm run eslint",
+    "lint": "npm run lint-md && npm run eslint && npm run biome",
     "test": "mocha",
     "test-coverage": "c8 npm run test",
     "start": "npm run compile && npm run lint && npm run cover-test"
@@ -42,6 +43,7 @@
     "lib/**/*.d.ts"
   ],
   "devDependencies": {
+    "@biomejs/biome": "1.8.3",
     "@eslint/compat": "^1.1.1",
     "@eslint/eslintrc": "^3.1.0",
     "@types/chai": "^4.3.16",

@@ -10,7 +10,7 @@ export class SourceStream extends Readable {
 
   private buf: Uint8Array;
 
-  constructor(private str: string = '') {
+  constructor(private str = '') {
     super();
 
     this.buf =  new TextEncoder().encode(str);

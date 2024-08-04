@@ -1,4 +1,4 @@
-import { Readable } from 'node:stream';
+import type { Readable } from 'node:stream';
 import { EndOfStreamError } from './EndOfStreamError.js';
 import { Deferred } from './Deferred.js';
 import { AbstractStreamReader } from "./AbstractStreamReader.js";
@@ -52,19 +52,19 @@ export class StreamReader extends AbstractStreamReader {
     if (readBuffer) {
       buffer.set(readBuffer, offset);
       return readBuffer.length;
-    } else {
-      const request = {
-        buffer,
-        offset,
-        length,
-        deferred: new Deferred<number>()
-      };
-      this.deferred = request.deferred;
-      this.s.once('readable', () => {
-        this.readDeferred(request);
-      });
-      return request.deferred.promise;
     }
+
+    const request = {
+      buffer,
+      offset,
+      length,
+      deferred: new Deferred<number>()
+    };
+    this.deferred = request.deferred;
+    this.s.once('readable', () => {
+      this.readDeferred(request);
+    });
+    return request.deferred.promise;
   }
 
   /**
