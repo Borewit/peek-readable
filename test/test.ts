@@ -2,7 +2,7 @@ import {assert, expect} from 'chai';
 import {EventEmitter} from 'node:events';
 import * as fs from 'node:fs';
 import {Readable} from 'node:stream';
-import {EndOfStreamError, IStreamReader, StreamReader, WebStreamReader} from '../lib/index.js';
+import {EndOfStreamError, type IStreamReader, StreamReader, WebStreamReader} from '../lib/index.js';
 import {SourceStream, stringToReadableStream} from './util.js';
 
 
@@ -231,8 +231,12 @@ describe('Matrix', () => {
             try {
               await streamReader.read(uint8Array, 0, 17);
               assert.fail('Should throw an exception');
-            } catch (err: any) {
-              assert.strictEqual(err.message, 'Stream closed');
+            } catch (err: unknown) {
+              if (err instanceof Error) {
+                assert.strictEqual(err.message, 'Stream closed');
+              } else {
+                assert.fail('Should throw an exception');
+              }
             }
           });
 
@@ -244,8 +248,12 @@ describe('Matrix', () => {
             try {
               await streamReader.read(uint8Array, 0, 17);
               assert.fail('Should throw an exception');
-            } catch (err: any) {
-              assert.strictEqual(err.code, 'ENOENT');
+            } catch (err) {
+              if (err instanceof Error) {
+                assert.strictEqual((err as Error & { code: string }).code, 'ENOENT');
+              } else {
+                assert.fail('Should throw an exception');
+              }
             }
           });
 
@@ -265,7 +273,7 @@ describe('Node.js StreamReader', () => {
     const not_a_stream = new MyEmitter();
 
     expect(() => {
-      new StreamReader(not_a_stream as any);
+      new StreamReader(not_a_stream as unknown as Readable);
     }).to.throw('Expected an instance of stream.Readable');
   });
 
@@ -293,7 +301,7 @@ describe('Node.js StreamReader', () => {
 
         super();
 
-        let len: number = 0;
+        let len = 0;
 
         for (const v of lens) {
           len += v;

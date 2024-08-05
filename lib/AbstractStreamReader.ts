@@ -73,8 +73,9 @@ export abstract class AbstractStreamReader implements IStreamReader {
     return bytesRead;
   }
 
-  public async readRemainderFromStream(buffer: Uint8Array, offset: number, remaining: number): Promise<number> {
+  public async readRemainderFromStream(buffer: Uint8Array, offset: number, initialRemaining: number): Promise<number> {
 
+    let remaining = initialRemaining;
     let bytesRead = 0;
     // Continue reading from stream if required
     while (remaining > 0 && !this.endOfStream) {
