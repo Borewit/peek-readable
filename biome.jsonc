@@ -33,14 +33,19 @@
 		}
 	},
 	"files": {
-		"ignoreUnknown": true,
+		"include": [
+			"lib/**/*.ts",
+			"test/**/*.ts"
+		],
 		"ignore": [
 			"./coverage",
 			"./yarn",
+			"./.pnp.*",
 			"./lib/**/*.d.ts",
 			"./lib/**/*.js",
 			"./test/**/*.d.ts",
 			"./test/**/*.js"
-		]
+		],
+		"ignoreUnknown": true
 	}
 }
