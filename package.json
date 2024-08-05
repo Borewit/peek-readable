@@ -15,13 +15,13 @@
     "build": "npm run clean && npm run compile",
     "compile-src": "tsc -p lib",
     "compile-test": "tsc -p test",
-    "compile": "npm run compile-src && yarn run compile-test",
-    "biome": "biome check",
+    "compile": "yarn run compile-src && yarn run compile-test",
+    "lint-ts": "biome check",
     "lint-md": "remark -u preset-lint-recommended .",
-    "lint": "npm run lint-md && npm run biome",
+    "lint": "yarn run lint-md && yarn run lint-ts",
     "test": "mocha",
     "test-coverage": "c8 npm run test",
-    "start": "npm run compile && npm run lint && npm run cover-test"
+    "start": "yarn run compile && yarn run lint && yarn run cover-test"
   },
   "engines": {
     "node": ">=14.16"
