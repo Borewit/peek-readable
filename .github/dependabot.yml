@@ -12,8 +12,3 @@ updates:
     target-branch: master
     labels:
       - dependencies
-    groups:
-      biome:
-        dependency-type: "development"
-        patterns:
-          - "@biomejs/biome"
