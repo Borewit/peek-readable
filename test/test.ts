@@ -25,7 +25,6 @@ describe('Matrix', () => {
     fromString: input => new WebStreamReader(stringToReadableStream(input))
   }];
 
-  // biome-ignore lint/complexity/noForEach: <explanation>
   streamFactories
     // .filter((q, n) => n===1)
     .forEach(factory => {
