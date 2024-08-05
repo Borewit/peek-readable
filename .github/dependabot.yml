@@ -13,7 +13,7 @@ updates:
     labels:
       - dependencies
     groups:
-      eslint:
+      biome:
         dependency-type: "development"
         patterns:
           - "@biomejs/biome"
