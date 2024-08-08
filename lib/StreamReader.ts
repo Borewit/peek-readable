@@ -91,4 +91,8 @@ export class StreamReader extends AbstractStreamReader {
       this.deferred = null;
     }
   }
+
+  public async abort(): Promise<void> {
+    this.s.destroy();
+  }
 }

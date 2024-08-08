@@ -2,8 +2,28 @@ import { EndOfStreamError } from "./EndOfStreamError.js";
 
 
 export interface IStreamReader {
+  /**
+   * Peak ahead (peek) from stream. Subsequent read or peeks will return the same data.
+   * @param uint8Array - Uint8Array (or Buffer) to store data read from stream in
+   * @param offset - Offset target
+   * @param length - Number of bytes to read
+   * @returns Number of bytes peeked
+   */
   peek(uint8Array: Uint8Array, offset: number, length: number): Promise<number>;
-  read(buffer: Uint8Array, offset: number, length: number): Promise<number>
+
+  /**
+   * Read from stream the stream.
+   * @param uint8Array - Uint8Array (or Buffer) to store data read from stream in
+   * @param offset - Offset target
+   * @param length - Number of bytes to read
+   * @returns Number of bytes peeked
+   */
+  read(uint8Array: Uint8Array, offset: number, length: number): Promise<number>;
+
+  /**
+   * Abort active asynchronous operation before it has completed.
+   */
+  abort(): Promise<void>;
 }
 
 export abstract class AbstractStreamReader implements IStreamReader {
@@ -20,13 +40,6 @@ export abstract class AbstractStreamReader implements IStreamReader {
    */
   protected peekQueue: Uint8Array[] = [];
 
-  /**
-   * Read ahead (peek) from stream. Subsequent read or peeks will return the same data
-   * @param uint8Array - Uint8Array (or Buffer) to store data read from stream in
-   * @param offset - Offset target
-   * @param length - Number of bytes to read
-   * @returns Number of bytes peeked
-   */
   public async peek(uint8Array: Uint8Array, offset: number, length: number): Promise<number> {
     const bytesRead = await this.read(uint8Array, offset, length);
     this.peekQueue.push(uint8Array.subarray(offset, offset + bytesRead)); // Put read data back to peek buffer
@@ -90,4 +103,6 @@ export abstract class AbstractStreamReader implements IStreamReader {
   }
 
   protected abstract readFromStream(buffer: Uint8Array, offset: number, length: number): Promise<number>;
+
+  public abstract abort(): Promise<void>;
 }

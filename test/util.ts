@@ -10,21 +10,23 @@ export class SourceStream extends Readable {
 
   private buf: Uint8Array;
 
-  constructor(private str = '') {
+  constructor(private str = '', private delay = 0) {
     super();
 
-    this.buf =  new TextEncoder().encode(str);
+    this.buf = new TextEncoder().encode(str);
   }
 
   public _read() {
-    this.push(this.buf);
-    this.push(null); // push the EOF-signaling `null` chunk
+    setTimeout(() => {
+      this.push(this.buf);
+      this.push(null); // Signal end of stream
+    }, this.delay);
   }
 }
 
 
 // Function to convert a string to a BYOB ReadableStream
-function stringToBYOBStream(inputString: string): ReadableStream<Uint8Array> {
+function stringToBYOBStream(inputString: string, delay = 0): ReadableStream<Uint8Array> {
   // Convert the string to a Uint8Array using TextEncoder
   const encoder = new TextEncoder();
   const uint8Array = encoder.encode(inputString);
@@ -48,8 +50,10 @@ function stringToBYOBStream(inputString: string): ReadableStream<Uint8Array> {
           // @ts-ignore
           controller.byobRequest.respond(bytesRead);
         } else {
-          controller.enqueue(uint8Array);
-          position = uint8Array.length;
+          setTimeout(() => {
+            controller.enqueue(uint8Array);
+            position = uint8Array.length;
+          }, delay);
         }
         if (position >= uint8Array.length) {
           controller.close();
@@ -60,6 +64,6 @@ function stringToBYOBStream(inputString: string): ReadableStream<Uint8Array> {
 }
 
 // Function to convert a string to a ReadableStreamBYOBReader
-export function stringToReadableStream(inputString: string): ReadableStream<Uint8Array> {
-  return stringToBYOBStream(inputString);
+export function stringToReadableStream(inputString: string, delay?: number): ReadableStream<Uint8Array> {
+  return stringToBYOBStream(inputString, delay);
 }
