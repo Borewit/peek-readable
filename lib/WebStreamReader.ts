@@ -1,7 +1,9 @@
-import type { ReadableStreamBYOBReader, ReadableStream } from 'node:stream/web';
+import type { ReadableStream as NodeReadableStream, ReadableStreamBYOBReader } from 'node:stream/web';
 import { EndOfStreamError } from './EndOfStreamError.js';
 export { EndOfStreamError } from './EndOfStreamError.js';
 import { AbstractStreamReader } from "./AbstractStreamReader.js";
+
+export type AnyWebByteStream = NodeReadableStream<Uint8Array> | ReadableStream<Uint8Array>;
 
 /**
  * Read from a WebStream
@@ -10,7 +12,7 @@ import { AbstractStreamReader } from "./AbstractStreamReader.js";
 export class WebStreamReader extends AbstractStreamReader {
   private reader: ReadableStreamBYOBReader;
 
-  public constructor(stream: ReadableStream<Uint8Array>) {
+  public constructor(stream: AnyWebByteStream) {
     super();
     this.reader = stream.getReader({ mode: 'byob' }) as ReadableStreamBYOBReader;
   }
