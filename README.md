@@ -69,14 +69,22 @@ read(buffer: Uint8Array, offset: number, length: number): Promise<number>
 ```
 
 Parameters:
-- `uint8Array`: `Uint8Array`: The buffer into which the data will be peeked.
-  This is where the peeked data will be stored.
-- `offset`: `number`: The offset in the Uint8Array where the peeked data should start being written.
-- `length`: `number`: The number of bytes to peek from the stream.
+- `uint8Array`: `Uint8Array`: The buffer into which the data will be read.
+  This is where the read data will be stored.
+- `offset`: `number`: The offset in the Uint8Array where the read data should start being written.
+- `length`: `number`: The number of bytes to read from the stream.
 
 Returns `Promise<number>`:
-A promise that resolves with the number of bytes actually peeked into the buffer.
+A promise that resolves with the number of bytes actually read into the buffer.
 This number may be less than the requested length if the end of the stream is reached.
+
+##### `abort` function
+
+Abort active asynchronous operation (`read` or `peak`) before it has completed.
+
+```ts  
+abort(): Promise<void>
+```
 
 ## Examples
 

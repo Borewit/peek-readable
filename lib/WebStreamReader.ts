@@ -10,7 +10,9 @@ export type AnyWebByteStream = NodeReadableStream<Uint8Array> | ReadableStream<U
  * Reference: https://nodejs.org/api/webstreams.html#class-readablestreambyobreader
  */
 export class WebStreamReader extends AbstractStreamReader {
+
   private reader: ReadableStreamBYOBReader;
+  private abortController = new AbortController();
 
   public constructor(stream: AnyWebByteStream) {
     super();
@@ -35,5 +37,9 @@ export class WebStreamReader extends AbstractStreamReader {
     }
 
     return 0;
+  }
+
+  public abort(): Promise<void> {
+    return this.reader.cancel();
   }
 }

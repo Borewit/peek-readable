@@ -1,16 +1,16 @@
-import {assert, expect} from 'chai';
+import {assert, expect, use} from 'chai';
+import chaiAsPromised from 'chai-as-promised';
 import {EventEmitter} from 'node:events';
 import * as fs from 'node:fs';
 import {Readable} from 'node:stream';
 import {EndOfStreamError, type IStreamReader, StreamReader, WebStreamReader} from '../lib/index.js';
 import {SourceStream, stringToReadableStream} from './util.js';
 
-
-type StringToStreamFactory = (input: string) => IStreamReader;
+use(chaiAsPromised);
 
 interface StreamFactorySuite {
   description: string;
-  fromString: StringToStreamFactory;
+  fromString: (input: string, delay?: number) => IStreamReader;
 }
 
 const latin1TextDecoder = new TextDecoder('latin1');
@@ -19,10 +19,10 @@ describe('Matrix', () => {
 
   const streamFactories: StreamFactorySuite[] = [{
     description: 'Node.js StreamReader',
-    fromString: input => new StreamReader(new SourceStream(input))
+    fromString: (input, delay) => new StreamReader(new SourceStream(input, delay))
   }, {
     description: 'WebStream Reader',
-    fromString: input => new WebStreamReader(stringToReadableStream(input))
+    fromString: (input, delay) => new WebStreamReader(stringToReadableStream(input, delay))
   }];
 
   streamFactories
@@ -200,6 +200,25 @@ describe('Matrix', () => {
             assert.equal(len, 3, 'should indicate only 3 bytes are actually peeked');
             len = await streamReader.read(res, 0, 4);
             assert.equal(len, 3, 'should indicate only 3 bytes are actually read');
+          });
+
+        });
+
+        describe('Handle delayed read', () => {
+
+          it('handle delay', async () => {
+            const fileReadStream = factory.fromString('123', 500);
+            const res = new Uint8Array(3);
+            const promise = fileReadStream.read(res, 0, 3);
+            assert.strictEqual(await promise, 3);
+          });
+
+          it('abort async operation', async () => {
+            const fileReadStream = factory.fromString('123', 500);
+            const res = new Uint8Array(3);
+            const promise = fileReadStream.read(res, 0, 3);
+            await fileReadStream.abort();
+            await expect(promise).to.be.rejectedWith(Error)
           });
 
         });
