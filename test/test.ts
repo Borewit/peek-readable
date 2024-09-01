@@ -204,63 +204,64 @@ describe('Matrix', () => {
 
         });
 
-        describe('file-stream', () => {
-
-          const fileSize = 5;
-          const uint8Array = new Uint8Array(17);
-
-          it('should return a partial size, if full length cannot be read', async () => {
-            const fileReadStream = fs.createReadStream(new URL('resources/test3.dat', import.meta.url));
-            const streamReader = new StreamReader(fileReadStream);
-            const actualRead = await streamReader.read(uint8Array, 0, 17);
-            assert.strictEqual(actualRead, fileSize);
-            fileReadStream.close();
-          });
-
-        });
-
-        describe('exception', () => {
-
-          const uint8Array = new Uint8Array(17);
-
-          it('handle stream closed', async () => {
-            const fileReadStream = fs.createReadStream(new URL('resources/test3.dat', import.meta.url));
-            const streamReader = new StreamReader(fileReadStream);
-            fileReadStream.close(); // Sabotage stream
-
-            try {
-              await streamReader.read(uint8Array, 0, 17);
-              assert.fail('Should throw an exception');
-            } catch (err: unknown) {
-              if (err instanceof Error) {
-                assert.strictEqual(err.message, 'Stream closed');
-              } else {
-                assert.fail('Should throw an exception');
-              }
-            }
-          });
-
-          it('handle stream error', async () => {
-
-            const fileReadStream = fs.createReadStream(new URL('resources/file-does-not-exist', import.meta.url));
-            const streamReader = new StreamReader(fileReadStream);
-
-            try {
-              await streamReader.read(uint8Array, 0, 17);
-              assert.fail('Should throw an exception');
-            } catch (err) {
-              if (err instanceof Error) {
-                assert.strictEqual((err as Error & { code: string }).code, 'ENOENT');
-              } else {
-                assert.fail('Should throw an exception');
-              }
-            }
-          });
-
-        });
-
       });
     });
+});
+
+
+
+describe('file-stream', () => {
+
+  const fileSize = 5;
+  const uint8Array = new Uint8Array(17);
+
+  it('should return a partial size, if full length cannot be read', async () => {
+    const fileReadStream = fs.createReadStream(new URL('resources/test3.dat', import.meta.url));
+    const streamReader = new StreamReader(fileReadStream);
+    const actualRead = await streamReader.read(uint8Array, 0, 17);
+    assert.strictEqual(actualRead, fileSize);
+    fileReadStream.close();
+  });
+
+});
+
+describe('exception', () => {
+
+  const uint8Array = new Uint8Array(17);
+
+  it('handle stream closed', async () => {
+    const fileReadStream = fs.createReadStream(new URL('resources/test3.dat', import.meta.url));
+    const streamReader = new StreamReader(fileReadStream);
+    fileReadStream.close(); // Sabotage stream
+
+    try {
+      await streamReader.read(uint8Array, 0, 17);
+      assert.fail('Should throw an exception');
+    } catch (err: unknown) {
+      if (err instanceof Error) {
+        assert.strictEqual(err.message, 'Stream closed');
+      } else {
+        assert.fail('Should throw an exception');
+      }
+    }
+  });
+
+  it('handle stream error', async () => {
+
+    const fileReadStream = fs.createReadStream(new URL('resources/file-does-not-exist', import.meta.url));
+    const streamReader = new StreamReader(fileReadStream);
+
+    try {
+      await streamReader.read(uint8Array, 0, 17);
+      assert.fail('Should throw an exception');
+    } catch (err) {
+      if (err instanceof Error) {
+        assert.strictEqual((err as Error & { code: string }).code, 'ENOENT');
+      } else {
+        assert.fail('Should throw an exception');
+      }
+    }
+  });
 
 });
 
