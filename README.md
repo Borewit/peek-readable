@@ -9,9 +9,20 @@
 
 A promise based asynchronous stream reader, which makes reading from a stream easy.
 
-Allows to read and peek from a [Readable Stream](https://nodejs.org/api/stream.html#stream_readable_streams) 
+Allows to read and peek from a [Readable Stream](https://nodejs.org/api/stream.html#stream_readable_streams)
 
-Note that [peek-readable](https://github.com/Borewit/peek-readable) was formally released as [then-read-stream](https://github.com/Borewit/peek-readable).
+This module is used by [strtok3](https://github.com/Borewit/strtok3)
+
+The `peek-readable` contains one class: `StreamReader`, which reads from a [stream.Readable](https://nodejs.org/api/stream.html#stream_class_stream_readable).
+
+- Class `StreamReader` is used to read from Node.js [stream.Readable](https://nodejs.org/api/stream.html#stream_class_stream_readable).
+- Class `WebStreamReader` is used to read from [ReadableStream<Uint8Array>](https://developer.mozilla.org/en-US/docs/Web/API/ReadableStream)
+
+## Compatibility
+
+Module: version 5 migrated from [CommonJS](https://en.wikipedia.org/wiki/CommonJS) to [pure ECMAScript Module (ESM)](https://gist.github.com/sindresorhus/a39789f98801d908bbc7ff3ecc99d99c).
+JavaScript is compliant with [ECMAScript 2019 (ES10)](https://en.wikipedia.org/wiki/ECMAScript#10th_Edition_%E2%80%93_ECMAScript_2019).
+Requires Node.js ≥ 14.16 engine.
 
 ## Usage
 
@@ -21,13 +32,51 @@ Note that [peek-readable](https://github.com/Borewit/peek-readable) was formally
 npm install --save peek-readable
 ```
 
-The `peek-readable` contains one class: `StreamReader`, which reads from a [stream.Readable](https://nodejs.org/api/stream.html#stream_class_stream_readable).
+## API Documentation
 
-### Compatibility
+Both `StreamReader` and `WebStreamReader` implement the [IStreamReader interface](#istreamreader-interface).
 
-Module: version 5 migrated from [CommonJS](https://en.wikipedia.org/wiki/CommonJS) to [pure ECMAScript Module (ESM)](https://gist.github.com/sindresorhus/a39789f98801d908bbc7ff3ecc99d99c).
-JavaScript is compliant with [ECMAScript 2019 (ES10)](https://en.wikipedia.org/wiki/ECMAScript#10th_Edition_%E2%80%93_ECMAScript_2019).
-Requires Node.js ≥ 14.16 engine.
+### `IStreamReader` Interface
+
+The `IStreamReader` interface defines the contract for a stream reader,
+which provides methods to read and peek data from a stream into a `Uint8Array` buffer.
+The methods are asynchronous and return a promise that resolves with the number of bytes read.
+
+#### Methods
+
+##### `peek` function
+This method allows you to inspect data from the stream without advancing the read pointer.
+It reads data into the provided Uint8Array at a specified offset but does not modify the stream's internal position, 
+allowing you to look ahead in the stream.
+
+```ts  
+peek(uint8Array: Uint8Array, offset: number, length: number): Promise<number>
+```
+
+Parameters:
+- `uint8Array`: `Uint8Array`: The buffer into which the data will be peeked.
+  This is where the peeked data will be stored.
+- `offset`: `number`: The offset in the Uint8Array where the peeked data should start being written.
+- `length`: `number`: The number of bytes to peek from the stream.
+
+Returns `Promise<number>`: 
+A promise that resolves with the number of bytes actually peeked into the buffer. 
+This number may be less than the requested length if the end of the stream is reached.
+
+##### `read` function
+```ts  
+read(buffer: Uint8Array, offset: number, length: number): Promise<number>
+```
+
+Parameters:
+- `uint8Array`: `Uint8Array`: The buffer into which the data will be peeked.
+  This is where the peeked data will be stored.
+- `offset`: `number`: The offset in the Uint8Array where the peeked data should start being written.
+- `length`: `number`: The number of bytes to peek from the stream.
+
+Returns `Promise<number>`:
+A promise that resolves with the number of bytes actually peeked into the buffer.
+This number may be less than the requested length if the end of the stream is reached.
 
 ## Examples
 
@@ -66,7 +115,7 @@ End-of-stream detection:
 })();
 ```
 
-With peek you can read ahead:
+With `peek` you can read ahead:
 ```js
 import fs from 'node:fs';
 import { StreamReader } from 'peek-readable';
