@@ -11,7 +11,6 @@
         "text"
   ],
   "all": true,
-  "instrument": true,
   "report-dir": "coverage",
   "include": "lib/**/*.ts"
 }
