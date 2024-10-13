@@ -38,7 +38,8 @@ export class WebStreamReader extends AbstractStreamReader {
     return 0;
   }
 
-  public abort(): Promise<void> {
-    return this.reader.cancel();
+  public async abort(): Promise<void> {
+    await this.reader.cancel(); // Signals a loss of interest in the stream by a consumer
+    this.reader.releaseLock();
   }
 }

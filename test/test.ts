@@ -389,5 +389,19 @@ describe('Node.js StreamReader', () => {
 
   });
 
+  describe('WebStreamReader', () => {
+
+    it('abort() should release stream-lock', async () => {
+
+      const readableStream = stringToReadableStream('abc');
+      assert.isFalse(readableStream.locked, 'stream is unlocked before initializing tokenizer');
+
+      const webStreamReader = new WebStreamReader(readableStream);
+      assert.isTrue(readableStream.locked, 'stream is locked after initializing tokenizer');
+
+      await webStreamReader.abort();
+      assert.isFalse(readableStream.locked, 'stream is unlocked after closing tokenizer');
+    });
+  });
 });
 
