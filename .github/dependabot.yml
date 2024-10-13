@@ -1,7 +1,5 @@
 version: 2
 updates:
-
-  # ECMAScript Module (ESM)
   - package-ecosystem: npm
     directory: "/"
     schedule:
@@ -12,3 +10,8 @@ updates:
     target-branch: master
     labels:
       - dependencies
+    groups:
+      types:
+        dependency-type: "development"
+        patterns:
+          - "@types/*"
