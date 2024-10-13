@@ -12,7 +12,6 @@ export type AnyWebByteStream = NodeReadableStream<Uint8Array> | ReadableStream<U
 export class WebStreamReader extends AbstractStreamReader {
 
   private reader: ReadableStreamBYOBReader;
-  private abortController = new AbortController();
 
   public constructor(stream: AnyWebByteStream) {
     super();
