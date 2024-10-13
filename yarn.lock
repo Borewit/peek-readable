@@ -342,12 +342,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/chai-as-promised@npm:^8.0.0":
-  version: 8.0.0
-  resolution: "@types/chai-as-promised@npm:8.0.0"
+"@types/chai-as-promised@npm:^8.0.1":
+  version: 8.0.1
+  resolution: "@types/chai-as-promised@npm:8.0.1"
   dependencies:
     "@types/chai": "npm:*"
-  checksum: 10c0/85c91bad8a5f1665a51a3fbb8cdd80b8eca663cf42816ccdfaddff1a9b8705060235220c26e32d361f2568386216c7ee484ab4e1735c971dbdcacced7acc857d
+  checksum: 10c0/706edb801e8327a09a78f00629f3ae92ec567465338c0114f1586f84daf26911ca05979ec8d5b62f857e7b5a9163c7aaf2f4415903e0ff57b3bfc47785088dd5
   languageName: node
   linkType: hard
 
@@ -2889,7 +2889,7 @@ __metadata:
   dependencies:
     "@biomejs/biome": "npm:1.9.3"
     "@types/chai": "npm:^4.3.19"
-    "@types/chai-as-promised": "npm:^8.0.0"
+    "@types/chai-as-promised": "npm:^8.0.1"
     "@types/mocha": "npm:^10.0.7"
     "@types/node": "npm:^22.1.0"
     c8: "npm:^10.1.2"
