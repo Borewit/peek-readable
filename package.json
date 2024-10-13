@@ -43,7 +43,7 @@
   ],
   "devDependencies": {
     "@biomejs/biome": "1.9.3",
-    "@types/chai": "^4.3.19",
+    "@types/chai": "^5.0.0",
     "@types/chai-as-promised": "^8.0.0",
     "@types/mocha": "^10.0.7",
     "@types/node": "^22.1.0",
