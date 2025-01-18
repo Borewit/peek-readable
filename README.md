@@ -16,7 +16,7 @@ This module is used by [strtok3](https://github.com/Borewit/strtok3)
 The `peek-readable` contains one class: `StreamReader`, which reads from a [stream.Readable](https://nodejs.org/api/stream.html#stream_class_stream_readable).
 
 - Class `StreamReader` is used to read from Node.js [stream.Readable](https://nodejs.org/api/stream.html#stream_class_stream_readable).
-- Class `WebStreamReader` is used to read from [ReadableStream<Uint8Array>](https://developer.mozilla.org/en-US/docs/Web/API/ReadableStream)
+- Class `WebStreamByobReader` is used to read from [ReadableStream<Uint8Array>](https://developer.mozilla.org/docs/Web/API/ReadableStream)
 
 ## Compatibility
 
@@ -34,7 +34,7 @@ npm install --save peek-readable
 
 ## API Documentation
 
-Both `StreamReader` and `WebStreamReader` implement the [IStreamReader interface](#istreamreader-interface).
+Both `StreamReader` and `WebStreamByobReader` implement the [IStreamReader interface](#istreamreader-interface).
 
 ### `IStreamReader` Interface
 

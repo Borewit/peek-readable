@@ -29,7 +29,8 @@
 			"style":{
 				"useConsistentBuiltinInstantiation": "error",
 				"useThrowNewError": "error",
-				"useThrowOnlyError": "error"
+				"useThrowOnlyError": "error",
+				"noParameterAssign": { "level": "off"}
 			}
 		}
 	},
