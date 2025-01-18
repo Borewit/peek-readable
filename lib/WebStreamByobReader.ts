@@ -1,21 +1,16 @@
-import type { ReadableStream as NodeReadableStream, ReadableStreamBYOBReader } from 'node:stream/web';
+import type { ReadableStreamBYOBReader } from 'node:stream/web';
 import { EndOfStreamError } from './EndOfStreamError.js';
 export { EndOfStreamError } from './EndOfStreamError.js';
 import { AbstractStreamReader } from "./AbstractStreamReader.js";
 
-export type AnyWebByteStream = NodeReadableStream<Uint8Array> | ReadableStream<Uint8Array>;
-
 /**
- * Read from a WebStream
+ * Read from a WebStream using a BYOB reader
  * Reference: https://nodejs.org/api/webstreams.html#class-readablestreambyobreader
  */
-export class WebStreamReader extends AbstractStreamReader {
+export class WebStreamByobReader extends AbstractStreamReader {
 
-  private reader: ReadableStreamBYOBReader;
-
-  public constructor(stream: AnyWebByteStream) {
+  public constructor(private reader: ReadableStreamBYOBReader) {
     super();
-    this.reader = stream.getReader({ mode: 'byob' }) as ReadableStreamBYOBReader;
   }
 
   protected async readFromStream(buffer: Uint8Array, offset: number, length: number): Promise<number> {

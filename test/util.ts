@@ -1,14 +1,14 @@
 // Utilities for testing
 
 import { Readable } from 'node:stream';
-import { ReadableStream} from 'node:stream/web';
+import { ReadableStream } from 'node:stream/web';
 
 /**
  * A mock Node.js readable-stream, using string to read from
  */
 export class SourceStream extends Readable {
 
-  private buf: Uint8Array;
+  private readonly buf: Uint8Array;
 
   constructor(private str = '', private delay = 0) {
     super();
@@ -26,7 +26,7 @@ export class SourceStream extends Readable {
 
 
 // Function to convert a string to a BYOB ReadableStream
-function stringToBYOBStream(inputString: string, delay = 0): ReadableStream<Uint8Array> {
+function stringReadableStream(inputString: string, delay = 0): ReadableStream<Uint8Array> {
   // Convert the string to a Uint8Array using TextEncoder
   const encoder = new TextEncoder();
   const uint8Array = encoder.encode(inputString);
@@ -39,31 +39,52 @@ function stringToBYOBStream(inputString: string, delay = 0): ReadableStream<Uint
     async pull(controller) {
       // Check if there is data left to be pushed
       if (position < uint8Array.length) {
-        // Push the chunk to the controller
+        const remaining = uint8Array.length - position;
+
         if (controller.byobRequest) {
-          const remaining = uint8Array.length - position;
-          // @ts-ignore
-          const v = controller.byobRequest.view;
-          const bytesRead = Math.min(remaining, v.byteLength);
-          v.set(uint8Array.subarray(position, position + bytesRead));
+          // BYOB path
+          const view = (controller.byobRequest as ReadableStreamBYOBRequest).view as Uint8Array;
+          const bytesRead = Math.min(remaining, view.byteLength);
+          view.set(uint8Array.subarray(position, position + bytesRead));
           position += bytesRead;
-          // @ts-ignore
-          controller.byobRequest.respond(bytesRead);
+          (controller.byobRequest as ReadableStreamBYOBRequest).respond(bytesRead);
         } else {
-          setTimeout(() => {
-            controller.enqueue(uint8Array);
-            position = uint8Array.length;
-          }, delay);
-        }
-        if (position >= uint8Array.length) {
-          controller.close();
+          // Non-BYOB path
+          const chunk = uint8Array.subarray(position, position + remaining);
+          position += remaining;
+
+          if (delay > 0) {
+            await new Promise((resolve) => setTimeout(resolve, delay));
+          }
+          controller.enqueue(chunk);
         }
       }
+
+      // Close the stream if all data has been pushed
+      if (position >= uint8Array.length) {
+        controller.close();
+      }
+    },
+    cancel() {
+      // Handle stream cancellation
+      position = uint8Array.length;
     }
   });
 }
 
-// Function to convert a string to a ReadableStreamBYOBReader
-export function stringToReadableStream(inputString: string, delay?: number): ReadableStream<Uint8Array> {
-  return stringToBYOBStream(inputString, delay);
+export function stringToReadableStream(inputString: string, forceDefault: boolean, delay?: number): ReadableStream<Uint8Array> {
+  const stream = stringReadableStream(inputString, delay);
+  const _getReader = stream.getReader.bind(stream);
+
+  // @ts-ignore
+  stream.getReader = (options?: { mode?: string }) => {
+    if (forceDefault) {
+      // Force returning the default reader
+      return _getReader(); // Call without options for a default reader
+    }
+    // @ts-ignore
+    return _getReader(options); // Pass through other options
+  };
+
+  return stream;
 }

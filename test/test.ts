@@ -3,7 +3,7 @@ import chaiAsPromised from 'chai-as-promised';
 import {EventEmitter} from 'node:events';
 import * as fs from 'node:fs';
 import {Readable} from 'node:stream';
-import {EndOfStreamError, type IStreamReader, StreamReader, WebStreamReader} from '../lib/index.js';
+import { EndOfStreamError, type IStreamReader, makeWebStreamReader, StreamReader } from '../lib/index.js';
 import {SourceStream, stringToReadableStream} from './util.js';
 import type { ReadStream } from 'node:fs';
 
@@ -11,6 +11,7 @@ use(chaiAsPromised);
 
 interface StreamFactorySuite {
   description: string;
+  isDefaultWebReader?: true;
   fromString: (input: string, delay?: number) => IStreamReader;
 }
 
@@ -33,8 +34,12 @@ describe('Matrix', () => {
     description: 'Node.js StreamReader',
     fromString: (input, delay) => new StreamReader(new SourceStream(input, delay))
   }, {
-    description: 'WebStream Reader',
-    fromString: (input, delay) => new WebStreamReader(stringToReadableStream(input, delay))
+    description: 'WebStream BYOB Reader',
+    fromString: (input, delay) => makeWebStreamReader(stringToReadableStream(input, false, delay))
+  }, {
+    description: 'WebStream Default Reader',
+    isDefaultWebReader: true,
+    fromString: (input, delay) => makeWebStreamReader(stringToReadableStream(input, true, delay ))
   }];
 
   streamFactories
@@ -68,7 +73,7 @@ describe('Matrix', () => {
           assert.strictEqual(bytesRead, 5, 'Should read 5 bytes');
           assert.strictEqual(new TextDecoder('latin1').decode(uint8Array), 'peter');
 
-          // should should reject at the end of the stream
+          // should reject at the end of the stream
           uint8Array = new Uint8Array(1);
           try {
             await streamReader.read(uint8Array, 0, 1);
@@ -86,7 +91,11 @@ describe('Matrix', () => {
             return uint8Array[0];
           }
 
-          it('should support concurrent reads', () => {
+          it('should support concurrent reads', async function () {
+
+            if (factory.isDefaultWebReader) {
+              this.skip(); // Default web reader does not support concurrent reads
+            }
 
             const streamReader = factory.fromString('\x00\x01\x02\x03\x04\x05\x06\x07\x08\x09');
 
@@ -96,11 +105,10 @@ describe('Matrix', () => {
               prom.push(readByteAsNumber(streamReader));
             }
 
-            return Promise.all(prom).then(res => {
-              for (let i = 0; i < 10; ++i) {
-                assert.strictEqual(res[i], i);
-              }
-            });
+            const res = await Promise.all(prom);
+            for (let i = 0; i < 10; ++i) {
+              assert.strictEqual(res[i], i);
+            }
 
           });
         });
@@ -408,14 +416,26 @@ describe('Node.js StreamReader', () => {
     });
   });
 
-  describe('WebStreamReader', () => {
+  describe('abort() should release stream-lock', () => {
 
-    it('abort() should release stream-lock', async () => {
+    it('`BYOB WebStreamReader`', async () => {
 
-      const readableStream = stringToReadableStream('abc');
+      const readableStream = stringToReadableStream('abc', false);
       assert.isFalse(readableStream.locked, 'stream is unlocked before initializing tokenizer');
 
-      const webStreamReader = new WebStreamReader(readableStream);
+      const webStreamReader = makeWebStreamReader(readableStream);
+      assert.isTrue(readableStream.locked, 'stream is locked after initializing tokenizer');
+
+      await webStreamReader.close();
+      assert.isFalse(readableStream.locked, 'stream is unlocked after closing tokenizer');
+    });
+
+    it('Default WebStreamReader', async () => {
+
+      const readableStream = stringToReadableStream('abc', true);
+      assert.isFalse(readableStream.locked, 'stream is unlocked before initializing tokenizer');
+
+      const webStreamReader = makeWebStreamReader(readableStream);
       assert.isTrue(readableStream.locked, 'stream is locked after initializing tokenizer');
 
       await webStreamReader.close();
