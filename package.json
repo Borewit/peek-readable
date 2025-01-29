@@ -1,6 +1,6 @@
 {
   "name": "peek-readable",
-  "version": "5.3.1",
+  "version": "5.4.1",
   "description": "Read and peek from a readable stream",
   "author": {
     "name": "Borewit",
