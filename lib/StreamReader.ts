@@ -92,7 +92,12 @@ export class StreamReader extends AbstractStreamReader {
     }
   }
 
-  public async abort(): Promise<void> {
-    this.s.destroy();
+  public abort(): Promise<void> {
+    return Promise.resolve();
+  }
+
+  close(): Promise<void> {
+    this.reject(new Error('abort'));
+    return Promise.resolve();
   }
 }

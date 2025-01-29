@@ -128,23 +128,45 @@ With `peek` you can read ahead:
 import fs from 'node:fs';
 import { StreamReader } from 'peek-readable';
 
-const fileReadStream = fs.createReadStream('JPEG_example_JPG_RIP_001.jpg');
-const streamReader = new StreamReader(fileReadStream);
-const buffer = Buffer.alloc(20);
+function closeNodeStream(stream: ReadStream): Promise<void> {
+  return new Promise<void>((resolve, reject) => {
+    stream.close(err => {
+      if(err)
+        reject(err);
+      else
+        resolve();
+    });
+  })
+}
 
 (async () => {
-  let bytesRead = await streamReader.peek(buffer, 0, 3);
-  if (bytesRead === 3 && buffer[0] === 0xFF && buffer[1] === 0xD8 && buffer[2] === 0xFF) {
-    console.log('This is a JPEG file');
-  } else {
-    throw Error('Expected a JPEG file');
+
+  const fileReadStream = fs.createReadStream('JPEG_example_JPG_RIP_001.jpg');
+  try {
+    const streamReader = new StreamReader(fileReadStream);
+    try {
+      const buffer = Buffer.alloc(20);
+
+      let bytesRead = await streamReader.peek(buffer, 0, 3);
+      if (bytesRead === 3 && buffer[0] === 0xFF && buffer[1] === 0xD8 && buffer[2] === 0xFF) {
+        console.log('This is a JPEG file');
+      } else {
+        throw Error('Expected a JPEG file');
+      }
+
+      bytesRead = await streamReader.read(buffer, 0, 20); // Read JPEG header
+      if (bytesRead === 20) {
+        console.log('Got the JPEG header');
+      } else {
+        throw Error('Failed to read JPEG header');
+      }
+    } finally {
+      await streamReader.close(); // Release fileReadStream
+    }    
+  } finally {
+    await closeNodeStream(fileReadStream);
   }
 
-  bytesRead = await streamReader.read(buffer, 0, 20); // Read JPEG header
-  if (bytesRead === 20) {
-    console.log('Got the JPEG header');
-  } else {
-    throw Error('Failed to read JPEG header');
-  }
+
 })();
 ```

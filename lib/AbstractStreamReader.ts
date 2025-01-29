@@ -21,7 +21,12 @@ export interface IStreamReader {
   read(uint8Array: Uint8Array, offset: number, length: number): Promise<number>;
 
   /**
-   * Abort active asynchronous operation before it has completed.
+   * Close underlying resources, claims.
+   */
+  close(): Promise<void>;
+
+  /**
+   * Abort any active asynchronous operation are active, abort those before they may have completed.
    */
   abort(): Promise<void>;
 }
@@ -104,5 +109,13 @@ export abstract class AbstractStreamReader implements IStreamReader {
 
   protected abstract readFromStream(buffer: Uint8Array, offset: number, length: number): Promise<number>;
 
+  /**
+   * abort synchronous operations
+   */
+  public abstract close(): Promise<void>;
+
+  /**
+   * Abort any active asynchronous operation are active, abort those before they may have completed.
+   */
   public abstract abort(): Promise<void>;
 }
