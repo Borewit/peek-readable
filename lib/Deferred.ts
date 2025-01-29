@@ -2,7 +2,7 @@ export class Deferred<T> {
 
   public promise: Promise<T>;
   public resolve: (value: T) => void = () => null;
-  public reject: (reason: unknown) => void = () => null;
+  public reject: (reason: Error) => void = () => null;
 
   constructor() {
     this.promise = new Promise<T>((resolve, reject) => {

@@ -5,6 +5,7 @@ import * as fs from 'node:fs';
 import {Readable} from 'node:stream';
 import {EndOfStreamError, type IStreamReader, StreamReader, WebStreamReader} from '../lib/index.js';
 import {SourceStream, stringToReadableStream} from './util.js';
+import type { ReadStream } from 'node:fs';
 
 use(chaiAsPromised);
 
@@ -14,6 +15,17 @@ interface StreamFactorySuite {
 }
 
 const latin1TextDecoder = new TextDecoder('latin1');
+
+function closeNodeStream(stream: ReadStream): Promise<void> {
+  return new Promise<void>((resolve, reject) => {
+    stream.close(err => {
+      if(err)
+        reject(err);
+      else
+        resolve();
+    });
+  })
+}
 
 describe('Matrix', () => {
 
@@ -217,7 +229,7 @@ describe('Matrix', () => {
             const fileReadStream = factory.fromString('123', 500);
             const res = new Uint8Array(3);
             const promise = fileReadStream.read(res, 0, 3);
-            await fileReadStream.abort();
+            await fileReadStream.close();
             await expect(promise).to.be.rejectedWith(Error)
           });
 
@@ -226,8 +238,6 @@ describe('Matrix', () => {
       });
     });
 });
-
-
 
 describe('file-stream', () => {
 
@@ -269,16 +279,19 @@ describe('exception', () => {
 
     const fileReadStream = fs.createReadStream(new URL('resources/file-does-not-exist', import.meta.url));
     const streamReader = new StreamReader(fileReadStream);
-
     try {
-      await streamReader.read(uint8Array, 0, 17);
-      assert.fail('Should throw an exception');
-    } catch (err) {
-      if (err instanceof Error) {
-        assert.strictEqual((err as Error & { code: string }).code, 'ENOENT');
-      } else {
+      try {
+        await streamReader.read(uint8Array, 0, 17);
         assert.fail('Should throw an exception');
+      } catch (err) {
+        if (err instanceof Error) {
+          assert.strictEqual((err as Error & { code: string }).code, 'ENOENT');
+        } else {
+          assert.fail('Should throw an exception');
+        }
       }
+    } finally {
+      await streamReader.close();
     }
   });
 
@@ -287,10 +300,8 @@ describe('exception', () => {
 describe('Node.js StreamReader', () => {
 
   it('should throw an exception if constructor argument is not a stream', () => {
-    class MyEmitter extends EventEmitter {
-    }
 
-    const not_a_stream = new MyEmitter();
+    const not_a_stream = new EventEmitter();
 
     expect(() => {
       new StreamReader(not_a_stream as unknown as Readable);
@@ -329,11 +340,11 @@ describe('Node.js StreamReader', () => {
 
         this.nvals = Math.floor(len / 4);
 
-        let data = '';
+        const string = new Uint8Array([0x01, 0x02, 0x03, 0x04]);
+        this.buf = new Uint8Array((this.nvals + 1)* string.length);
         for (let i = 0; i < this.nvals + 1; i++) {
-          data += '\x01\x02\x03\x04';
+          this.buf.set(string, i * string.length);
         }
-        this.buf = new Uint8Array([0x01, 0x02, 0x03, 0x04]);
       }
 
       public _read() {
@@ -354,18 +365,20 @@ describe('Node.js StreamReader', () => {
     if (!t) return;
     const s = new LensSourceStream(t);
 
-    const sb = new StreamReader(s);
-
     const uint8Array = new Uint8Array(4);
 
-    const run = (): Promise<void> => {
-      return sb.read(uint8Array, 0, 4).then(bytesRead => {
+    const run = async (): Promise<void> => {
+      const sb = new StreamReader(s);
+      try {
+        const bytesRead = await sb.read(uint8Array, 0, 4);
         assert.strictEqual(bytesRead, 4);
         assert.strictEqual(new DataView(uint8Array.buffer).getUint32(0, false), 16909060);
         if (--s.nvals > 0) {
           return run();
         }
-      });
+      } finally {
+        await sb.close();
+      }
     };
 
     it('should parse disjoint', () => {
@@ -381,12 +394,18 @@ describe('Node.js StreamReader', () => {
 
     it('should return a partial size, if full length cannot be read', async () => {
       const fileReadStream = fs.createReadStream(new URL('resources/test3.dat', import.meta.url));
-      const streamReader = new StreamReader(fileReadStream);
-      const actualRead = await streamReader.read(uint8Array, 0, 17);
-      assert.strictEqual(actualRead, fileSize);
-      fileReadStream.close();
+      try {
+        const streamReader = new StreamReader(fileReadStream);
+        try {
+          const actualRead = await streamReader.read(uint8Array, 0, 17);
+          assert.strictEqual(actualRead, fileSize);
+        } finally {
+          await streamReader.close();
+        }
+      } finally {
+        await closeNodeStream(fileReadStream);
+      }
     });
-
   });
 
   describe('WebStreamReader', () => {
@@ -399,7 +418,7 @@ describe('Node.js StreamReader', () => {
       const webStreamReader = new WebStreamReader(readableStream);
       assert.isTrue(readableStream.locked, 'stream is locked after initializing tokenizer');
 
-      await webStreamReader.abort();
+      await webStreamReader.close();
       assert.isFalse(readableStream.locked, 'stream is unlocked after closing tokenizer');
     });
   });
