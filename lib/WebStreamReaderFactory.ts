@@ -1,4 +1,4 @@
-import { type ReadableStream as NodeReadableStream, ReadableStreamDefaultReader } from 'node:stream/web';
+import type { ReadableStream as NodeReadableStream } from 'node:stream/web';
 import { WebStreamByobReader } from './WebStreamByobReader.js';
 import { WebStreamDefaultReader } from './WebStreamDefaultReader.js';
 
