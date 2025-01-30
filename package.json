@@ -24,7 +24,7 @@
     "start": "yarn run compile && yarn run lint && yarn run cover-test"
   },
   "engines": {
-    "node": ">=14.16"
+    "node": ">=18"
   },
   "repository": {
     "type": "git",

@@ -25,7 +25,11 @@
 							"node:buffer": "Use Uint8Array instead of Buffer"
 						}
 					}
-				}},
+				}
+			},
+			"correctness": {
+				"noNodejsModules": "error"
+			},
 			"style":{
 				"useConsistentBuiltinInstantiation": "error",
 				"useThrowNewError": "error",
@@ -44,5 +48,17 @@
 			"./test/**/*.d.ts",
 			"./test/**/*.js"
 		]
-	}
+	},
+	"overrides": [
+		{
+			"include": ["./test/**/*"],
+			"linter": {
+				"rules": {
+					"correctness": {
+						"noNodejsModules": "off"
+					}
+				}
+			}
+		}
+	]
 }
