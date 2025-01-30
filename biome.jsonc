@@ -28,6 +28,7 @@
 				}
 			},
 			"correctness": {
+				"noUnusedImports": "error",
 				"noNodejsModules": "error"
 			},
 			"style":{
