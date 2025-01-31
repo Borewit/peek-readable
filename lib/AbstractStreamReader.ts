@@ -1,4 +1,4 @@
-import { EndOfStreamError } from "./EndOfStreamError.js";
+import { AbortError, EndOfStreamError } from "./Errors.js";
 
 
 export interface IStreamReader {
@@ -38,6 +38,7 @@ export abstract class AbstractStreamReader implements IStreamReader {
    */
   protected maxStreamReadSize = 1 * 1024 * 1024;
   protected endOfStream = false;
+  protected interrupted = false;
 
   /**
    * Store peeked data
@@ -98,6 +99,11 @@ export abstract class AbstractStreamReader implements IStreamReader {
     // Continue reading from stream if required
     while (remaining > 0 && !this.endOfStream) {
       const reqLen = Math.min(remaining, this.maxStreamReadSize);
+
+      if(this.interrupted) {
+        throw new AbortError();
+      }
+
       const chunkLen = await this.readFromStream(buffer, offset + bytesRead, reqLen);
       if (chunkLen === 0)
         break;

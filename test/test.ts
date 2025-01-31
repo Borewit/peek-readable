@@ -3,7 +3,7 @@ import chaiAsPromised from 'chai-as-promised';
 import {EventEmitter} from 'node:events';
 import * as fs from 'node:fs';
 import {Readable} from 'node:stream';
-import { EndOfStreamError, type IStreamReader, makeWebStreamReader, StreamReader } from '../lib/index.js';
+import { AbortError, EndOfStreamError, type IStreamReader, makeWebStreamReader, StreamReader } from '../lib/index.js';
 import {SourceStream, stringToReadableStream} from './util.js';
 import type { ReadStream } from 'node:fs';
 
@@ -275,11 +275,7 @@ describe('exception', () => {
       await streamReader.read(uint8Array, 0, 17);
       assert.fail('Should throw an exception');
     } catch (err: unknown) {
-      if (err instanceof Error) {
-        assert.strictEqual(err.message, 'Stream closed');
-      } else {
-        assert.fail('Should throw an exception');
-      }
+      assert.instanceOf(err, AbortError);
     }
   });
 

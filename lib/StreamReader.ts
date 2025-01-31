@@ -1,9 +1,7 @@
 import type { Readable } from 'node:stream';
-import { EndOfStreamError } from './EndOfStreamError.js';
+import { AbortError, } from './Errors.js';
 import { Deferred } from './Deferred.js';
 import { AbstractStreamReader } from "./AbstractStreamReader.js";
-
-export { EndOfStreamError } from './EndOfStreamError.js';
 
 interface IReadRequest {
   buffer: Uint8Array,
@@ -29,9 +27,14 @@ export class StreamReader extends AbstractStreamReader {
     if (!s.read || !s.once) {
       throw new Error('Expected an instance of stream.Readable');
     }
-    this.s.once('end', () => this.reject(new EndOfStreamError()));
+    this.s.once('end', () => {
+      this.endOfStream = true;
+      if (this.deferred) {
+        this.deferred.resolve(0);
+      }
+    });
     this.s.once('error', err => this.reject(err));
-    this.s.once('close', () => this.reject(new Error('Stream closed')));
+    this.s.once('close', () => this.abort());
   }
 
   /**
@@ -42,10 +45,6 @@ export class StreamReader extends AbstractStreamReader {
    * @returns Number of bytes read
    */
   protected async readFromStream(buffer: Uint8Array, offset: number, length: number): Promise<number> {
-
-    if (this.endOfStream) {
-      return 0;
-    }
 
     const readBuffer = this.s.read(length);
 
@@ -85,7 +84,7 @@ export class StreamReader extends AbstractStreamReader {
   }
 
   private reject(err: Error) {
-    this.endOfStream = true;
+    this.interrupted = true;
     if (this.deferred) {
       this.deferred.reject(err);
       this.deferred = null;
@@ -93,7 +92,7 @@ export class StreamReader extends AbstractStreamReader {
   }
 
   public async abort(): Promise<void> {
-    this.reject(new Error('abort'));
+    this.reject(new AbortError());
   }
 
   async close(): Promise<void> {
