@@ -21,9 +21,9 @@ describe('Examples', () => {
     assert.equal(await streamReader.read(uint8Array, 0, 16), 16);
     try {
       while(await streamReader.read(uint8Array, 0, 1) > 0);
-      assert.fail('Should throw EndOfStreamError');
+      assert.fail('Should throw Errors');
     } catch(error) {
-      assert.isOk(error instanceof EndOfStreamError, 'Expect `error` to be instance of `EndOfStreamError`');
+      assert.isOk(error instanceof EndOfStreamError, 'Expect `error` to be instance of `Errors`');
       console.log('End-of-stream reached');
     }
   });

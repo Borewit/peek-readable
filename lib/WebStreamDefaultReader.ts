@@ -1,5 +1,5 @@
 import type { ReadableStreamDefaultReader } from 'node:stream/web';
-import { EndOfStreamError } from './EndOfStreamError.js';
+import { EndOfStreamError } from './Errors.js';
 import { AbstractStreamReader } from "./AbstractStreamReader.js";
 
 export class WebStreamDefaultReader extends AbstractStreamReader {
@@ -11,9 +11,6 @@ export class WebStreamDefaultReader extends AbstractStreamReader {
   }
 
   protected async readFromStream(buffer: Uint8Array, offset: number, length: number): Promise<number> {
-    if (this.endOfStream) {
-      throw new EndOfStreamError();
-    }
 
     let totalBytesRead = 0;
 
@@ -71,6 +68,7 @@ export class WebStreamDefaultReader extends AbstractStreamReader {
   }
 
   public abort(): Promise<void> {
+    this.interrupted = true;
     return this.reader.cancel();
   }
 
