@@ -1,6 +1,4 @@
 
-import { AbstractStreamReader } from './AbstractStreamReader.js';
-import type { WebStreamByobReader } from './WebStreamByobReader.js';
 
 export { EndOfStreamError } from './EndOfStreamError.js';
 export { StreamReader } from './StreamReader.js';
