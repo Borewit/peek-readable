@@ -1,4 +1,4 @@
-[![Node.js CI](https://github.com/Borewit/peek-readable/actions/workflows/nodejs-ci.yml/badge.svg?branch=master)](https://github.com/Borewit/peek-readable/actions/workflows/nodejs-ci.yml)
+[![CI](https://github.com/Borewit/peek-readable/actions/workflows/ci.yml/badge.svg?branch=master)](https://github.com/Borewit/peek-readable/actions/workflows/ci.yml)
 [![CodeQL](https://github.com/Borewit/peek-readable/actions/workflows/github-code-scanning/codeql/badge.svg?branch=master)](https://github.com/Borewit/peek-readable/actions/workflows/github-code-scanning/codeql)[![NPM version](https://badge.fury.io/js/peek-readable.svg)](https://npmjs.org/package/peek-readable)
 [![npm downloads](http://img.shields.io/npm/dm/peek-readable.svg)](https://npmcharts.com/compare/peek-readable?start=600&interval=30)
 [![Coverage Status](https://coveralls.io/repos/github/Borewit/peek-readable/badge.svg?branch=master)](https://coveralls.io/github/Borewit/peek-readable?branch=master)
