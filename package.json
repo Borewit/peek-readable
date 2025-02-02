@@ -20,6 +20,7 @@
     "lint-md": "remark -u preset-lint-recommended .",
     "lint": "yarn run lint-md && yarn run lint-ts",
     "test": "mocha",
+    "bun:test": "bun run --bun test",
     "test-coverage": "c8 npm run test",
     "start": "yarn run compile && yarn run lint && yarn run cover-test"
   },
