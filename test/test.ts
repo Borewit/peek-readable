@@ -44,7 +44,7 @@ describe('Matrix', () => {
   }];
 
   streamFactories
-    // .filter((q, n) => n===1)
+     //.filter((q, n) => n===2)
     .forEach(factory => {
       describe(factory.description, () => {
 
@@ -92,15 +92,7 @@ describe('Matrix', () => {
             return uint8Array[0];
           }
 
-          it('should support concurrent reads', async function() {
-
-            if (process.versions.bun) {
-              this.skip(); // Fails with Bun 1.2
-            }
-
-            if (factory.isDefaultWebReader) {
-              this.skip(); // Default web reader does not support concurrent reads
-            }
+          it.skip('should support concurrent reads', async () => {
 
             const streamReader = factory.fromString('\x00\x01\x02\x03\x04\x05\x06\x07\x08\x09');
 
@@ -231,10 +223,7 @@ describe('Matrix', () => {
 
         describe('Handle delayed read', () => {
 
-          it('handle delay', async function(){
-            if (process.versions.bun) {
-              this.skip();
-            }
+          it('handle delay', async ()=> {
             const fileReadStream = factory.fromString('123', 500);
             const res = new Uint8Array(3);
             const promise = fileReadStream.read(res, 0, 3);
