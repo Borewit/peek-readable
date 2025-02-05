@@ -6,7 +6,6 @@ import {Readable} from 'node:stream';
 import { AbortError, EndOfStreamError, type IStreamReader, makeWebStreamReader, StreamReader } from '../lib/index.js';
 import {SourceStream, stringToReadableStream} from './util.js';
 import type { ReadStream } from 'node:fs';
-import process from 'node:process';
 
 use(chaiAsPromised);
 
@@ -224,20 +223,20 @@ describe('Matrix', () => {
         describe('Handle delayed read', () => {
 
           it('handle delay', async ()=> {
-            const fileReadStream = factory.fromString('123', 500);
+            const streamReader = factory.fromString('123', 500);
             const res = new Uint8Array(3);
-            const promise = fileReadStream.read(res, 0, 3);
+            const promise = streamReader.read(res, 0, 3);
             assert.strictEqual(await promise, 3);
           });
 
-          it('abort async operation', async function () {
+          it('abort async operation', async function() {
             if (process.versions.bun) {
-              this.skip();
+              this.skip(); // https://github.com/oven-sh/bun/issues/17008
             }
             const fileReadStream = factory.fromString('123', 500);
             const res = new Uint8Array(3);
             const promise = fileReadStream.read(res, 0, 3);
-            await fileReadStream.close();
+            await fileReadStream.abort();
             await expect(promise).to.be.rejectedWith(Error)
           });
 
@@ -414,28 +413,37 @@ describe('Node.js StreamReader', () => {
 
   describe('abort() should release stream-lock', () => {
 
-    it('`BYOB WebStreamReader`', async () => {
+    it('BYOB WebStreamReader', async () => {
 
       const readableStream = stringToReadableStream('abc', false);
-      assert.isFalse(readableStream.locked, 'stream is unlocked before initializing tokenizer');
+      try {
+        assert.isFalse(readableStream.locked, 'stream is unlocked before initializing tokenizer');
 
-      const webStreamReader = makeWebStreamReader(readableStream);
-      assert.isTrue(readableStream.locked, 'stream is locked after initializing tokenizer');
+        const webStreamReader = makeWebStreamReader(readableStream);
+        assert.isTrue(readableStream.locked, 'stream is locked after initializing tokenizer');
 
-      await webStreamReader.close();
-      assert.isFalse(readableStream.locked, 'stream is unlocked after closing tokenizer');
+        await webStreamReader.close();
+        assert.isFalse(readableStream.locked, 'stream is unlocked after closing tokenizer');
+      } finally {
+        await readableStream.cancel();
+      }
+
     });
 
     it('Default WebStreamReader', async () => {
 
       const readableStream = stringToReadableStream('abc', true);
-      assert.isFalse(readableStream.locked, 'stream is unlocked before initializing tokenizer');
+      try {
+        assert.isFalse(readableStream.locked, 'stream is unlocked before initializing tokenizer');
 
-      const webStreamReader = makeWebStreamReader(readableStream);
-      assert.isTrue(readableStream.locked, 'stream is locked after initializing tokenizer');
+        const webStreamReader = makeWebStreamReader(readableStream);
+        assert.isTrue(readableStream.locked, 'stream is locked after initializing tokenizer');
 
-      await webStreamReader.close();
-      assert.isFalse(readableStream.locked, 'stream is unlocked after closing tokenizer');
+        await webStreamReader.close();
+        assert.isFalse(readableStream.locked, 'stream is unlocked after closing tokenizer');
+      } finally {
+        await readableStream.cancel();
+      }
     });
   });
 });
