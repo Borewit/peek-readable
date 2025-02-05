@@ -1,15 +1,11 @@
-import type { ReadableStreamBYOBReader } from 'node:stream/web';
-import { AbstractStreamReader } from "./AbstractStreamReader.js";
+
+import { WebStreamReader } from './WebStreamReader.js';
 
 /**
  * Read from a WebStream using a BYOB reader
  * Reference: https://nodejs.org/api/webstreams.html#class-readablestreambyobreader
  */
-export class WebStreamByobReader extends AbstractStreamReader {
-
-  public constructor(private reader: ReadableStreamBYOBReader) {
-    super();
-  }
+export class WebStreamByobReader extends WebStreamReader {
 
   protected async readFromStream(buffer: Uint8Array, offset: number, length: number): Promise<number> {
 
@@ -25,14 +21,5 @@ export class WebStreamByobReader extends AbstractStreamReader {
     }
 
     return 0;
-  }
-
-  public abort(): Promise<void> {
-    return this.reader.cancel(); // Signals a loss of interest in the stream by a consumer
-  }
-
-  public async close(): Promise<void> {
-    await this.abort();
-    this.reader.releaseLock();
   }
 }
