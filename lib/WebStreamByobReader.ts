@@ -1,4 +1,3 @@
-
 import { WebStreamReader } from './WebStreamReader.js';
 
 /**
@@ -9,7 +8,7 @@ export class WebStreamByobReader extends WebStreamReader {
 
   protected async readFromStream(buffer: Uint8Array, offset: number, length: number): Promise<number> {
 
-    const result = await this.reader.read(new Uint8Array(length));
+    const result = await this.reader.read(new Uint8Array(length), {min: length});
 
     if (result.done) {
       this.endOfStream = result.done;
