@@ -1,4 +1,3 @@
-import type { ReadableStreamDefaultReader } from 'node:stream/web';
 import { EndOfStreamError } from './Errors.js';
 import { AbstractStreamReader } from "./AbstractStreamReader.js";
 
@@ -6,7 +5,7 @@ export class WebStreamDefaultReader extends AbstractStreamReader {
   private buffer: Uint8Array | null = null; // Internal buffer to store excess data
   private bufferOffset = 0; // Current position in the buffer
 
-  public constructor(private reader: ReadableStreamDefaultReader) {
+  public constructor(private reader: ReadableStreamDefaultReader<Uint8Array>) {
     super();
   }
 

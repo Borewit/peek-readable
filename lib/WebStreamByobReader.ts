@@ -1,4 +1,3 @@
-
 import { WebStreamReader } from './WebStreamReader.js';
 
 /**

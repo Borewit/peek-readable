@@ -1,4 +1,3 @@
-import type { ReadableStreamBYOBReader, ReadableStreamDefaultReader } from 'node:stream/web';
 import { AbstractStreamReader } from "./AbstractStreamReader.js";
 
 export abstract class WebStreamReader extends AbstractStreamReader {
