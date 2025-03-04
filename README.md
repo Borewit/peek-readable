@@ -173,3 +173,7 @@ function closeNodeStream(stream: ReadStream): Promise<void> {
 
 })();
 ```
+
+## Licence
+
+This project is licensed under the [MIT License](LICENSE.txt). Feel free to use, modify, and distribute as needed.
