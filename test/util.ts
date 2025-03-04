@@ -1,7 +1,6 @@
 // Utilities for testing
 
 import { Readable } from 'node:stream';
-import type { ReadableStream } from 'node:stream/web';
 import { makeByteReadableStreamFromNodeReadable } from 'node-readable-to-web-readable-stream';
 
 /**
