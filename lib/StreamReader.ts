@@ -5,9 +5,7 @@ import { AbstractStreamReader } from "./AbstractStreamReader.js";
 
 interface IReadRequest {
   buffer: Uint8Array,
-  offset: number,
-  length: number,
-  position?: number,
+  mayBeLess: boolean,
   deferred: Deferred<number>
 }
 
@@ -40,23 +38,23 @@ export class StreamReader extends AbstractStreamReader {
   /**
    * Read chunk from stream
    * @param buffer Target Uint8Array (or Buffer) to store data read from stream in
-   * @param offset Offset target
-   * @param length Number of bytes to read
+   * @param mayBeLess - If true, may fill the buffer partially
    * @returns Number of bytes read
    */
-  protected async readFromStream(buffer: Uint8Array, offset: number, length: number): Promise<number> {
+  protected async readFromStream(buffer: Uint8Array, mayBeLess: boolean): Promise<number> {
 
-    const readBuffer = this.s.read(length);
+    if (buffer.length === 0) return 0;
+
+    const readBuffer = this.s.read(buffer.length);
 
     if (readBuffer) {
-      buffer.set(readBuffer, offset);
+      buffer.set(readBuffer);
       return readBuffer.length;
     }
 
     const request = {
       buffer,
-      offset,
-      length,
+      mayBeLess,
       deferred: new Deferred<number>()
     };
     this.deferred = request.deferred;
@@ -71,9 +69,9 @@ export class StreamReader extends AbstractStreamReader {
    * @param request Deferred read request
    */
   private readDeferred(request: IReadRequest) {
-    const readBuffer = this.s.read(request.length);
+    const readBuffer = this.s.read(request.buffer.length);
     if (readBuffer) {
-      request.buffer.set(readBuffer, request.offset);
+      request.buffer.set(readBuffer);
       request.deferred.resolve(readBuffer.length);
       this.deferred = null;
     } else {
