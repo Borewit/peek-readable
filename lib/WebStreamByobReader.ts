@@ -6,17 +6,26 @@ import { WebStreamReader } from './WebStreamReader.js';
  */
 export class WebStreamByobReader extends WebStreamReader {
 
-  protected async readFromStream(buffer: Uint8Array, offset: number, length: number): Promise<number> {
+  /**
+   * Read from stream
+   * @param buffer - Target Uint8Array (or Buffer) to store data read from stream in
+   * @param mayBeLess - If true, may fill the buffer partially
+   * @protected Bytes read
+   */
+  protected async readFromStream(buffer: Uint8Array, mayBeLess: boolean): Promise<number> {
 
-    const result = await this.reader.read(new Uint8Array(length), {min: length});
+    if (buffer.length === 0) return 0;
+
+    // @ts-ignore
+    const result = await this.reader.read(new Uint8Array(buffer.length), {min: mayBeLess ? undefined : buffer.length});
 
     if (result.done) {
       this.endOfStream = result.done;
     }
 
     if(result.value) {
-      buffer.set(result.value, offset);
-      return result.value.byteLength;
+      buffer.set(result.value);
+      return result.value.length;
     }
 
     return 0;

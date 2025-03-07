@@ -53,14 +53,13 @@ It reads data into the provided Uint8Array at a specified offset but does not mo
 allowing you to look ahead in the stream.
 
 ```ts  
-peek(uint8Array: Uint8Array, offset: number, length: number): Promise<number>
+peek(buffer: Uint8Array, offset: number, length: number): Promise<number>
 ```
 
 Parameters:
-- `uint8Array`: `Uint8Array`: The buffer into which the data will be peeked.
+- `buffer`: `Uint8Array`: The buffer into which the data will be peeked.
   This is where the peeked data will be stored.
-- `offset`: `number`: The offset in the Uint8Array where the peeked data should start being written.
-- `length`: `number`: The number of bytes to peek from the stream.
+- `maybeBeLess`: If true, the buffer maybe partially filled.
 
 Returns `Promise<number>`: 
 A promise that resolves with the number of bytes actually peeked into the buffer. 
@@ -72,10 +71,9 @@ read(buffer: Uint8Array, offset: number, length: number): Promise<number>
 ```
 
 Parameters:
-- `uint8Array`: `Uint8Array`: The buffer into which the data will be read.
+- `buffer`: `Uint8Array`: The buffer into which the data will be read.
   This is where the read data will be stored.
-- `offset`: `number`: The offset in the Uint8Array where the read data should start being written.
-- `length`: `number`: The number of bytes to read from the stream.
+- `maybeBeLess`: If true, the buffer maybe partially filled.
 
 Returns `Promise<number>`:
 A promise that resolves with the number of bytes actually read into the buffer.
@@ -102,7 +100,7 @@ import { StreamReader } from 'peek-readable';
   const readable = fs.createReadStream('JPEG_example_JPG_RIP_001.jpg');
   const streamReader = new StreamReader(readable);
   const uint8Array = new Uint8Array(16);
-  const bytesRead = await streamReader.read(uint8Array, 0, 16);;
+  const bytesRead = await streamReader.read(uint8Array);;
   // buffer contains 16 bytes, if the end-of-stream has not been reached
 })();
 ```
@@ -116,7 +114,7 @@ End-of-stream detection:
   const buffer = Buffer.alloc(16); // or use: new Uint8Array(16);
 
   try {
-    await streamReader.read(buffer, 0, 16);
+    await streamReader.read(buffer);
     // buffer contains 16 bytes, if the end-of-stream has not been reached
   } catch(error) {
     if (error instanceof EndOfStreamError) {
@@ -150,14 +148,14 @@ function closeNodeStream(stream: ReadStream): Promise<void> {
     try {
       const buffer = Buffer.alloc(20);
 
-      let bytesRead = await streamReader.peek(buffer, 0, 3);
+      let bytesRead = await streamReader.peek(buffer.subarray(0, 3));
       if (bytesRead === 3 && buffer[0] === 0xFF && buffer[1] === 0xD8 && buffer[2] === 0xFF) {
         console.log('This is a JPEG file');
       } else {
         throw Error('Expected a JPEG file');
       }
 
-      bytesRead = await streamReader.read(buffer, 0, 20); // Read JPEG header
+      bytesRead = await streamReader.read(buffer); // Read JPEG header
       if (bytesRead === 20) {
         console.log('Got the JPEG header');
       } else {

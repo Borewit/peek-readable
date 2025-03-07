@@ -3,35 +3,46 @@ import { AbstractStreamReader } from "./AbstractStreamReader.js";
 
 export class WebStreamDefaultReader extends AbstractStreamReader {
   private buffer: Uint8Array | null = null; // Internal buffer to store excess data
-  private bufferOffset = 0; // Current position in the buffer
 
   public constructor(private reader: ReadableStreamDefaultReader<Uint8Array>) {
     super();
   }
 
-  protected async readFromStream(buffer: Uint8Array, offset: number, length: number): Promise<number> {
+  /**
+   * Copy chunk to target, and store the remainder in this.buffer
+   */
+  private writeChunk(target: Uint8Array, chunk: Uint8Array): number {
+    const written = Math.min(chunk.length, target.length);
+    target.set(chunk.subarray(0, written));
+
+    // Adjust the remainder of the buffer
+    if (written < chunk.length) {
+      this.buffer = chunk.subarray(written);
+    } else {
+      this.buffer = null;
+    }
+    return written;
+  }
+
+  /**
+   * Read from stream
+   * @param buffer - Target Uint8Array (or Buffer) to store data read from stream in
+   * @param mayBeLess - If true, may fill the buffer partially
+   * @protected Bytes read
+   */
+  protected async readFromStream(buffer: Uint8Array, mayBeLess: boolean): Promise<number> {
+
+    if (buffer.length === 0) return 0;
 
     let totalBytesRead = 0;
 
     // Serve from the internal buffer first
     if (this.buffer) {
-      const remainingInBuffer = this.buffer.byteLength - this.bufferOffset;
-      const toCopy = Math.min(remainingInBuffer, length);
-      buffer.set(this.buffer.subarray(this.bufferOffset, this.bufferOffset + toCopy), offset);
-      this.bufferOffset += toCopy;
-      totalBytesRead += toCopy;
-      length -= toCopy;
-      offset += toCopy;
-
-      // If the buffer is exhausted, clear it
-      if (this.bufferOffset >= this.buffer.byteLength) {
-        this.buffer = null;
-        this.bufferOffset = 0;
-      }
+      totalBytesRead += this.writeChunk(buffer, this.buffer);
     }
 
     // Continue reading from the stream if more data is needed
-    while (length > 0 && !this.endOfStream) {
+    while (totalBytesRead < buffer.length && !this.endOfStream) {
       const result = await this.reader.read();
 
       if (result.done) {
@@ -40,22 +51,7 @@ export class WebStreamDefaultReader extends AbstractStreamReader {
       }
 
       if (result.value) {
-        const chunk = result.value;
-
-        // If the chunk is larger than the requested length, store the excess
-        if (chunk.byteLength > length) {
-          buffer.set(chunk.subarray(0, length), offset);
-          this.buffer = chunk;
-          this.bufferOffset = length; // Keep track of the unconsumed part
-          totalBytesRead += length;
-          return totalBytesRead;
-        }
-
-        // Otherwise, consume the entire chunk
-        buffer.set(chunk, offset);
-        totalBytesRead += chunk.byteLength;
-        length -= chunk.byteLength;
-        offset += chunk.byteLength;
+        totalBytesRead += this.writeChunk(buffer.subarray(totalBytesRead), result.value);
       }
     }
 

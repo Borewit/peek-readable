@@ -29,7 +29,7 @@ function stringReadableStream(inputString: string, delay = 0): ReadableStream<Ui
   // Convert the string to a Uint8Array using TextEncoder
 
   const nodeReadable = new SourceStream(inputString, delay);
-  return makeByteReadableStreamFromNodeReadable(nodeReadable);
+  return makeByteReadableStreamFromNodeReadable(nodeReadable) as ReadableStream<Uint8Array>;
 }
 
 export function stringToReadableStream(inputString: string, forceDefault: boolean, delay?: number): ReadableStream<Uint8Array> {
