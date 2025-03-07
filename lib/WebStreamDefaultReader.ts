@@ -9,19 +9,27 @@ export class WebStreamDefaultReader extends AbstractStreamReader {
     super();
   }
 
-  protected async readFromStream(buffer: Uint8Array, offset: number, length: number): Promise<number> {
+  /**
+   * Read from stream
+   * @param buffer - Target Uint8Array (or Buffer) to store data read from stream in
+   * @param mayBeLess - If true, may fill the buffer partially
+   * @protected Bytes read
+   */
+  protected async readFromStream(buffer: Uint8Array, mayBeLess: boolean): Promise<number> {
+
+    if (buffer.length === 0) return 0;
 
     let totalBytesRead = 0;
+    let remaining = buffer.length;
 
     // Serve from the internal buffer first
     if (this.buffer) {
       const remainingInBuffer = this.buffer.byteLength - this.bufferOffset;
-      const toCopy = Math.min(remainingInBuffer, length);
-      buffer.set(this.buffer.subarray(this.bufferOffset, this.bufferOffset + toCopy), offset);
+      const toCopy = Math.min(remainingInBuffer, remaining);
+      buffer.set(this.buffer.subarray(this.bufferOffset, this.bufferOffset + toCopy));
       this.bufferOffset += toCopy;
       totalBytesRead += toCopy;
-      length -= toCopy;
-      offset += toCopy;
+      remaining -= toCopy;
 
       // If the buffer is exhausted, clear it
       if (this.bufferOffset >= this.buffer.byteLength) {
@@ -31,7 +39,7 @@ export class WebStreamDefaultReader extends AbstractStreamReader {
     }
 
     // Continue reading from the stream if more data is needed
-    while (length > 0 && !this.endOfStream) {
+    while (remaining > 0 && !this.endOfStream) {
       const result = await this.reader.read();
 
       if (result.done) {
@@ -43,19 +51,18 @@ export class WebStreamDefaultReader extends AbstractStreamReader {
         const chunk = result.value;
 
         // If the chunk is larger than the requested length, store the excess
-        if (chunk.byteLength > length) {
-          buffer.set(chunk.subarray(0, length), offset);
+        if (chunk.byteLength > remaining) {
+          buffer.set(chunk.subarray(0, remaining), totalBytesRead);
           this.buffer = chunk;
-          this.bufferOffset = length; // Keep track of the unconsumed part
-          totalBytesRead += length;
+          this.bufferOffset = remaining; // Keep track of the unconsumed part
+          totalBytesRead += remaining;
           return totalBytesRead;
         }
 
         // Otherwise, consume the entire chunk
-        buffer.set(chunk, offset);
+        buffer.set(chunk);
         totalBytesRead += chunk.byteLength;
-        length -= chunk.byteLength;
-        offset += chunk.byteLength;
+        remaining -= chunk.byteLength;
       }
     }
 
