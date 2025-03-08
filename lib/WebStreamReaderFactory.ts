@@ -2,7 +2,7 @@ import type { ReadableStream as NodeReadableStream } from 'node:stream/web';
 import { WebStreamByobReader } from './WebStreamByobReader.js';
 import { WebStreamDefaultReader } from './WebStreamDefaultReader.js';
 
-export type AnyWebByteStream = NodeReadableStream<Uint8Array> | ReadableStream<Uint8Array>;
+export type AnyWebByteStream = NodeReadableStream<Uint8Array> | ReadableStream<Uint8Array> | ReadableStream<ArrayBufferView>;
 
 export function makeWebStreamReader(stream: AnyWebByteStream): WebStreamByobReader | WebStreamDefaultReader {
   try {
