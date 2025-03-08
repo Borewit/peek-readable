@@ -2207,10 +2207,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"node-readable-to-web-readable-stream@npm:^0.3.1":
-  version: 0.3.1
-  resolution: "node-readable-to-web-readable-stream@npm:0.3.1"
-  checksum: 10c0/0034cc725399057444eec20a5b09413c164f37a10d073176b7889bc7926545f85bc30f12026ec997a30d18a8793248776e5bb370b213cab9f0f5f53b68d9fdb5
+"node-readable-to-web-readable-stream@npm:^0.4.1":
+  version: 0.4.1
+  resolution: "node-readable-to-web-readable-stream@npm:0.4.1"
+  checksum: 10c0/4ec1c714bd43570492a9ae8c26b9c8cd1871fe359b954c36ab9b37e15824942ddc4976c56313134ab8a6cffc2780a49cf240e2755c9faa4b92e4c66e8b929efc
   languageName: node
   linkType: hard
 
@@ -2406,7 +2406,7 @@ __metadata:
     chai-as-promised: "npm:^8.0.1"
     del-cli: "npm:^6.0.0"
     mocha: "npm:^11.1.0"
-    node-readable-to-web-readable-stream: "npm:^0.3.1"
+    node-readable-to-web-readable-stream: "npm:^0.4.1"
     remark-cli: "npm:^12.0.1"
     remark-preset-lint-recommended: "npm:^7.0.0"
     source-map-support: "npm:^0.5.21"
