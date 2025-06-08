@@ -8,6 +8,13 @@
 
 # peek-readable
 
+> [!WARNING]  
+> ### This modules is deprecated.
+> 
+> I merged its functionality into [strtok3](https://github.com/Borewit/strtok3/pull/1234), under the assumption it is solely used as a dependency of [strtok3](https://github.com/Borewit/strtok3).
+>
+> If this change does have a negative impact on your project, please [raise your concern here](https://github.com/Borewit/strtok3/pull/1234). 
+
 A promise based asynchronous stream reader, which makes reading from a stream easy.
 
 Allows to read and peek from a [Readable Stream](https://nodejs.org/api/stream.html#stream_readable_streams)
